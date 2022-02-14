@@ -1,48 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Welcome from './components/Welcome';
-import { gql, useQuery, useLazyQuery } from '@apollo/client'
-//import { testQuery } from './queries/types/testQuery';
-//import { multiplyQuery, multiplyQueryVariables } from './queries/types/multiplyQuery';
-//import allBooksQuery from './queries/allBooksQuery';
-//import multiplyQuery from './queries/multiplyQuery';
+import { GET_ALL_BOOKS } from './queries/allBooksQuery';
+import { GET_MULTIPLY } from './queries/multiplyQuery';
+import { useQuery, useLazyQuery } from '@apollo/client'
+import { MultiplyQuery, MultiplyQueryVariables } from './queries/types/multiplyQuery';
+import { AllBooksQuery } from './queries/types/allBooksQuery';
 
 function App() {
-
-
-
-    //const { loadingMultiply, dataMultiply } = useQuery<multiplyQuery,multiplyQueryVariables>(multiplyQuery);
-    //const { loadingBooks, dataBooks } = useQuery<testQuery,Number>(allBooksQuery);
-
-    interface Book {
-        title: string,
-        author: string
-    }
-
-    interface AllBooksData {
-        allBooks: Book[];
-    }
-
-    interface AllBooksQueryVars {
-    }
-
-    const GET_ALL_BOOKS = gql`
-    query {
-      allBooks {
-          title
-          author
-      }
-    }
-    `
-
-    const GET_MULTIPLY = gql`
-    query multiplyQuery ($value1X: Int!, $value2X: Int!){
-      multiply(value1: $value1X, value2: $value2X) {
-          value
-      }
-    }
-    `
     
     const [value1, setValue1] = useState('');
     const [value2, setValue2] = useState('');
@@ -56,54 +21,17 @@ function App() {
             )
     }
 
-    interface MultiplyDataVars {
-        value1X: number,
-        value2X: number
-    }
-
-    interface MultiplyQuery {
-        multiply: MultiplyResultData;
-      }
-
-    interface MultiplyResultData {
-        value: number
-    }
-
-    const allBooksResult = useQuery<AllBooksData,AllBooksQueryVars>(GET_ALL_BOOKS);
-    // const [getAllBooks, allBooksResult2] = useLazyQuery<AllBooksData, AllBooksQueryVars>(GET_ALL_BOOKS)
-
-    /*  const  multiplyResult = useQuery<MultiplyQuery, MultiplyDataVars>(GET_MULTIPLY,{variables: {value1X: 2, value2X: 3},
+    const allBooksResult = useQuery<AllBooksQuery,undefined>(GET_ALL_BOOKS);
+   
+    const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyQueryVariables>(GET_MULTIPLY,{
         onError: (error) => {
-            console.log(error)
+            console.log('error')
         }
     })
-*/
-    const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyDataVars>(GET_MULTIPLY,{variables: {value1X: Number(value1), value2X: Number(value2)},
-        onError: (error) => {
-            console.log(error)
-        }
-    })
-
-    
 
     useEffect(() => {
-        //  const data: MultiplyDataVars = {value1: Number(value1), value2: Number(value2)};
-        //  getMultiply({variables: data})
-        // getMultiply({variables: {value1: 2, value2: 3}});
-        //console.log('running effect')
-        //getAllBooks()
-        getMultiply()
-    }, [value1, value2])
-
-    //console.log('allBooksResult2',allBooksResult2.data)
-
-    //const data: MultiplyDataVars = {value1: 2, value2: 3};
-    //getMultiply({variables: data})
-    /* try {
-        getMultiply({variables: {a: 2, b: 3}});
-    } catch (error) {
-        console.error(error)
-    }*/
+        getMultiply({variables: {value1: Number(value1), value2: Number(value2)}})
+    }, [value1, value2, getMultiply])
 
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -124,11 +52,11 @@ function App() {
                     onChange={({ target }) => setValue2(target.value)}/>
             </label>
             <div>
-                
+                {multiplyResult.data?.multiply.value}
             </div>
         </form>
     }
-    //TODO to print result {multiplyResult.data}
+
     return (
         <div className="App">
             <Welcome name='developer'/>
