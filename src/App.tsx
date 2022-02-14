@@ -37,8 +37,6 @@ function App() {
         event.preventDefault()
     }
 
-    console.log("multiplyResult",multiplyResult.data?.multiply.value)
-
     const renderValuesForm = () => {
         return <form onSubmit={handleSubmit}>
             <label> Value1
