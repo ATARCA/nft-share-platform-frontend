@@ -6,6 +6,7 @@ import { GET_MULTIPLY } from './queries/multiplyQuery';
 import { useQuery, useLazyQuery } from '@apollo/client'
 import { MultiplyQuery, MultiplyQueryVariables } from './queries/types/multiplyQuery';
 import { AllBooksQuery } from './queries/types/allBooksQuery';
+import MetamaskConnectCard from './components/MetamaskConnectCard';
 
 function App() {
     
@@ -57,6 +58,7 @@ function App() {
 
     return (
         <div className="App">
+            <MetamaskConnectCard/>
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}
