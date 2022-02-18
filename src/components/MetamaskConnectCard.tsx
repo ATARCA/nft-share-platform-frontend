@@ -52,9 +52,12 @@ function SwitchNetworkButton( {connector}: {connector: MetaMask} ) {
 
     const desiredChainName = CHAINS[DESIRED_CHAIN_ID].name
 
+    console.log(`is desiredCHId ${isDesiredChainID(chainID)}, active ${active} result ${isDesiredChainID(chainID) && !active}`)
+
     return (
-        isDesiredChainID(chainID) && !active ? <></> :
+        !isDesiredChainID(chainID) && active ? 
             <button onClick={() => connector.activate(getAddChainParameters(DESIRED_CHAIN_ID))}>Switch to {desiredChainName}</button>
+            : <></> 
     )
 }
 
