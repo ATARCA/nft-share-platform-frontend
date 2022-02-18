@@ -10,32 +10,6 @@ import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConn
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
-function MetaMaskChainSelect({ chainId, setChainId }: { chainId: number; setChainId?: (chainId: number) => void }) {
-    return (
-        <label>
-        Chain:{' '}
-            <select
-                value={`${chainId}`}
-                onChange={
-                    setChainId
-                        ? (event) => {
-                            setChainId(Number(event.target.value))
-                        }
-                        : undefined
-                }
-                disabled={!setChainId}
-            >
-                <option value={-1}>Default</option>
-                {Object.keys(URLS).map((chainId) => (
-                    <option key={chainId} value={chainId}>
-                        {CHAINS[Number(chainId)].name}
-                    </option>
-                ))}
-            </select>
-        </label>
-    )
-}
-
 function ChainDetails() {
     const chainId = useChainId()
 
@@ -51,8 +25,6 @@ function SwitchNetworkButton( {connector}: {connector: MetaMask} ) {
     const active = useIsActive()
 
     const desiredChainName = CHAINS[DESIRED_CHAIN_ID].name
-
-    console.log(`is desiredCHId ${isDesiredChainID(chainID)}, active ${active} result ${isDesiredChainID(chainID) && !active}`)
 
     return (
         !isDesiredChainID(chainID) && active ? 
@@ -78,24 +50,13 @@ function MetaMaskConnect({
     const active = useIsActive()
   
     const [desiredChainId, setDesiredChainId] = useState<number>(-1)
-  
-    const setChainId = useCallback(
-        (chainId: number) => {
-            setDesiredChainId(chainId)
-            if (chainId !== -1 && chainId !== currentChainId) {
-                return connector.activate(getAddChainParameters(chainId))
-            }
-        },
-        [setDesiredChainId, currentChainId, connector]
-    )
+
   
     if (error) {
         return (
             <>
-                <MetaMaskChainSelect chainId={desiredChainId} setChainId={setChainId} />
-                <br />
                 <button
-                    onClick={() => connector.activate(desiredChainId === -1 ? undefined : getAddChainParameters(desiredChainId))}
+                    onClick={() => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))}
                 >
             Try Again? 
                 </button>
@@ -104,21 +65,17 @@ function MetaMaskConnect({
     } else if (active) {
         return (
             <>
-                <MetaMaskChainSelect chainId={desiredChainId === -1 ? -1 : currentChainId as number} setChainId={setChainId} />
-                <br />
                 <button onClick={() => connector.deactivate()}>Disconnect</button>
             </>
         )
     } else {
         return (
             <>
-                <MetaMaskChainSelect chainId={desiredChainId} setChainId={isActivating ? undefined : setChainId} />
-                <br />
                 <button
                     onClick={
                         isActivating
                             ? undefined
-                            : () => connector.activate(desiredChainId === -1 ? undefined : getAddChainParameters(desiredChainId))
+                            : () => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))
                     }
                     disabled={isActivating}
                 >
@@ -139,9 +96,7 @@ function getName(connector: Connector) {
 
 function Status({connector}: { connector: Connector }) {
     const chainId = useChainId()
-    const accounts = useAccounts()
     const error = useError()
-    const isActivating = useIsActivating()
     const isActive = useIsActive()
   
     if (error) return (
