@@ -4,6 +4,12 @@ ATARCA has received funding from the European Union’s Horizon 2020 research an
 
 TODO: specify license before publishing this repo
 
+# How to
+
+### Update GraphQL schema
+
+Update schema on backend and start the backend. On frontend run `npm run schema:download` and then `npm run schema:codegen`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
