@@ -1,14 +1,13 @@
 import { MetaMask } from '@web3-react/metamask';
 import { Web3ReactHooks } from '@web3-react/core'
 import { formatEther } from '@ethersproject/units'
-import { useCallback, useEffect, useState } from 'react';
-import { CHAINS, getAddChainParameters, URLS, ExtendedChainInformation, DESIRED_CHAIN_ID } from '../chains'
+import { useEffect, useState } from 'react';
+import { CHAINS, getAddChainParameters, ExtendedChainInformation, DESIRED_CHAIN_ID } from '../chains'
 import { BigNumber } from '@ethersproject/bignumber'
 import React from 'react';
 import type { Connector } from '@web3-react/types'
 import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConnector'
-import { Button, ButtonProps, Menu, Ref } from 'semantic-ui-react';
-import { mainModule } from 'process';
+import { Button, Menu } from 'semantic-ui-react';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
@@ -54,35 +53,29 @@ function MetaMaskConnect({connector}: {connector: MetaMask}) {
     const active = useIsActive()
   
     if (error) {
-        return (
-            <>
-                <Button secondary
-                    onClick={() => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))}
-                >
+        return (    
+            <Button secondary
+                onClick={() => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))}
+            >
             Try Again? 
-                </Button>
-            </>
+            </Button>
         )
     } else if (active) {
         return (
-            <>
-                <Button onClick={() => connector.deactivate()}>Disconnect</Button>
-            </>
+            <Button onClick={() => connector.deactivate()}>Disconnect</Button>
         )
     } else {
         return (
-            <>
-                <Button primary
-                    onClick={
-                        isActivating
-                            ? undefined
-                            : () => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))
-                    }
-                    disabled={isActivating}
-                >
-                    {isActivating ? 'Connecting...' : `Connect ${getName(connector)}`}
-                </Button>
-            </>
+            <Button primary loading={isActivating}
+                onClick={
+                    isActivating
+                        ? undefined
+                        : () => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))
+                }
+                disabled={isActivating}
+            >
+                {isActivating ? 'Connecting...' : `Connect ${getName(connector)}`}
+            </Button>
         )
     }
 }
