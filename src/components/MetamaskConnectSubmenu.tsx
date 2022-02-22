@@ -7,16 +7,25 @@ import { BigNumber } from '@ethersproject/bignumber'
 import React from 'react';
 import type { Connector } from '@web3-react/types'
 import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConnector'
+import { Button, ButtonProps, Menu, Ref } from 'semantic-ui-react';
+import { mainModule } from 'process';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
 function ChainDetails() {
     const chainId = useChainId()
+    const active = useIsActive()
 
     return (
-        <label>
+        active ?
+            <Menu.Item>
+
+                <label>
             Chain:  {chainId ? CHAINS[chainId].name : '-'}
-        </label>
+                </label>
+            </Menu.Item>
+
+            : <></>
     )
 }
 
@@ -28,7 +37,9 @@ function SwitchNetworkButton( {connector}: {connector: MetaMask} ) {
 
     return (
         !isDesiredChainID(chainID) && active ? 
-            <button onClick={() => connector.activate(getAddChainParameters(DESIRED_CHAIN_ID))}>Switch to {desiredChainName}</button>
+            <Menu.Item>
+                <Button primary onClick={() => connector.activate(getAddChainParameters(DESIRED_CHAIN_ID))}>Switch to {desiredChainName}</Button>
+            </Menu.Item>
             : <></> 
     )
 }
@@ -37,41 +48,31 @@ function isDesiredChainID(chainId: number | undefined) {
     return chainId === DESIRED_CHAIN_ID
 }
 
-function MetaMaskConnect({
-    connector,
-    hooks: { useChainId, useIsActivating, useError, useIsActive },
-}: {
-    connector: MetaMask
-    hooks: Web3ReactHooks
-  }) {
-    const currentChainId = useChainId()
+function MetaMaskConnect({connector}: {connector: MetaMask}) {
     const isActivating = useIsActivating()
     const error = useError()
     const active = useIsActive()
   
-    const [desiredChainId, setDesiredChainId] = useState<number>(-1)
-
-  
     if (error) {
         return (
             <>
-                <button
+                <Button secondary
                     onClick={() => connector.activate( getAddChainParameters(DESIRED_CHAIN_ID))}
                 >
             Try Again? 
-                </button>
+                </Button>
             </>
         )
     } else if (active) {
         return (
             <>
-                <button onClick={() => connector.deactivate()}>Disconnect</button>
+                <Button onClick={() => connector.deactivate()}>Disconnect</Button>
             </>
         )
     } else {
         return (
             <>
-                <button
+                <Button primary
                     onClick={
                         isActivating
                             ? undefined
@@ -80,7 +81,7 @@ function MetaMaskConnect({
                     disabled={isActivating}
                 >
                     {isActivating ? 'Connecting...' : `Connect ${getName(connector)}`}
-                </button>
+                </Button>
             </>
         )
     }
@@ -105,13 +106,13 @@ function Status({connector}: { connector: Connector }) {
 
     if (isActive) 
         if(isDesiredChainID(chainId)) return (
-            <div>✅ Connected</div>
+            <Menu.Item>✅ Connected </Menu.Item>
         )
         else return (
-            <div>⚠️ Switch network</div>
+            <Menu.Item>⚠️ Switch network </Menu.Item>
         )
     else return (
-        <div>⚠️ Disconnected</div>
+        <Menu.Item>⚠️ Disconnected </Menu.Item>
     )
 }
 
@@ -120,26 +121,38 @@ function Accounts() {
     const accounts = useAccounts()
     const ENSNames = useENSNames(provider)
     const chainId = useChainId()
+    const isActive = useIsActive()
+
+    const shortenedAccounts = accounts?.map(a => shortenAccountAddress(a))
 
 
     const balances = useBalances(provider, accounts)
 
     return (
-        <div>
-        Account:
-            {accounts === undefined
-                ? ' -'
-                : accounts.length === 0
-                    ? ' None'
-                    : accounts?.map((account, i) => (
-                        <ul key={account} style={{ margin: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            <b>{ENSNames?.[i] ?? account}</b>
-                            {balances?.[i] ? ` (${formatEther(balances[i])} ${getCurrencySymbol(chainId)})` : null}
-                        </ul>
-                    ))}
-        </div>
+        isActive ?
+            <Menu.Item>
+                <div>
+                    Account:
+                    {accounts === undefined
+                        ? ' -'
+                        : accounts.length === 0
+                            ? ' None'
+                            : shortenedAccounts?.map((account, i) => (
+                                <ul key={account} style={{ margin: 0, padding:0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <b>{ENSNames?.[i] ?? account}</b>
+                                    {balances?.[i] ? ` (${formatEther(balances[i])} ${getCurrencySymbol(chainId)})` : null}
+                                </ul>
+                            ))}
+                </div>
+            </Menu.Item> 
+            : <></>
     )
 }
+
+const shortenAccountAddress = (address: string) : string => {
+    return address.substring(0,5) + '...' + address.substring(address.length - 4)
+}
+
 
 function getCurrencySymbol(chainId: number | undefined): string {
     if (chainId) {
@@ -179,33 +192,20 @@ function useBalances(
     return balances
 }
 
-export default function MetamaskConnectCard() {
-    return (
-        <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-            <div
-                    
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    width: '20rem',
-                    padding: '1rem',
-                    margin: '1rem',
-                    overflow: 'auto',
-                    border: '1px solid',
-                    borderRadius: '1rem',
-                }}
-            >
-                <div>
-                    <Status connector={metamaskConnector}/>
-                    <br />
-                    <ChainDetails/>
-                    <Accounts />
-                    <br />
-                </div>
-                <SwitchNetworkButton connector={metamaskConnector}/>
-                <MetaMaskConnect connector={metamaskConnector} hooks={hooks} />
-            </div>
-        </div>
+export default function MetamaskConnectSubMenu() {
+    return (          
+        <Menu.Menu position='right'>
+           
+            <Status  connector={metamaskConnector}/>
+            <ChainDetails/>
+           
+            <Accounts />
+           
+            <SwitchNetworkButton connector={metamaskConnector}/>       
+
+            <Menu.Item>
+                <MetaMaskConnect connector={metamaskConnector}/>
+            </Menu.Item>
+        </Menu.Menu>
     )
 }
