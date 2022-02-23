@@ -11,7 +11,7 @@ import { Button, Menu } from 'semantic-ui-react';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
 
-function ChainDetails() {
+const ChainDetails = () => {
     const chainId = useChainId()
     const active = useIsActive()
 
@@ -28,7 +28,7 @@ function ChainDetails() {
     )
 }
 
-function SwitchNetworkButton( {connector}: {connector: MetaMask} ) {
+const SwitchNetworkButton = ( {connector}: {connector: MetaMask} ) => {
     const chainID = useChainId()
     const active = useIsActive()
 
@@ -43,11 +43,11 @@ function SwitchNetworkButton( {connector}: {connector: MetaMask} ) {
     )
 }
 
-function isDesiredChainID(chainId: number | undefined) {
+const isDesiredChainID = (chainId: number | undefined) => {
     return chainId === DESIRED_CHAIN_ID
 }
 
-function MetaMaskConnect({connector}: {connector: MetaMask}) {
+const MetaMaskConnect = ({connector}: {connector: MetaMask}) => {
     const isActivating = useIsActivating()
     const error = useError()
     const active = useIsActive()
@@ -80,7 +80,7 @@ function MetaMaskConnect({connector}: {connector: MetaMask}) {
     }
 }
 
-function getName(connector: Connector) {
+const getName = (connector: Connector) => {
     if (connector instanceof MetaMask) {
         return 'MetaMask'
     } else {
@@ -88,7 +88,7 @@ function getName(connector: Connector) {
     }
 }
 
-function Status({connector}: { connector: Connector }) {
+const Status = ({connector}: { connector: Connector }) => {
     const chainId = useChainId()
     const error = useError()
     const isActive = useIsActive()
@@ -109,7 +109,7 @@ function Status({connector}: { connector: Connector }) {
     )
 }
 
-function Accounts() {
+const Accounts = () => {
     const provider = useProvider()
     const accounts = useAccounts()
     const ENSNames = useENSNames(provider)
@@ -147,7 +147,7 @@ const shortenAccountAddress = (address: string) : string => {
 }
 
 
-function getCurrencySymbol(chainId: number | undefined): string {
+const getCurrencySymbol = (chainId: number | undefined): string => {
     if (chainId) {
         const chain = CHAINS[chainId]
         const extendedInfoChain = chain as ExtendedChainInformation
@@ -159,10 +159,10 @@ function getCurrencySymbol(chainId: number | undefined): string {
     return 'Ξ'
 }
 
-function useBalances(
+const useBalances = (
     provider?: ReturnType<Web3ReactHooks['useProvider']>,
     accounts?: string[]
-): BigNumber[] | undefined {
+): BigNumber[] | undefined => {
     const [balances, setBalances] = useState<BigNumber[] | undefined>()
   
     useEffect(() => {
@@ -185,7 +185,7 @@ function useBalances(
     return balances
 }
 
-export default function MetamaskConnectSubMenu() {
+export const MetamaskConnectSubMenu = () => {
     return (          
         <Menu.Menu position='right'>
            
@@ -202,3 +202,5 @@ export default function MetamaskConnectSubMenu() {
         </Menu.Menu>
     )
 }
+
+export default MetamaskConnectSubMenu
