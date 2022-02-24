@@ -112,7 +112,6 @@ const Status = ({connector}: { connector: Connector }) => {
 const Accounts = () => {
     const provider = useProvider()
     const accounts = useAccounts()
-    const ENSNames = useENSNames(provider)
     const chainId = useChainId()
     const isActive = useIsActive()
 
@@ -132,7 +131,7 @@ const Accounts = () => {
                             ? ' None'
                             : shortenedAccounts?.map((account, i) => (
                                 <ul key={account} style={{ margin: 0, padding:0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    <b>{ENSNames?.[i] ?? account}</b>
+                                    <b>{account}</b>
                                     {balances?.[i] ? ` (${formatEther(balances[i])} ${getCurrencySymbol(chainId)})` : null}
                                 </ul>
                             ))}
