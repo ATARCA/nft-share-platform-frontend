@@ -94,7 +94,7 @@ const Status = ({connector}: { connector: Connector }) => {
     const isActive = useIsActive()
   
     if (error) return (
-        <div>{error.name ?? 'Error'}: {error.message}</div>
+        <Menu.Item>{error.name ?? 'Error'}: {error.message} </Menu.Item>
     )
 
     if (isActive) 

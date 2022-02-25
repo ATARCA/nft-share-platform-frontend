@@ -8,6 +8,7 @@ import { MultiplyQuery, MultiplyQueryVariables } from './queries/types/multiplyQ
 import { AllBooksQuery } from './queries/types/allBooksQuery';
 import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
 import { Menu } from 'semantic-ui-react';
+import { SendDemoTransaction } from './components/SendDemoTransaction';
 
 function App() {
     
@@ -65,6 +66,7 @@ function App() {
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}
+            <SendDemoTransaction/>
         </div>
     );
 }
