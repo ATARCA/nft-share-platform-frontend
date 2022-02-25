@@ -9,7 +9,7 @@ import type { Connector } from '@web3-react/types'
 import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConnector'
 import { Button, Menu } from 'semantic-ui-react';
 
-const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider } = hooks
 
 const ChainDetails = () => {
     const chainId = useChainId()

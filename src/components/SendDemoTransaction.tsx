@@ -4,7 +4,7 @@ import { hooks } from '../connectors/metaMaskConnector'
 import { deployContract } from '../contracts/demoContract';
 import { ShareableERC721 } from '../typechain-types/ShareableERC721';
 
-const { useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+const { useAccounts, useIsActive, useProvider } = hooks
 
 export const SendDemoTransaction = () => {
 
@@ -16,11 +16,10 @@ export const SendDemoTransaction = () => {
     const [ minting, setMinting ] = useState(false)
     
     const [ deployedContractAddress, setDeployedContractAddress ] = useState('')
-    const [ error, setError ] = useState<any>(undefined)
+    const [ errorMessage, setErrorMessage ] = useState('')
     
     const [contract, setContract] = useState<ShareableERC721 | undefined>(undefined);
 
-//TODO copy generated tyoes with script and build them first
     const onMintClicked = async () => {
         if (contract && accounts) {
             setMinting(true)
@@ -44,7 +43,9 @@ export const SendDemoTransaction = () => {
                 setDeployedContractAddress(contract.address)
             } catch (error) {
                 console.log(error)
-                setError(error)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const message = (error as any)?.message
+                setErrorMessage(message)
             }
             setdeploying(false)
         }
@@ -52,7 +53,7 @@ export const SendDemoTransaction = () => {
 
     return (
         <div>
-            {error?.message ? <div> Error {error?.message}</div>: <></>}
+            {errorMessage ? <div> Error {errorMessage}</div>: <></>}
             <Button onClick={onDeployClicked} disabled={!active} loading={deploying}>Deploy</Button>
             <div>Contract deployed at {deployedContractAddress}</div>
             <Button onClick={onMintClicked} disabled={!active || !contract}loading={minting}>Mint new token</Button>
