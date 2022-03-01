@@ -136,7 +136,7 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
     },
 }
 
-export const DESIRED_CHAIN_ID = 4//TODO revert 100
+export const DESIRED_CHAIN_ID = Number(process.env.REACT_APP_DESIRED_CHAIN_ID || 100)
 
 export const URLS: { [chainId: number]: string[] } = Object.keys(CHAINS).reduce((accumulator, chainId) => {
     const validURLs: string[] = CHAINS[Number(chainId)].urls.filter((url) => url) as string[]
