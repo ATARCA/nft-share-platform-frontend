@@ -6,6 +6,8 @@ import { GET_MULTIPLY } from './queries/multiplyQuery';
 import { useQuery, useLazyQuery } from '@apollo/client'
 import { MultiplyQuery, MultiplyQueryVariables } from './queries/types/multiplyQuery';
 import { AllBooksQuery } from './queries/types/allBooksQuery';
+import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
+import { Menu } from 'semantic-ui-react';
 
 function App() {
     
@@ -25,7 +27,7 @@ function App() {
    
     const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyQueryVariables>(GET_MULTIPLY,{
         onError: (error) => {
-            console.log('error')
+            console.log('error', error)
         }
     })
 
@@ -57,6 +59,9 @@ function App() {
 
     return (
         <div className="App">
+            <Menu>
+                <MetamaskConnectSubMenu/>
+            </Menu>
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}
