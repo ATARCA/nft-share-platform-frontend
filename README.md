@@ -10,6 +10,12 @@ TODO: specify license before publishing this repo
 
 Update schema on backend and start the backend. On frontend run `npm run schema:download` and then `npm run schema:codegen`
 
+### Update smart contracts from the nft-share-platform-contract repo
+
+Required setup: the `nft-share-platform-frontend` and `nft-share-platform-contrats` repos has to be in the same folder next to each other.
+
+Then run `npm run contracts:update` to generate new Typescript files from the solidity contracts and copy them over to the `nft-share-platform-frontend` folder.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

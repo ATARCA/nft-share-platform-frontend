@@ -9,7 +9,7 @@ import type { Connector } from '@web3-react/types'
 import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConnector'
 import { Button, Menu } from 'semantic-ui-react';
 
-const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider } = hooks
 
 const ChainDetails = () => {
     const chainId = useChainId()
@@ -94,7 +94,7 @@ const Status = ({connector}: { connector: Connector }) => {
     const isActive = useIsActive()
   
     if (error) return (
-        <div>{error.name ?? 'Error'}: {error.message}</div>
+        <Menu.Item>{error.name ?? 'Error'}: {error.message} </Menu.Item>
     )
 
     if (isActive) 
@@ -112,7 +112,6 @@ const Status = ({connector}: { connector: Connector }) => {
 const Accounts = () => {
     const provider = useProvider()
     const accounts = useAccounts()
-    const ENSNames = useENSNames(provider)
     const chainId = useChainId()
     const isActive = useIsActive()
 
@@ -132,7 +131,7 @@ const Accounts = () => {
                             ? ' None'
                             : shortenedAccounts?.map((account, i) => (
                                 <ul key={account} style={{ margin: 0, padding:0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    <b>{ENSNames?.[i] ?? account}</b>
+                                    <b>{account}</b>
                                     {balances?.[i] ? ` (${formatEther(balances[i])} ${getCurrencySymbol(chainId)})` : null}
                                 </ul>
                             ))}
