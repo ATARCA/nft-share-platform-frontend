@@ -8,13 +8,14 @@ import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
 
-const { useAccounts, useIsActive, useProvider } = hooks
+const { useAccounts, useIsActive, useProvider, useChainId } = hooks
 
 export const SendDemoTransaction = () => {
 
     const active = useIsActive();
     const provider = useProvider();
     const accounts = useAccounts();
+    const chainId = useChainId()
 
     const [deployInProgress, setdeployInProgress] = useState(false)
     const [ mintInProgress, setMintInProgress ] = useState(false)
@@ -133,7 +134,7 @@ export const SendDemoTransaction = () => {
                 {events?.map( e => <div key={e.event}>{e.args[0]} {e.args[1]} {(e.args[2] as BigNumber).toString()}</div>)}
             </div>
 
-            <Button onClick={onLoadALotOfEventsClicked} disabled={!active} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
+            <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== 100} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
             A lot of events size {aLotOfEvents?.length}
             {aLotOfEvents?.map( e => <div key={e.transactionHash}>From {(e as any).args.from} To {(e as any).args.to}</div>)}
 
