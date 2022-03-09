@@ -8,6 +8,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
+import { XDAI_CHAIN_ID } from '../chains';
 
 const { useAccounts, useIsActive, useProvider, useChainId } = hooks
 
@@ -131,7 +132,7 @@ export const SendDemoTransaction = () => {
                 {events?.map( e => <div key={e.event}>{e.args[0]} {e.args[1]} {(e.args[2] as BigNumber).toString()}</div>)}
             </div>
 
-            <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== 100} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
+            <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== XDAI_CHAIN_ID} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
             A lot of events size {aLotOfEvents?.length}
             {aLotOfEvents?.map( e => <div key={e.transactionHash}>From {(e as any).args.from} To {(e as any).args.to}</div>)}
 
