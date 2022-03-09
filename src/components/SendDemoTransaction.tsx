@@ -105,7 +105,7 @@ export const SendDemoTransaction = () => {
             const contract = new ethers.Contract(contractAddress,niftyInkContractABI, provider)
 
             const filter = contract.filters.Transfer()
-            const events = await contract.queryFilter(filter)
+            const events = await contract.queryFilter(filter, 15988323)
             console.log('events', events)
 
             setALotOfEvents(events)            
