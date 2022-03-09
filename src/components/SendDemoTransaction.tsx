@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from 'semantic-ui-react'
 import React, {  useState } from 'react'
 import { hooks } from '../connectors/metaMaskConnector'
@@ -41,7 +42,6 @@ export const SendDemoTransaction = () => {
                 await resultTransaction.wait()
             } catch (error) {
                 console.log(error)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const message = (error as any)?.message
                 setErrorMessage(message)
             }
@@ -60,7 +60,6 @@ export const SendDemoTransaction = () => {
                 setNextShareId(nextShareId+1)
             } catch (error) {
                 console.log(error)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const message = (error as any)?.message
                 setErrorMessage(message)
             }
@@ -79,7 +78,6 @@ export const SendDemoTransaction = () => {
                 setDeployedContractAddress(contract.address)
             } catch (error) {
                 console.log(error)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const message = (error as any)?.message
                 setErrorMessage(message)
             }
@@ -113,7 +111,6 @@ export const SendDemoTransaction = () => {
         }
         catch (error) {
             console.log(error)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const message = (error as any)?.message
             setErrorMessage(message)
         }
