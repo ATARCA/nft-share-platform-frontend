@@ -47,8 +47,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
-    "contracts:clean": "rimraf src/typechain-types",
-    "contracts:update": "npm run contracts:clean && cd ../nft-share-platform-contracts && npm run build && copyfiles \"./typechain-types/**\" \"../nft-share-platform-frontend/src\""
+    "contracts:clean": "rimraf src/typechain-types && rimraf src/abi-generated",
+    "contracts:update": "npm run contracts:clean && cd ../nft-share-platform-contracts && npm run build && copyfiles \"./typechain-types/**\" \"../nft-share-platform-frontend/src\" && copyfiles \"./abi-generated/**\" \"../nft-share-platform-frontend/src\""
   },
   "eslintConfig": {
     "extends": [
