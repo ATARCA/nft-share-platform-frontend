@@ -27,7 +27,8 @@ export class ExampleEntity extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type ExampleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        "Cannot save ExampleEntity entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
       );
       store.set("ExampleEntity", id.toString(), this);
     }
@@ -90,7 +91,8 @@ export class ShareableToken extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type ShareableToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        "Cannot save ShareableToken entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
       );
       store.set("ShareableToken", id.toString(), this);
     }

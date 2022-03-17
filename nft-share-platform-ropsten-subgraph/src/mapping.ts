@@ -63,7 +63,7 @@ export function handleApprovalForAll(event: ApprovalForAll): void {}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
-function getTokenEntityId(tokenId: BigInt, contractAddress: String): string {
+export function getTokenEntityId(tokenId: BigInt, contractAddress: String): string {
   return `${tokenId}-${contractAddress}`
 }
 
