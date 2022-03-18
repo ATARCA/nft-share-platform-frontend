@@ -67,8 +67,17 @@ export function getTokenEntityId(tokenId: BigInt, contractAddress: String): stri
   return `${tokenId}-${contractAddress}`
 }
 
+
+//next- listen to multiple contracts
+//next- template for different networks
+
+//steps for project setup for others:
+//cd nft-share-platform-ropsten-subgraph
+//npm ci
+//(to run tests )install docker + https://github.com/LimeChain/matchstick/blob/main/README.md#quick-start-
+
 export function handleShare(event: Share): void {
-  //ShareableToken. // next - ID cannot be BigInt, how does ID work? use from.toHex()
+
   const tokenEntityId = getTokenEntityId(event.params.tokenId, event.address.toHex())
   let token = ShareableToken.load(tokenEntityId)
 
@@ -76,7 +85,7 @@ export function handleShare(event: Share): void {
     token = new ShareableToken(tokenEntityId)
   }
 
-  log.warning('logging sharedBy event address {} params.to {}', [event.address.toString(),event.params.to.toString()])
+  log.warning('logging sharedBy event address {} params.to {}', [event.address.toHex(),event.params.to.toHex()])
   log.warning('sharedByBefore size {}',[token.sharedBy.length.toString()])
   token.owner = event.address
 
@@ -89,3 +98,7 @@ export function handleShare(event: Share): void {
 }
 
 export function handleTransfer(event: Transfer): void {}
+
+//TODO remove this
+//Comment this when deploying graph to hosted service as described in https://thegraph.com/docs/en/developer/matchstick/
+//export { runTests } from "../tests/nft-platform.test";
