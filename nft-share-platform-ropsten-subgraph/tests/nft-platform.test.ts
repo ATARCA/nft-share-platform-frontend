@@ -22,7 +22,7 @@ import { getTokenEntityId, handleShare } from '../src/mapping'
     handleShares([shareEvent1, shareEvent2])
 
     assert.fieldEquals('ShareableToken', 'id1', 'owner', '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7')
-    //assert.fieldEquals('ShareableToken', 'id1', 'sharedBy', '[0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7,0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7]')
+    assert.fieldEquals('ShareableToken', getTokenEntityId( bigInt('1'),shareEvent1.address.toHexString()), 'sharedBy', '[0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7]')
     assert.fieldEquals('ShareableToken', getTokenEntityId( bigInt('1'),shareEvent1.address.toHexString()), 'owner', shareEvent1.address.toHexString())
     assert.fieldEquals('ShareableToken', getTokenEntityId( bigInt('2'),shareEvent2.address.toHexString()), 'owner', shareEvent2.address.toHexString())
 

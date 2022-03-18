@@ -90,7 +90,9 @@ export function handleShare(event: Share): void {
   token.owner = event.address
 
   const sharedBy = token.sharedBy
-  sharedBy.push(event.address)
+  sharedBy.push(event.params.to)
+  sharedBy.push(event.params.to)
+
   token.sharedBy = sharedBy
   log.info('sharedByAfter size {}',[token.sharedBy.length.toString()])
 
