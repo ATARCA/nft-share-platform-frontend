@@ -20,7 +20,4 @@ WORKDIR /matchstick
 
 COPY ../ .
 
-RUN npm run codegen
-RUN npm run build
-
 CMD ../binary-linux-20 ${ARGS}
