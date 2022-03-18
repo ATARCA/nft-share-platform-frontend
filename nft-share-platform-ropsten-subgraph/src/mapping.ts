@@ -85,14 +85,14 @@ export function handleShare(event: Share): void {
     token = new ShareableToken(tokenEntityId)
   }
 
-  log.warning('logging sharedBy event address {} params.to {}', [event.address.toHex(),event.params.to.toHex()])
-  log.warning('sharedByBefore size {}',[token.sharedBy.length.toString()])
+  log.info('logging sharedBy event address {} params.to {}', [event.address.toHex(),event.params.to.toHex()])
+  log.info('sharedByBefore size {}',[token.sharedBy.length.toString()])
   token.owner = event.address
 
   const sharedBy = token.sharedBy
   sharedBy.push(event.address)
   token.sharedBy = sharedBy
-  log.warning('sharedByAfter size {}',[token.sharedBy.length.toString()])
+  log.info('sharedByAfter size {}',[token.sharedBy.length.toString()])
 
   token.save()
 }
