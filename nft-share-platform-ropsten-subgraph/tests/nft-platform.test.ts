@@ -35,7 +35,7 @@ import { getTokenEntityId, handleShare } from '../src/mapping'
 
 
 function bigInt(i: string): BigInt {
-  return BigInt.fromString(i);//  (0).Set//ethereum.Value.from(i).toBigInt()
+  return BigInt.fromString(i);
 }
 
 function createNewShareEvent(
@@ -53,7 +53,7 @@ function createNewShareEvent(
     mockEvent.transaction,
     mockEvent.parameters
   )
-  newShareEvent.parameters = new Array()
+
   let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(Address.fromString(fromAddress)))
   let toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(Address.fromString(fromAddress)))
   let tokenIdParam = new ethereum.EventParam('tokenId', ethereum.Value.fromI32(tokenId))
