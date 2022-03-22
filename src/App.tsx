@@ -9,6 +9,7 @@ import { AllBooksQuery } from './queries-backend/types-backend/AllBooksQuery';
 import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
 import { Menu } from 'semantic-ui-react';
 import { SendDemoTransaction } from './components/SendDemoTransaction';
+import { backendApolloClient } from './graphql/backendApolloClient';
 
 function App() {
     
@@ -24,9 +25,9 @@ function App() {
             )
     }
 
-    const allBooksResult = useQuery<AllBooksQuery,undefined>(GET_ALL_BOOKS);
+    const allBooksResult = useQuery<AllBooksQuery,undefined>(GET_ALL_BOOKS, {client: backendApolloClient});
    
-    const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyQueryVariables>(GET_MULTIPLY,{
+    const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyQueryVariables>(GET_MULTIPLY,{ client: backendApolloClient,
         onError: (error) => {
             console.log('error', error)
         }

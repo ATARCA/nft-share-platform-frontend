@@ -2,13 +2,20 @@
 import { Button } from 'semantic-ui-react'
 import React, {  useState } from 'react'
 import { hooks } from '../connectors/metaMaskConnector'
-import { deployContract } from '../contracts/demoContract';
+import { deployContract, loadContract } from '../contracts/demoContract';
 import { ShareableERC721, ShareEvent } from '../typechain-types/ShareableERC721';
 import { BigNumber } from '@ethersproject/bignumber';
 import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
 import { XDAI_CHAIN_ID } from '../chains';
+import { ShareableTokenQuery } from '../queries-thegraph/types-thegraph/ShareableTokenQuery';
+import { GET_SHAREABLE_TOKEN } from '../queries-thegraph/shareableTokensQuery';
+
+import { useQuery } from '@apollo/client'
+import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
+import { sleep } from '../utils';
+
 
 const { useAccounts, useIsActive, useProvider, useChainId } = hooks
 
@@ -31,8 +38,9 @@ export const SendDemoTransaction = () => {
     const [ events, setEvents ] = useState<ShareEvent[] | undefined>(undefined)
     const [ aLotOfEvents, setALotOfEvents ] = useState<ethers.Event[] | undefined>(undefined)
 
+    const [ nextShareId, setNextShareId ] = useState(1)
 
-    const [ nextShareId, setNextShareId ] = useState(2)
+    const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
 
     const onMintClicked = async () => {
         if (contract && accounts) {
@@ -59,6 +67,8 @@ export const SendDemoTransaction = () => {
                 const resultTransaction = await contract.share(demoShareDestinationAddress,'1', nextShareId)
                 await resultTransaction.wait()
                 setNextShareId(nextShareId+1)
+                await sleep(2000)//cannot refetch the graph data immediately because they are not updated yet
+                await allgraphShareTokensResult.refetch()
             } catch (error) {
                 console.log(error)
                 const message = (error as any)?.message
@@ -75,6 +85,27 @@ export const SendDemoTransaction = () => {
             try {
                 const contract = await deployContract(provider)
                 await contract.deployed()
+                setNextShareId(3)
+                setContract(contract)
+                setDeployedContractAddress(contract.address)
+            } catch (error) {
+                console.log(error)
+                const message = (error as any)?.message
+                setErrorMessage(message)
+            }
+            setdeployInProgress(false)
+        }
+    }
+
+    const onLoadGraphIndexedContractClicked = async () => {
+        if (provider) {
+            setdeployInProgress(true)
+            setErrorMessage('')
+            try {
+                const contract  = loadContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
+                await contract.deployed()
+                const totalTokens = allgraphShareTokensResult.data?.shareableTokens.length || 1
+                setNextShareId(totalTokens+2)
                 setContract(contract)
                 setDeployedContractAddress(contract.address)
             } catch (error) {
@@ -121,7 +152,9 @@ export const SendDemoTransaction = () => {
     return (
         <div>
             {errorMessage ? <div> Error {errorMessage}</div>: <></>}
-            <Button onClick={onDeployClicked} disabled={!active} loading={deployInProgress}>Deploy</Button>
+            <Button onClick={onDeployClicked} disabled={!active} loading={deployInProgress}>Deploy new contract</Button>
+            <Button onClick={onLoadGraphIndexedContractClicked} disabled={!active} loading={deployInProgress}>Load graph indexed contract</Button>
+
             <div>Contract deployed at {deployedContractAddress}</div>
             <Button onClick={onMintClicked} disabled={!active || !contract} loading={mintInProgress}>Mint new token</Button>
             <Button onClick={onShareClicked} disabled={!active || !contract} loading={shareInProgress}>Share token, next ID {nextShareId}</Button>
@@ -133,7 +166,18 @@ export const SendDemoTransaction = () => {
             </div>
 
             <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== XDAI_CHAIN_ID} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
-            A lot of events size {aLotOfEvents?.length}
+            
+            <div>            
+                Graph tokens/events size {allgraphShareTokensResult.data?.shareableTokens.length}
+            </div>
+
+            <div> 
+             Graph tokens/events
+            </div>
+
+            {allgraphShareTokensResult.data?.shareableTokens.map( t => <div key={t.id}>{t.id} {t.owner}</div>)}
+
+            A lot of events directly queried size {aLotOfEvents?.length}
             {aLotOfEvents?.map( e => <div key={e.transactionHash}>From {(e as any).args.from} To {(e as any).args.to}</div>)}
 
             <div>
