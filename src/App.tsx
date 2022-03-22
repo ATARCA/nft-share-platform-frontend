@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Welcome from './components/Welcome';
-import { GET_ALL_BOOKS } from './queries/allBooksQuery';
-import { GET_MULTIPLY } from './queries/multiplyQuery';
+import { GET_ALL_BOOKS } from './queries-backend/allBooksQuery';
+import { GET_MULTIPLY } from './queries-backend/multiplyQuery';
 import { useQuery, useLazyQuery } from '@apollo/client'
-import { MultiplyQuery, MultiplyQueryVariables } from './queries/types/multiplyQuery';
-import { AllBooksQuery } from './queries/types/allBooksQuery';
+import { MultiplyQuery, MultiplyQueryVariables } from './queries-backend/types-backend/MultiplyQuery';
+import { AllBooksQuery } from './queries-backend/types-backend/AllBooksQuery';
 import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
 import { Menu } from 'semantic-ui-react';
 import { SendDemoTransaction } from './components/SendDemoTransaction';
