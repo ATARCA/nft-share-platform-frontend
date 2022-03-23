@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+nft-share-platform-ropsten-subgraph/build
+nft-share-platform-ropsten-subgraph/node_modules
+nft-share-platform-ropsten-subgraph/tests/.bin
