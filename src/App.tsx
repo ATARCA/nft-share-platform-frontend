@@ -10,12 +10,18 @@ import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
 import { Menu } from 'semantic-ui-react';
 import { SendDemoTransaction } from './components/SendDemoTransaction';
 import { backendApolloClient } from './graphql/backendApolloClient';
+import { GET_SHAREABLE_TOKEN } from './queries-thegraph/shareableTokensQuery';
+import { ShareableTokenQuery } from './queries-thegraph/types-thegraph/ShareableTokenQuery';
+import { theGraphApolloClient } from './graphql/theGraphApolloClient';
+import { Token } from 'graphql';
+import TokenGrid from './components/TokenGrid';
 
 function App() {
     
     const [value1, setValue1] = useState('');
     const [value2, setValue2] = useState('');
 
+    const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
     const renderBooks = () => {
         if (allBooksResult.loading)
             return <div>Loading</div>
@@ -68,6 +74,7 @@ function App() {
             {renderBooks()}
             {renderValuesForm()}
             <SendDemoTransaction/>
+            <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
         </div>
     );
 }
