@@ -1,4 +1,3 @@
-import { Provider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import { ShareableERC721__factory } from '../typechain-types/factories/ShareableERC721__factory'
 
