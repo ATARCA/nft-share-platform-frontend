@@ -13,7 +13,6 @@ import { backendApolloClient } from './graphql/backendApolloClient';
 import { GET_SHAREABLE_TOKEN } from './queries-thegraph/shareableTokensQuery';
 import { ShareableTokenQuery } from './queries-thegraph/types-thegraph/ShareableTokenQuery';
 import { theGraphApolloClient } from './graphql/theGraphApolloClient';
-import { Token } from 'graphql';
 import TokenGrid from './components/TokenGrid';
 
 function App() {
