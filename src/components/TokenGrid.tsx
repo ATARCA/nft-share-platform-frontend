@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Image, Segment } from 'semantic-ui-react';
 import { ShareableTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/ShareableTokenQuery';
 
@@ -6,8 +7,7 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shar
     return (
         <div>
             {isLoading? 
-                <Segment placeholder vertical padded='very' loading>
-                </Segment>
+                <Segment placeholder vertical padded='very' loading/>
                 :
                 <Grid doubling centered columns={5} style={{padding: '10vw'}}>
                     {tokens.map(t => 
@@ -23,8 +23,15 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shar
 };
 
 const TokenCard = ({token}: {token:ShareableTokenQuery_shareableTokens}) => {
+
+    const navigate = useNavigate()
+
+    const onCardClicked = () => {
+        navigate(`token/${token.id}`)
+    }
+
     return (
-        <Card style={{margin: '20px', textAlign: 'left'}}>
+        <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
             <Image size='medium' src='https://react.semantic-ui.com/images/wireframe/paragraph.png'/>
             <Card.Content>
                 <Card.Header>{token.id.toString().substring(0,7)}...</Card.Header>
