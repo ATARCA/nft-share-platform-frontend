@@ -10,3 +10,14 @@ query ShareableTokenQuery{
   }
 }
 `
+
+export const GET_TOKEN_BY_ID = gql`
+query ShareableTokenByIdQuery ($id: String!){
+  shareableToken( id: $id) {
+    id
+    owner
+    sharedBy
+    sharedWith
+  }
+}
+`
