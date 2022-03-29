@@ -18,7 +18,6 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shar
                 </Grid>
             }
         </div>
-
     );
 };
 
