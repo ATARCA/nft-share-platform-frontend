@@ -10,7 +10,7 @@ import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 import { ethers } from 'ethers';
 import { XDAI_CHAIN_ID } from '../chains';
 import { ShareableTokenQuery } from '../queries-thegraph/types-thegraph/ShareableTokenQuery';
-import { GET_SHAREABLE_TOKEN } from '../queries-thegraph/shareableTokensQuery';
+import { GET_SHAREABLE_TOKEN } from '../queries-thegraph/queries';
 
 import { useQuery } from '@apollo/client'
 import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
