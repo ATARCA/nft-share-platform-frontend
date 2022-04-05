@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Welcome from '../../components/Welcome';
-import { GET_ALL_BOOKS } from '../../queries-backend/allBooksQuery';
-import { GET_MULTIPLY } from '../../queries-backend/multiplyQuery';
+import { GET_ALL_BOOKS, GET_MULTIPLY } from '../../queries-backend/queries';
 import { useQuery, useLazyQuery } from '@apollo/client'
 import { MultiplyQuery, MultiplyQueryVariables } from '../../queries-backend/types-backend/MultiplyQuery';
 import { AllBooksQuery } from '../../queries-backend/types-backend/AllBooksQuery';
@@ -11,6 +10,7 @@ import { GET_SHAREABLE_TOKEN } from '../../queries-thegraph/queries';
 import { ShareableTokenQuery } from '../../queries-thegraph/types-thegraph/ShareableTokenQuery';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import TokenGrid from '../../components/TokenGrid';
+import { MetadataSignAndPostDemo } from '../MetadataSignAndPostDemo';
 
 const Home = () => {
 
@@ -63,6 +63,7 @@ const Home = () => {
 
     return (
         <div>
+            <MetadataSignAndPostDemo/>
             <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}
