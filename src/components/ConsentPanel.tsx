@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React from 'react';
-import { Button, Header, Menu } from 'semantic-ui-react';
+import { Button, Menu, Message } from 'semantic-ui-react';
 import { hooks } from '../connectors/metaMaskConnector';
 import { backendApolloClient } from '../graphql/backendApolloClient';
 import { ADD_SIGNED_CONSENT, CONSENT_NEEDED, GET_CONSENT_MESSAGE_TO_SIGN } from '../queries-backend/queries';
@@ -33,9 +33,7 @@ const ConsentPanelContent = () => {
 
     const onGiveConsentClicked = async () => {
         if (messageToSign) {
-            const signedConsentMessage = await provider?.getSigner().signMessage(messageToSign)
-            console.log('signed consent', signedConsentMessage)
-            
+            const signedConsentMessage = await provider?.getSigner().signMessage(messageToSign)            
             if (signedConsentMessage) {
                 await uploadConsent(signedConsentMessage)
             }
@@ -56,7 +54,10 @@ const ConsentPanelContent = () => {
             <Menu.Item>
                 <p>You need to give consent before using the platform. TODO complete text.</p>
                 <Button color='green' onClick={onGiveConsentClicked}>Sign consent</Button>
-                { uploadConsentResultError ? <Header as='h4' color='red'>{uploadConsentResultError}</Header> : <></>}
+                { uploadConsentResultError ? <Message error>
+                    <Message.Header>Consent upload failed</Message.Header>
+                    <p>{uploadConsentResultError}</p>
+                </Message> : <></>}
             </Menu.Item>
         </Menu> 
         : <></>;
