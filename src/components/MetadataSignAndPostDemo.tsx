@@ -15,6 +15,8 @@ export const MetadataSignAndPostDemo = () => {
     const [ txHash, setTxHash ] = useState('')
     const [ metadata, setMetadata ] = useState('')
 
+    const [ isMetadataValid, setIsMetadataValid ] = useState(false)
+
     const provider = useProvider()
     const active = useIsActive()
 
@@ -49,9 +51,9 @@ export const MetadataSignAndPostDemo = () => {
                 </Form.Field>
             </Form>
 
-            <MetadataEntryForm/>
+            <MetadataEntryForm onIsValid={(isValid) => setIsMetadataValid(isValid)}/>
 
-            <Button disabled={!active} onClick={onSignAndUploadClicked}>Sign and upload metadata</Button>
+            <Button disabled={!active || !isMetadataValid} onClick={onSignAndUploadClicked}>Sign and upload metadata</Button>
         </div>
     )
 }
