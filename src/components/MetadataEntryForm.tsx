@@ -1,6 +1,6 @@
 import { useState } from "react"
 import React from "react";
-import { Icon, Input } from "semantic-ui-react";
+import { Icon, Input, Header, Button } from "semantic-ui-react";
 
 const MetadataEntryItem = ({
     propertyName, 
@@ -27,15 +27,19 @@ const MetadataEntryItem = ({
             <Input focus placeholder='propertyValue' style={{margin: '0px 10px 0px 0px'}}
                 value={currentPropertyValue} 
                 onChange={(e, { value }) => {setcurrentPropertyValue( value ); onPropertyValueChanged(value)}}/>
-            <Icon name='delete' size='small' circular onClick={onRemoveClicked}/>
+            <Icon name='delete' size='small' onClick={onRemoveClicked}/>
         </div>
     )
 };
 
-export const MetadataEntryForm = () => {
-//use state for properties and values map
+const twitterContributionPropertiesTemplate: [string, string][] = [[  'Author', ''], ['Topic', ''], ['Contribution URI', 'http://']]
+const eventOrganiserContributionPropertiesTemplate: [string, string][] = [['Organizer', ''], ['Event Name', ''], ['Event date', ''], ['Event location', '']]
 
-    //const [ propertiesToValuesMap, setPropertiesToValuesMap ] = useState(new Map<string, string>())
+export const MetadataEntryForm = () => {
+
+    const [ tokenName, setTokenName ] = useState('')
+    const [ tokenDescription, setTokenDescription ] = useState('')
+
     const [ propertiesToValuesArray, setPropertiesToValuesArray ] = useState<[string, string][]>([])
 
     const updatePropertyValue = (index: number, newValue:string) => {
@@ -68,9 +72,17 @@ export const MetadataEntryForm = () => {
         arrayCopy.push(['',''],)
         setPropertiesToValuesArray(arrayCopy)
     }
-//TODO next - template button
     return (
         <div>
+            <div style={{margin: '10px 0px 0px 10px'}}><Input label='Name' placeholder='token name' value={tokenName} onChange={(e, { value }) => setTokenName( value )} /></div>
+            <div style={{margin: '10px 0px 0px 10px'}}><Input label='Description' placeholder='token description' value={tokenDescription} onChange={(e, { value }) => setTokenDescription( value )}/></div>
+
+            <Header as='h3' dividing>
+                Properties
+            </Header>
+            <text>Choose template</text>
+            <Button basic onClick={() => { setPropertiesToValuesArray([]); setPropertiesToValuesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
+            <Button basic onClick={() => { setPropertiesToValuesArray([]); setPropertiesToValuesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
             {Array.from( propertiesToValuesArray ).map( (value, index) => { 
                 const propertyName = value[0]
                 const propertyValue = value[1]
