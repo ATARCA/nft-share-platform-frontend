@@ -33,19 +33,25 @@ const MetadataEntryItem = ({
     )
 };
 
-const twitterContributionPropertiesTemplate: [string, string, string][] = [[ uuidv4(), 'Author', ''], [ uuidv4(), 'Topic', ''], [ uuidv4(), 'Contribution URI', 'http://']]
-const eventOrganiserContributionPropertiesTemplate: [string, string, string][] = [[ uuidv4(), 'Organizer', ''], [ uuidv4(), 'Event Name', ''], [ uuidv4(), 'Event date', ''], [ uuidv4(), 'Event location', '']]
+interface MetadataProperty {
+    id: string;
+    name: string;
+    value: string;
+}
+
+const twitterContributionPropertiesTemplate: MetadataProperty[] = [{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
+const eventOrganiserContributionPropertiesTemplate: MetadataProperty[] = [{ id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
 
 export const MetadataEntryForm = () => {
 
     const [ tokenName, setTokenName ] = useState('')
     const [ tokenDescription, setTokenDescription ] = useState('')
 
-    const [ propertiesToValuesArray, setPropertiesToValuesArray ] = useState<[string, string, string][]>([])
+    const [ propertiesToValuesArray, setPropertiesToValuesArray ] = useState<MetadataProperty[]>([])
 
     const updatePropertyValue = (uuid: string, newValue:string) => {
         const arrayCopy = [...propertiesToValuesArray]
-        arrayCopy.map(( entry => {if (uuid === entry[0]) entry[2] = newValue; return entry}))
+        arrayCopy.map(( entry => {if (uuid === entry.id) entry.value = newValue; return entry}))
         setPropertiesToValuesArray(arrayCopy)
     }
 
@@ -53,24 +59,18 @@ export const MetadataEntryForm = () => {
 
     const updatePropertyName = (uuid: string, newPropertyName:string) => {
         const arrayCopy = [...propertiesToValuesArray]
-        arrayCopy.map(( entry => {if (uuid === entry[0]) entry[1] = newPropertyName; return entry}))
+        arrayCopy.map(( entry => {if (uuid === entry.id) entry.name = newPropertyName; return entry}))
         setPropertiesToValuesArray(arrayCopy)
     }
 
-    const demoContent: [string, string, string][] = [[ uuidv4(), 'a','1'],[ uuidv4(), 'b','2'],[ uuidv4(), 'c','3']];
-
-    if (propertiesToValuesArray.length === 0) {
-        setPropertiesToValuesArray(demoContent)//TODO remove
-    }
-
     const removeProperty = (uuid: string) => {
-        const filteredArray = propertiesToValuesArray.filter(((entry) => (uuid !== entry[0])))        
+        const filteredArray = propertiesToValuesArray.filter(((entry) => (uuid !== entry.id)))        
         setPropertiesToValuesArray(filteredArray)
     }
 
     const addEmptyProperty = () => {
         const arrayCopy = [...propertiesToValuesArray]
-        arrayCopy.push([ uuidv4(), '',''],)
+        arrayCopy.push({ id:uuidv4(), name:'',value:''})
         setPropertiesToValuesArray(arrayCopy)
     }
     return (
@@ -84,10 +84,10 @@ export const MetadataEntryForm = () => {
             <text>Choose template</text>
             <Button basic onClick={() => { setPropertiesToValuesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
             <Button basic onClick={() => { setPropertiesToValuesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
-            {Array.from( propertiesToValuesArray ).map( (value, index) => { 
-                const uuid = value[0]
-                const propertyName = value[1]
-                const propertyValue = value[2]
+            {Array.from( propertiesToValuesArray ).map( entry => { 
+                const uuid = entry.id
+                const propertyName = entry.name
+                const propertyValue = entry.value
 
                 return (
                     <MetadataEntryItem
