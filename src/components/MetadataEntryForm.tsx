@@ -9,24 +9,24 @@ const MetadataEntryItem = ({
     onRemoveClicked,
     onPropertyNameChanged,
     onPropertyValueChanged,
-    style}: {
+    className}: {
         propertyName: string, 
         propertyValue: string, 
         onRemoveClicked: () => void,
         onPropertyNameChanged: (newName: string) => void,
         onPropertyValueChanged: (newValue: string) => void,
-        style: React.CSSProperties}) => {
+        className?:string}) => {
 
     const [ currentPropertyName, setCurrentPropertyName ] = useState(propertyName)
     const [ currentPropertyValue, setcurrentPropertyValue ] = useState(propertyValue)
 
     return (
-        <div style={style}>
-            <Input placeholder='propertyName' style={{margin: '0px 10px 0px 0px'}}
+        <div className={className}>
+            <Input placeholder='propertyName' className='margin-bottom'
                 value={currentPropertyName} 
                 error={!currentPropertyName}
                 onChange={(e, { value }) => {setCurrentPropertyName( value ); onPropertyNameChanged(value)}}/>
-            <Input placeholder='propertyValue' style={{margin: '0px 10px 0px 0px'}}
+            <Input placeholder='propertyValue' className='margin-bottom'
                 value={currentPropertyValue} 
                 error={!currentPropertyValue}
                 onChange={(e, { value }) => {setcurrentPropertyValue( value ); onPropertyValueChanged(value)}}/>
@@ -112,9 +112,10 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
         arrayCopy.push({ id:uuidv4(), name:'',value:''})
         setMetadataAttributesArray(arrayCopy)
     }
+
     return (
         <div>
-            <div style={{margin: '10px 0px 0px 10px'}}>
+            <div className='margin-vertical' >
                 <Input fluid 
                     label='Name' 
                     placeholder='token name' 
@@ -122,7 +123,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
                     error={!tokenName && tokenNameEverChanged} 
                     onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
             </div>
-            <div style={{margin: '10px 0px 0px 10px'}}>
+            <div className='margin-vertical'>
                 <Input fluid
                     label='Description' 
                     placeholder='token description' 
@@ -144,7 +145,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
 
                 return (
                     <MetadataEntryItem
-                        style={{margin: '10px 0px 0px 10px'}}
+                        className='margin-vertical'
                         key={uuid} 
                         propertyName={propertyName} 
                         propertyValue={propertyValue}
