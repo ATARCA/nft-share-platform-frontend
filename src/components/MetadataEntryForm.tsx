@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
@@ -35,16 +35,29 @@ const MetadataEntryItem = ({
     )
 };
 
-interface MetadataProperty {
+interface MetadataAttributeUIEntry {
     id: string;
     name: string;
     value: string;
 }
 
-const twitterContributionPropertiesTemplate: MetadataProperty[] = [{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
-const eventOrganiserContributionPropertiesTemplate: MetadataProperty[] = [{ id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
+interface MetadataAttribute {
+    trait_type: string;
+    value: string;
+}
 
-export const MetadataEntryForm = ({onIsValid}: {onIsValid: (isValid:boolean) => void}) => {
+interface Metadata {
+    description: string;
+    name: string;
+    attributes: MetadataAttribute[];
+}
+
+
+
+const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
+const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
+
+export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void}) => {
 
     const [ tokenName, setTokenName ] = useState('')
     const [ tokenNameEverChanged, setTokenNameEverChanged ] = useState(false)
@@ -52,39 +65,52 @@ export const MetadataEntryForm = ({onIsValid}: {onIsValid: (isValid:boolean) => 
     const [ tokenDescription, setTokenDescription ] = useState('')
     const [ tokenDescriptionEverChanged, setTokenDescriptionEverChanged ] = useState(false)
 
-    const [ propertiesToValuesArray, setPropertiesToValuesArray ] = useState<MetadataProperty[]>([])
+    const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
+
+    const [ isValid, setIsValid ] = useState(false)
 
     const updatePropertyValue = (uuid: string, newValue:string) => {
-        const arrayCopy = [...propertiesToValuesArray]
+        const arrayCopy = [...metadataAttributesArray]
         arrayCopy.map(( entry => {if (uuid === entry.id) entry.value = newValue; return entry}))
-        setPropertiesToValuesArray(arrayCopy)
+        setMetadataAttributesArray(arrayCopy)
     }
 
-    const validateFields = () => {
-        const propertiesNotEmpty = propertiesToValuesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
-        const isValid = !!tokenName && !!tokenDescription && propertiesNotEmpty
-        onIsValid(isValid)
-    }
+   
 
-    validateFields()
-
-    console.log('current map', propertiesToValuesArray)
+    useEffect(() => {
+        const validateFields = () => {
+            const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
+            const isValidNew = !!tokenName && !!tokenDescription && propertiesNotEmpty
+    
+            setIsValid(isValidNew)
+            onIsValid(isValidNew)
+        }
+    
+        const postMetadataToCallback = () => {
+            const attributes:MetadataAttribute[] = metadataAttributesArray.map( it => {return {trait_type: it.name, value: it.value}});
+            const metadata: Metadata = {description: tokenDescription, name: tokenName, attributes}
+            const metadataJson = JSON.stringify(metadata, null, '\t')
+            onMetadataChanged(metadataJson)
+        }
+        validateFields()
+        postMetadataToCallback()
+    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged])
 
     const updatePropertyName = (uuid: string, newPropertyName:string) => {
-        const arrayCopy = [...propertiesToValuesArray]
+        const arrayCopy = [...metadataAttributesArray]
         arrayCopy.map(( entry => {if (uuid === entry.id) entry.name = newPropertyName; return entry}))
-        setPropertiesToValuesArray(arrayCopy)
+        setMetadataAttributesArray(arrayCopy)
     }
 
     const removeProperty = (uuid: string) => {
-        const filteredArray = propertiesToValuesArray.filter(((entry) => (uuid !== entry.id)))        
-        setPropertiesToValuesArray(filteredArray)
+        const filteredArray = metadataAttributesArray.filter(((entry) => (uuid !== entry.id)))        
+        setMetadataAttributesArray(filteredArray)
     }
 
     const addEmptyProperty = () => {
-        const arrayCopy = [...propertiesToValuesArray]
+        const arrayCopy = [...metadataAttributesArray]
         arrayCopy.push({ id:uuidv4(), name:'',value:''})
-        setPropertiesToValuesArray(arrayCopy)
+        setMetadataAttributesArray(arrayCopy)
     }
     return (
         <div>
@@ -108,10 +134,10 @@ export const MetadataEntryForm = ({onIsValid}: {onIsValid: (isValid:boolean) => 
             <Header as='h2' dividing>
                 Properties
             </Header>
-            <text>Choose template</text>
-            <Button basic onClick={() => { setPropertiesToValuesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
-            <Button basic onClick={() => { setPropertiesToValuesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
-            {Array.from( propertiesToValuesArray ).map( entry => { 
+            Choose template
+            <Button basic onClick={() => { setMetadataAttributesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
+            <Button basic onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
+            {Array.from( metadataAttributesArray ).map( entry => { 
                 const uuid = entry.id
                 const propertyName = entry.name
                 const propertyValue = entry.value
@@ -125,8 +151,7 @@ export const MetadataEntryForm = ({onIsValid}: {onIsValid: (isValid:boolean) => 
                         onRemoveClicked={() => removeProperty(uuid)}
                         onPropertyNameChanged={(newName) => updatePropertyName(uuid, newName) }
                         onPropertyValueChanged={(newValue => updatePropertyValue(uuid, newValue))}/>)})}
-            <Icon name='plus' circular onClick={addEmptyProperty} style={{margin: '10px'}}
-            />
+            <Icon name='plus' circular onClick={addEmptyProperty} style={{margin: '10px'}}/>
 
         </div>
     )
