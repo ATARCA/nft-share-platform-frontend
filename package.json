@@ -8,6 +8,7 @@
     "@ethersproject/experimental": "^5.5.0",
     "@ethersproject/providers": "^5.5.3",
     "@ethersproject/units": "^5.5.0",
+    "@semantic-ui-react/css-patch": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -30,28 +31,26 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.2",
-    "react-scripts": "5.0.0",
+    "react-scripts": "^5.0.1",
     "rimraf": "^3.0.2",
-    "semantic-ui-css": "git+https://github.com/Semantic-Org/Semantic-UI-CSS.git",
+    "semantic-ui-less": "^2.4.1",
     "semantic-ui-react": "^2.1.2",
     "typescript": "^4.5.5",
     "web-vitals": "^2.1.4"
   },
-  "COMMENT-semantic-ui-css-as-git-repo": {
-    "text": "semantic-ui-css above is installed as a git repo to fix an error until the fixed version is released as npm package - see https://github.com/Semantic-Org/Semantic-UI-CSS/issues/75"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "craco start",
+    "build": "craco build",
     "backend:schema:download": "apollo schema:download --endpoint=http://localhost:4000/graphql backend-graphql-schema.json",
     "backend:schema:codegen": "apollo codegen:generate --localSchemaFile=backend-graphql-schema.json --target=typescript --includes=src/queries-backend/**/*.ts --tagName=gql --addTypename --globalTypesFile=src/types-backend/graphql-global-types.ts types-backend",
     "thegraph:schema:download": "apollo schema:download --endpoint=https://api.thegraph.com/subgraphs/name/atarca/nft-share-platform-ropsten thegraph-graphql-schema.json",
     "thegraph:schema:codegen": "apollo codegen:generate --localSchemaFile=thegraph-graphql-schema.json --target=typescript --includes=src/queries-thegraph/**/*.ts --tagName=gql --addTypename --globalTypesFile=src/types-thegraph/thegraph-global-types.ts types-thegraph",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "test": "craco test",
+    "eject": "craco eject",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "contracts:clean": "rimraf src/typechain-types && rimraf src/abi-generated",
-    "contracts:update": "npm run contracts:clean && cd ../nft-share-platform-contracts && npm run build && copyfiles \"./typechain-types/**\" \"../nft-share-platform-frontend/src\" && copyfiles \"./abi-generated/**\" \"../nft-share-platform-frontend/src\""
+    "contracts:update": "npm run contracts:clean && cd ../nft-share-platform-contracts && npm run build && copyfiles \"./typechain-types/**\" \"../nft-share-platform-frontend/src\" && copyfiles \"./abi-generated/**\" \"../nft-share-platform-frontend/src\"",
+    "postinstall": "semantic-ui-css-patch"
   },
   "eslintConfig": {
     "extends": [
@@ -70,5 +69,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^6.4.3",
+    "@semantic-ui-react/craco-less": "^2.0.2"
   }
 }
