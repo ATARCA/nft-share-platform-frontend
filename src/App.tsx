@@ -6,6 +6,7 @@ import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
 import { Menu } from 'semantic-ui-react';
 import Home from './components/topLevel/Home';
 import TokenDetailPage from './components/topLevel/TokenDetailPage';
+import ConsentPanel from './components/ConsentPanel';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                 <Menu>
                     <MetamaskConnectSubMenu/>    
                 </Menu>
+                <ConsentPanel/>
 
                 <Routes>
                     <Route path="token/:tokenId" element={<TokenDetailPage/>}/>

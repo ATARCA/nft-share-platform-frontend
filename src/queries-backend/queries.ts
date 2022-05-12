@@ -22,3 +22,24 @@ query GetMessageToSignForMetadataUploadQuery ($txHash: String!, $metadata: Strin
   getMetadataUploadMessageToSign( txHash: $txHash, metadata: $metadata)
 }
 `
+
+export const GET_CONSENT_MESSAGE_TO_SIGN = gql`
+query GetConsentMessageToSignQuery {
+  getConsentMessageToSign 
+}
+`
+
+export const ADD_SIGNED_CONSENT = gql`
+mutation AddSignedConsentMutation  ($signingAddress: String!, $signature: String!, $consentText: String!){
+  addSignedConsent( signingAddress: $signingAddress, signature: $signature, consentText: $consentText ) {
+    success, 
+    message
+  }
+}
+`
+
+export const CONSENT_NEEDED = gql`
+query ConsentNeededQuery ($address: String!){
+  consentNeeded(address: $address) 
+}
+`
