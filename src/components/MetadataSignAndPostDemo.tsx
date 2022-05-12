@@ -6,6 +6,7 @@ import { useLazyQuery } from '@apollo/client'
 import { GetMessageToSignForMetadataUploadQueryVariables, GetMessageToSignForMetadataUploadQuery } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../queries-backend/queries";
 import { backendApolloClient } from "../graphql/backendApolloClient";
+import { MetadataEntryForm } from "./MetadataEntryForm";
 
 const { useIsActive, useProvider } = hooks
 
@@ -14,18 +15,22 @@ export const MetadataSignAndPostDemo = () => {
     const [ txHash, setTxHash ] = useState('')
     const [ metadata, setMetadata ] = useState('')
 
+    const [ isMetadataValid, setIsMetadataValid ] = useState(false)
+
     const provider = useProvider()
     const active = useIsActive()
 
-    const [ getMetadataToSign, metadataToSign]  = useLazyQuery<GetMessageToSignForMetadataUploadQuery, 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [ getMetadataToSign, _metadataToSign]  = useLazyQuery<GetMessageToSignForMetadataUploadQuery, 
                                                                 GetMessageToSignForMetadataUploadQueryVariables>
                                                                 (GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD,
                                                                     {client: backendApolloClient})
 
     const onSignAndUploadClicked = async () => {
-        console.log('on sign clicked')
-        await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
-        const messageToSign = metadataToSign.data?.getMetadataUploadMessageToSign
+        //TODO token minting call is missing - do not wait for mint to be done before publishing metadata
+        console.log('on sign clicked',{variables: {txHash: txHash, metadata: metadata}})
+        const result = await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
+        const messageToSign = result.data?.getMetadataUploadMessageToSign
         console.log('now sign...', messageToSign)
 
         if (messageToSign) {
@@ -40,15 +45,19 @@ export const MetadataSignAndPostDemo = () => {
             Metadata test
             <Form>
                 <Form.Field>
-                    <Input label='txHash' placeholder='First Name' onChange={(e, { value }) => setTxHash( value )}/>
+                    <Input label='txHash' onChange={(e, { value }) => setTxHash( value )}/>
                 </Form.Field>
                 <label>metadata</label>
                 <Form.Field>
-                    <TextArea  onChange={(e, { value }) => setMetadata( (value?.toString() || '') )}/>
+                    <TextArea value={metadata} />
                 </Form.Field>
             </Form>
 
-            <Button disabled={!active} onClick={onSignAndUploadClicked}>Sign and upload metadata</Button>
+            <MetadataEntryForm 
+                onIsValid={(isValid) => setIsMetadataValid(isValid)}
+                onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
+
+            <Button disabled={!active || !isMetadataValid} onClick={onSignAndUploadClicked}>Sign and upload metadata</Button>
         </div>
     )
 }
