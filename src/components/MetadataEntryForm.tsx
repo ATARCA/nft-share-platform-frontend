@@ -75,8 +75,6 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
         setMetadataAttributesArray(arrayCopy)
     }
 
-   
-
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
@@ -135,7 +133,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
             <Header as='h2' dividing>
                 Properties
             </Header>
-            Choose template
+            
+            <div className='margin-vertical'>Choose a template</div>
             <Button basic onClick={() => { setMetadataAttributesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
             <Button basic onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
             {Array.from( metadataAttributesArray ).map( entry => { 
