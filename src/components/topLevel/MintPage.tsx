@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { Button, Input, Message } from "semantic-ui-react";
@@ -7,7 +7,8 @@ import { hooks } from "../../connectors/metaMaskConnector";
 import { loadContract } from "../../contracts/demoContract";
 import { backendApolloClient } from "../../graphql/backendApolloClient";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
-import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
+import { ADD_PENDING_METADATA, GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
+import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../../queries-backend/types-backend/AddPendingMetadataMutation";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { GET_SHAREABLE_TOKEN } from "../../queries-thegraph/queries";
 import { ShareableTokenQuery } from "../../queries-thegraph/types-thegraph/ShareableTokenQuery";
@@ -20,6 +21,8 @@ const { useAccounts, useIsActive, useProvider, useChainId } = hooks
 const MintPage = () => {
 
     const isActive = useIsActive()
+    const accounts = useAccounts()
+
     const [ metadata, setMetadata ] = useState('')
     const [ isMetadataValid, setIsMetadataValid ] = useState(false)
     const [deployInProgress, setdeployInProgress] = useState(false)
@@ -33,6 +36,10 @@ const MintPage = () => {
     const [ mintInProgress, setMintInProgress ] = useState(false)
     const [ metadataSignAndUploadInProgress, setMetadataSignAndUploadInProgress ] = useState(false)
     const [ metadaSignOrUploadFailed, setMetadaSignOrUploadFailed ] = useState(false)
+
+    const [ mintAndMetadaUploadCompleted, setMintAndMetadaUploadCompleted ] = useState(false)
+
+    const [addPendingMetadataFunction, addPendingMetadataResult] = useMutation<AddPendingMetadataMutation, AddPendingMetadataMutationVariables>(ADD_PENDING_METADATA,  {client: backendApolloClient})
 
     const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
     const shareableTokensCount = allgraphShareTokensResult.data?.shareableTokens.length
@@ -89,20 +96,36 @@ const MintPage = () => {
     }
 
     const signAndUploadMetadata = async (txHash: string) => {
-        //TODO test retry after signing fails
         setMetadataSignAndUploadInProgress(true)
         setMetadaSignOrUploadFailed(false)
 
         try {
             const result = await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
             const messageToSign = result.data?.getMetadataUploadMessageToSign
-            if (messageToSign) {
-                const signedMessage = await provider?.getSigner().signMessage(messageToSign)
-                console.log('signed message', signedMessage)
-                //next - upload metadata + query
+            if (messageToSign) {//TODO too many ifs - try to refactor this
+                if (accounts) {
+                    const signingAddress = accounts[0]
+
+                    const signature = await provider?.getSigner().signMessage(messageToSign) || ''
+
+                    const metadataUploadResult = await addPendingMetadataFunction({variables: {pendingTxHash: txHash, metadata, signingAddress , signature}})
+                    if (metadataUploadResult.data?.addPendingMetadata.success) {
+                        setMintAndMetadaUploadCompleted(true)
+                        //TODO add total success state and close form + button to mint new token
+                    }
+                    else {
+                        setMetadaSignOrUploadFailed(true)
+                        setErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
+                    }
+                } else {
+                    console.error('accounts cannot be undefined')
+                    setMetadaSignOrUploadFailed(true)
+                }
+
             }
             else {
                 console.error('Message to sign cannot be undefined')
+                setMetadaSignOrUploadFailed(true)
             }
         } catch (error) {
             console.log(error)
@@ -114,9 +137,6 @@ const MintPage = () => {
         setMetadataSignAndUploadInProgress(false)
     }
     
-
-    console.log('mint in progress', mintInProgress, 'metadataUploadInProgress', metadataSignAndUploadInProgress)
-
     const onMintAndUploadMetadataClicked = async () => {
         setErrorMessage('')
         const transaction = await mint()
@@ -137,6 +157,7 @@ const MintPage = () => {
         const isAddress = ethers.utils.isAddress(receiverAddress)
         return !mintInProgress 
         && !metadataSignAndUploadInProgress 
+        && !metadaSignOrUploadFailed
         && isActive 
         && isAddress 
         && isMetadataValid
@@ -145,7 +166,11 @@ const MintPage = () => {
 
     const renderRetryMetadataSignAndUpload = () => {
         return <div>
-            {metadaSignOrUploadFailed ? <Button onClick={() => signAndUploadMetadata(transactionHash)} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={mintInProgress}>Retry metadata sign and upload</Button> :<></>}
+            {metadaSignOrUploadFailed ?
+                <div>
+                    <p>Metadata signing and uploading failed. Please try again to avoid having minted token without metadata.</p>
+                    <Button color='orange' onClick={() => signAndUploadMetadata(transactionHash)} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
+                </div>:<></>}
         </div>
     }
 
@@ -163,10 +188,12 @@ const MintPage = () => {
                     value={receiverAddress} 
                     onChange={(e, { value }) => setReceiverAddress( value ) }/>
             </div>
-            { errorMessage ? <Message error>
-                <Message.Header>Error</Message.Header>
-                <p>{errorMessage}</p>
-            </Message> : <></>}
+            { errorMessage ? 
+                <Message error>
+                    <Message.Header>Error</Message.Header>
+                    <p>{errorMessage}</p>
+                </Message> : <></>}
+            {renderRetryMetadataSignAndUpload()}
             <Button onClick={onMintAndUploadMetadataClicked} disabled={!canMint()} loading={mintInProgress}>Mint new token</Button>
 
         </div>
