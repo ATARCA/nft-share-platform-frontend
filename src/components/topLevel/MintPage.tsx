@@ -29,6 +29,8 @@ const MintPage = () => {
     const [contract, setContract] = useState<ShareableERC721 | undefined>(undefined);
     const [ deployedContractAddress, setDeployedContractAddress ] = useState('')
     const [ receiverAddress, setReceiverAddress ] = useState('')
+    const isValidAddress = ethers.utils.isAddress(receiverAddress)
+
     const [ transactionHash, setTransactionHash ] = useState('')
 
     const [ nextShareId, setNextShareId ] = useState(1)
@@ -101,29 +103,22 @@ const MintPage = () => {
         try {
             const result = await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
             const messageToSign = result.data?.getMetadataUploadMessageToSign
-            if (messageToSign) {//TODO too many ifs - try to refactor this
-                if (accounts) {
-                    const signingAddress = accounts[0]
+            if (messageToSign && accounts) {
+                const signingAddress = accounts[0]
 
-                    const signature = await provider?.getSigner().signMessage(messageToSign) || ''
+                const signature = await provider?.getSigner().signMessage(messageToSign) || ''
 
-                    const metadataUploadResult = await addPendingMetadataFunction({variables: {pendingTxHash: txHash, metadata, signingAddress , signature}})
-                    if (metadataUploadResult.data?.addPendingMetadata.success) {
-                        setMintAndMetadaUploadCompleted(true)
-                        //TODO add total success state and close form + button to mint new token
-                    }
-                    else {
-                        setMetadaSignOrUploadFailed(true)
-                        setMetadataUploadErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
-                    }
-                } else {
-                    console.error('accounts cannot be undefined')
-                    setMetadaSignOrUploadFailed(true)
+                const metadataUploadResult = await addPendingMetadataFunction({variables: {pendingTxHash: txHash, metadata, signingAddress , signature}})
+                if (metadataUploadResult.data?.addPendingMetadata.success) {
+                    setMintAndMetadaUploadCompleted(true)
                 }
-
+                else {
+                    setMetadaSignOrUploadFailed(true)
+                    setMetadataUploadErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
+                }
             }
             else {
-                console.error('Message to sign cannot be undefined')
+                console.error('Message to sign and account cannot be undefined')
                 setMetadaSignOrUploadFailed(true)
             }
         } catch (error) {
@@ -152,12 +147,11 @@ const MintPage = () => {
     }
 
     const canMint = () => {
-        const isAddress = ethers.utils.isAddress(receiverAddress)
         return !mintInProgress 
         && !metadataSignAndUploadInProgress 
         && !metadaSignOrUploadFailed
         && isActive 
-        && isAddress 
+        && isValidAddress 
         && isMetadataValid
         && contract
     }
@@ -179,7 +173,7 @@ const MintPage = () => {
                 && mintErrorMessage === '' 
                 && metadataUploadErrorMessage === '' ? renderSuccessView() :
                 <div>
-                    <div>Contract deployed at {deployedContractAddress}</div>
+                    <div>Contract deployed at {deployedContractAddress ? deployedContractAddress : '(loading)'}</div>
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
                         onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
@@ -189,6 +183,7 @@ const MintPage = () => {
                             label='Token receiver' 
                             placeholder='address' 
                             value={receiverAddress} 
+                            error={!isValidAddress && !!receiverAddress}
                             onChange={(e, { value }) => setReceiverAddress( value ) }/>
                     </div>
                     { mintErrorMessage ? 
@@ -210,6 +205,9 @@ const MintPage = () => {
 
     const resetState = () => {
         setMintAndMetadaUploadCompleted(false)
+        setReceiverAddress('')
+        const totalTokens = shareableTokensCount || 1
+        setNextShareId(totalTokens+2)//TODO for the new version of contract this will not be needed
     }
 
     const renderSuccessView = () => {
