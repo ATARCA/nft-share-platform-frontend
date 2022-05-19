@@ -115,8 +115,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
         <div>
             <div className='margin-vertical' >
                 <Input fluid 
-                    label='Name' 
-                    placeholder='token name' 
+                    label='Token name' 
+                    placeholder='Title' 
                     value={tokenName} 
                     error={!tokenName && tokenNameEverChanged} 
                     onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
@@ -124,7 +124,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
             <div className='margin-vertical'>
                 <Input fluid
                     label='Description' 
-                    placeholder='token description' 
+                    placeholder='Token description' 
                     value={tokenDescription} 
                     error={!tokenDescription && tokenDescriptionEverChanged} 
                     onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>

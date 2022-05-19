@@ -16,7 +16,7 @@ import { ShareableERC721 } from "../../typechain-types";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
 
-const { useAccounts, useIsActive, useProvider, useChainId } = hooks
+const { useAccounts, useIsActive, useProvider } = hooks
 
 const MintPage = () => {
 
@@ -25,7 +25,6 @@ const MintPage = () => {
 
     const [ metadata, setMetadata ] = useState('')
     const [ isMetadataValid, setIsMetadataValid ] = useState(false)
-    const [deployInProgress, setdeployInProgress] = useState(false)
 
     const [contract, setContract] = useState<ShareableERC721 | undefined>(undefined);
     const [ deployedContractAddress, setDeployedContractAddress ] = useState('')
@@ -52,14 +51,14 @@ const MintPage = () => {
 
     const provider = useProvider();
 
-    const [ errorMessage, setErrorMessage ] = useState('')
+    const [ mintErrorMessage, setMintErrorMessage ] = useState('')
+    const [ metadataUploadErrorMessage, setMetadataUploadErrorMessage ] = useState('')
 
     useEffect(() => {
 
         const loadGraphIndexedContract = async () => {
             if (provider) {
-                setdeployInProgress(true)
-                setErrorMessage('')
+                setMintErrorMessage('')
                 try {
                     const contract  = loadContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
                     await contract.deployed()
@@ -70,9 +69,8 @@ const MintPage = () => {
                 } catch (error) {
                     console.log(error)
                     const message = (error as any)?.message
-                    setErrorMessage(message)
+                    setMintErrorMessage(message)
                 }
-                setdeployInProgress(false)
             }
         }
 
@@ -81,6 +79,7 @@ const MintPage = () => {
 
     const mint = async () => {
         if (contract && isActive) {
+            setMintErrorMessage('')
             setMintInProgress(true)
             try {
                 const resultTransaction = await contract.share(receiverAddress,'1', nextShareId)
@@ -89,7 +88,7 @@ const MintPage = () => {
             } catch (error) {
                 console.log(error)
                 const message = (error as any)?.message
-                setErrorMessage(message)
+                setMintErrorMessage(message)
                 setMintInProgress(false)
             }
         }
@@ -98,7 +97,7 @@ const MintPage = () => {
     const signAndUploadMetadata = async (txHash: string) => {
         setMetadataSignAndUploadInProgress(true)
         setMetadaSignOrUploadFailed(false)
-
+        setMetadataUploadErrorMessage('')
         try {
             const result = await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
             const messageToSign = result.data?.getMetadataUploadMessageToSign
@@ -115,7 +114,7 @@ const MintPage = () => {
                     }
                     else {
                         setMetadaSignOrUploadFailed(true)
-                        setErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
+                        setMetadataUploadErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
                     }
                 } else {
                     console.error('accounts cannot be undefined')
@@ -131,14 +130,13 @@ const MintPage = () => {
             console.log(error)
             setMetadaSignOrUploadFailed(true)
             const message = (error as any)?.message
-            setErrorMessage(message)
+            setMetadataUploadErrorMessage(message)
         }
 
         setMetadataSignAndUploadInProgress(false)
     }
     
     const onMintAndUploadMetadataClicked = async () => {
-        setErrorMessage('')
         const transaction = await mint()
        
         if (transaction) {
@@ -176,26 +174,48 @@ const MintPage = () => {
 
     const renderContent = () => {
         return <div className='top-level-page'>
-            <div>Contract deployed at {deployedContractAddress}</div>
-            <MetadataEntryForm 
-                onIsValid={(isValid) => setIsMetadataValid(isValid)}
-                onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
             
-            <div className='margin-vertical' >
-                <Input fluid 
-                    label='Token receiver' 
-                    placeholder='address' 
-                    value={receiverAddress} 
-                    onChange={(e, { value }) => setReceiverAddress( value ) }/>
-            </div>
-            { errorMessage ? 
-                <Message error>
-                    <Message.Header>Error</Message.Header>
-                    <p>{errorMessage}</p>
-                </Message> : <></>}
-            {renderRetryMetadataSignAndUpload()}
-            <Button onClick={onMintAndUploadMetadataClicked} disabled={!canMint()} loading={mintInProgress}>Mint new token</Button>
+            { mintAndMetadaUploadCompleted 
+                && mintErrorMessage === '' 
+                && metadataUploadErrorMessage === '' ? renderSuccessView() :
+                <div>
+                    <div>Contract deployed at {deployedContractAddress}</div>
+                    <MetadataEntryForm 
+                        onIsValid={(isValid) => setIsMetadataValid(isValid)}
+                        onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
+            
+                    <div className='margin-vertical' >
+                        <Input fluid 
+                            label='Token receiver' 
+                            placeholder='address' 
+                            value={receiverAddress} 
+                            onChange={(e, { value }) => setReceiverAddress( value ) }/>
+                    </div>
+                    { mintErrorMessage ? 
+                        <Message error>
+                            <Message.Header>Error while minting</Message.Header>
+                            <p>{mintErrorMessage}</p>
+                        </Message> : <></>}
+                    { metadataUploadErrorMessage ? 
+                        <Message error>
+                            <Message.Header>Error while signing and uploading metadata</Message.Header>
+                            <p>{metadataUploadErrorMessage}</p>
+                        </Message> : <></>}
+                    {renderRetryMetadataSignAndUpload()}
+                    <Button onClick={onMintAndUploadMetadataClicked} disabled={!canMint()} loading={mintInProgress}>Mint new token</Button>
+                </div>
+            }
+        </div>
+    }
 
+    const resetState = () => {
+        setMintAndMetadaUploadCompleted(false)
+    }
+
+    const renderSuccessView = () => {
+        return <div>
+            <p>Token minting and metadata upload successful.</p>
+            <Button onClick={() => resetState()}>Mint another token</Button>
         </div>
     }
    
