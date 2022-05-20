@@ -9,8 +9,10 @@ import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables } from "../..
 const TokenDetailPage = () => {
 
     const tokenId = useParams().tokenId || 'undefined'
+    const contractAddress = useParams().contractAddress || 'undefined'
+    const subgraphTokenId = tokenId + '-' + contractAddress
 
-    const tokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {client: theGraphApolloClient, pollInterval: 5000, variables: {id: tokenId}});
+    const tokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {client: theGraphApolloClient, pollInterval: 5000, variables: {id: subgraphTokenId}});
     const token = tokenQuery.data?.shareableToken
    
     if (tokenQuery.loading) return (

@@ -23,10 +23,13 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shar
 
 const TokenCard = ({token}: {token:ShareableTokenQuery_shareableTokens}) => {
 
+    const tokenId = token.id.split('-')[0]
+    const contractAddress =  token.id.split('-')[1]
+
     const navigate = useNavigate()
 
     const onCardClicked = () => {
-        navigate(`token/${token.id}`)
+        navigate(`token/${contractAddress}/${tokenId}`)
     }
 
     return (

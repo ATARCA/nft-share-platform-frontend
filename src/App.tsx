@@ -28,7 +28,7 @@ function App() {
 
                 <Routes>
                     <Route path="/mint" element={<MintPage/>}/> 
-                    <Route path="token/:tokenId" element={<TokenDetailPage/>}/>
+                    <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                     <Route path="/" element={<Home/>}/>
                 </Routes>
             </Router>
