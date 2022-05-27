@@ -15,12 +15,13 @@ const TokenDetailPage = () => {
     const subgraphTokenId = tokenId + '-' + contractAddress
 
     const [ metadata, setMetadata ] = useState<NFTMetadata|undefined>(undefined)
+    const [ missingConsent, setMissingConsent ] = useState(false)
 
     const tokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {client: theGraphApolloClient, pollInterval: 5000, variables: {id: subgraphTokenId}});
     const token = tokenQuery.data?.shareableToken
 
     const buildMetadataUri = (contractAddress: string, tokenId: string) => {
-        //TODO after updating to new contracts load URI contract or subgraph - do not build it here
+        //TODO after updating to new contracts load URI from contract or subgraph - do not build it here
         return `${process.env.REACT_APP_BACKEND_URI}/metadata/${contractAddress}/${tokenId}`
     }
 
@@ -34,11 +35,17 @@ const TokenDetailPage = () => {
                 const body = await response.json()
                 const metadata = body as NFTMetadata
                 setMetadata(metadata)
+            } else if (response && response.status === 403) {
+                setMissingConsent(true)
             }
         }
     
         fetchMetadata()
     },[contractAddress, tokenId])
+
+    const renderMetadataAttributes = () => {
+        return <div>{metadata?.attributes ? <TokenAttributesView attributes={metadata.attributes}/> : <></>}</div>
+    }
    
     if (tokenQuery.loading) return (
         <Segment placeholder vertical padded='very' loading/>
@@ -49,10 +56,13 @@ const TokenDetailPage = () => {
                 <div>
                     <p> Token id is {tokenId}</p>
                     <div>
-                        shared by {tokenQuery.data?.shareableToken?.sharedBy.map((sharingAccount,i) => 
+                        shared by {token.sharedBy.map((sharingAccount,i) => 
                             <div key={`${sharingAccount}-${i}`}>{sharingAccount}</div>)}
                     </div>
-                    {metadata?.attributes ? <TokenAttributesView attributes={metadata.attributes}/> : <></>}
+                    {missingConsent ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
+                        : renderMetadataAttributes()}
+                    
+                    
                 </div>
                 :
                 <div>
