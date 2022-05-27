@@ -206,7 +206,7 @@ const MintPage = () => {
 
     const renderSuccessView = () => {
         return <div>
-            <p>Token minting and metadata upload successful.</p>
+            <p>Token minting transaction sent. Metadata upload successful.</p>
             <Button onClick={() => resetState()}>Mint another token</Button>
         </div>
     }
