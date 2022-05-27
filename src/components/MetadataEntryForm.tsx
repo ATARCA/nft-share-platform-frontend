@@ -54,8 +54,8 @@ interface Metadata {
 
 
 
-const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
-const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
+const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Twitter'},{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
+const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
 
 export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void}) => {
 
