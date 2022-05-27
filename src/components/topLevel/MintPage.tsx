@@ -187,15 +187,9 @@ const MintPage = () => {
                             onChange={(e, { value }) => setReceiverAddress( value ) }/>
                     </div>
                     { mintErrorMessage ? 
-                        <Message error>
-                            <Message.Header>Error while minting</Message.Header>
-                            <p>{mintErrorMessage}</p>
-                        </Message> : <></>}
+                        <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
                     { metadataUploadErrorMessage ? 
-                        <Message error>
-                            <Message.Header>Error while signing and uploading metadata</Message.Header>
-                            <p>{metadataUploadErrorMessage}</p>
-                        </Message> : <></>}
+                        <Message error header='Error while signing and uploading metadata' content={metadataUploadErrorMessage}/>: <></>}
                     {renderRetryMetadataSignAndUpload()}
                     <Button onClick={onMintAndUploadMetadataClicked} disabled={!canMint()} loading={mintInProgress}>Mint new token</Button>
                 </div>
