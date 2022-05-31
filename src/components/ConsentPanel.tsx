@@ -53,7 +53,7 @@ const ConsentPanelContent = () => {
         <Menu fluid vertical>
             <Menu.Item>
                 <p>You need to give consent before using the platform. TODO complete text.</p>
-                <Button color='green' onClick={onGiveConsentClicked}>Sign consent</Button>
+                <Button primary onClick={onGiveConsentClicked}>Sign consent</Button>
                 { uploadConsentResultError ? <Message error>
                     <Message.Header>Consent upload failed</Message.Header>
                     <p>{uploadConsentResultError}</p>
