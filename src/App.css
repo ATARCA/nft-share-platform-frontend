@@ -41,7 +41,15 @@
   margin: 10px 0px
 }
 
+.margin-horizontal {
+  margin: 0px 10px
+}
+
 .margin-bottom {
   margin: 0px 10px 0px 0px 
+}
+
+.top-level-page {
+  margin: 0px 20vw 0px 20vw
 }
 

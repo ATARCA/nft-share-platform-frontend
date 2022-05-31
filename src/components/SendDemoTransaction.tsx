@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from 'semantic-ui-react'
+import { Button, Input } from 'semantic-ui-react'
 import React, {  useState } from 'react'
 import { hooks } from '../connectors/metaMaskConnector'
 import { deployContract, loadContract } from '../contracts/demoContract';
@@ -40,6 +40,8 @@ export const SendDemoTransaction = () => {
 
     const [ nextShareId, setNextShareId ] = useState(1)
 
+    const [ shareToAddress, setShareToAddress ] = useState('')
+
     const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
 
     const onMintClicked = async () => {
@@ -63,8 +65,7 @@ export const SendDemoTransaction = () => {
             setShareInProgress(true)
             setErrorMessage('')
             try {
-                const demoShareDestinationAddress = '0xA86cb4378Cdbc327eF950789c81BcBcc3aa73D21'
-                const resultTransaction = await contract.share(demoShareDestinationAddress,'1', nextShareId)
+                const resultTransaction = await contract.share(shareToAddress,'1', nextShareId)
                 await resultTransaction.wait()
                 setNextShareId(nextShareId+1)
                 await sleep(2000)//cannot refetch the graph data immediately because they are not updated yet
@@ -156,6 +157,7 @@ export const SendDemoTransaction = () => {
             <Button onClick={onLoadGraphIndexedContractClicked} disabled={!active} loading={deployInProgress}>Load graph indexed contract</Button>
 
             <div>Contract deployed at {deployedContractAddress}</div>
+            <div><Input label='Share to address' value={shareToAddress} onChange={(e, { value }) => setShareToAddress(value)}/></div>
             <Button onClick={onMintClicked} disabled={!active || !contract} loading={mintInProgress}>Mint new token</Button>
             <Button onClick={onShareClicked} disabled={!active || !contract} loading={shareInProgress}>Share token, next ID {nextShareId}</Button>
 

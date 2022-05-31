@@ -8,6 +8,7 @@ import React from 'react';
 import type { Connector } from '@web3-react/types'
 import { hooks, metaMask as metamaskConnector } from '../connectors/metaMaskConnector'
 import { Button, Menu } from 'semantic-ui-react';
+import { shortenAccountAddress } from '../utils';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider } = hooks
 
@@ -139,10 +140,6 @@ const Accounts = () => {
             </Menu.Item> 
             : <></>
     )
-}
-
-const shortenAccountAddress = (address: string) : string => {
-    return address.substring(0,5) + '...' + address.substring(address.length - 4)
 }
 
 

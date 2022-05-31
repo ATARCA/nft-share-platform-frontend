@@ -43,3 +43,12 @@ query ConsentNeededQuery ($address: String!){
   consentNeeded(address: $address) 
 }
 `
+
+export const ADD_PENDING_METADATA = gql`
+mutation AddPendingMetadataMutation  ($pendingTxHash: String!, $metadata: String!, $signingAddress: String!, $signature: String!){
+  addPendingMetadata( pendingTxHash: $pendingTxHash, metadata: $metadata, signingAddress: $signingAddress, , signature: $signature ) {
+    success, 
+    message
+  }
+}
+`
