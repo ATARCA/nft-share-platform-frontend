@@ -10,6 +10,7 @@ import { GET_SHAREABLE_TOKEN } from '../../queries-thegraph/queries';
 import { ShareableTokenQuery } from '../../queries-thegraph/types-thegraph/ShareableTokenQuery';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import TokenGrid from '../../components/TokenGrid';
+import OnboardingCarousel from '../onboarding/OnboardingCarouselModal';
 
 const Home = () => {
 
@@ -62,11 +63,12 @@ const Home = () => {
 
     return (
         <div>
+            <OnboardingCarousel/>
+            <SendDemoTransaction/>
             <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}
-            <SendDemoTransaction/>
         </div>
     )
 }

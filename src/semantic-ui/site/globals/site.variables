@@ -3,6 +3,8 @@
 *******************************/
 
 @primaryColor: #3D00B7;
+@primaryColorFocused: #2E008A;
+
 @primaryColorDisabledOpaque: #3D00B744;
 @secondaryColor : @grey;
 @pageBackground: #eff0f1;
