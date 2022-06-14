@@ -5,6 +5,8 @@ import { Button, Container, Grid, Icon, Image, Modal, Rail, Segment } from "sema
 import guitar1 from '../../images/guitar1.jpg';
 import guitar2 from '../../images/guitar2.jpg';
 import guitar3 from '../../images/guitar3.jpg';
+import useCookie from 'react-use-cookie';
+import { useTutorialCompletedCookie } from "../../hooks/hooks";
 
 interface CarouselEntry {
     image: string;
@@ -46,14 +48,13 @@ const OnboardingCarousel = () => {
 
 const OnboardingCarouselModal = () => {
 
-    const [ open, setOpen ] = useState(true)
-
+    const [tutorialCompleted, setTutorialCompleted] = useTutorialCompletedCookie();
     return (
         <Modal
             closeIcon
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            open={open}>
+            onClose={() => setTutorialCompleted(true)}
+           
+            open={!tutorialCompleted}>
 
             <OnboardingCarousel/>
 
