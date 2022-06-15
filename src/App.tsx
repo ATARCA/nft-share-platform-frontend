@@ -11,10 +11,7 @@ import MintPage from './components/topLevel/MintPage';
 import MainMenuDropdown from './components/MainMenuDropdown';
 import HomeMenuButton from './components/HomeMenuButton';
 
-
 function App() {
-
-   
 
     return (
         <div className="App">
@@ -28,11 +25,10 @@ function App() {
 
                 <Routes>
                     <Route path="/mint" element={<MintPage/>}/> 
-                    <Route path="token/:tokenId" element={<TokenDetailPage/>}/>
+                    <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                     <Route path="/" element={<Home/>}/>
                 </Routes>
             </Router>
-         
         </div>
     );
 }
