@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { NFTMetadata } from "../../types/NFTMetadata"
+import useCookie from 'react-use-cookie';
+
 
 const buildMetadataUri = (contractAddress: string, tokenId: string) => {
     //TODO after updating to new contracts load URI from contract or subgraph - do not build it here
@@ -34,4 +36,19 @@ export const useMetadata = (contractAddress: string, tokenId: string): [ NFTMeta
     },[contractAddress, tokenId])
 
     return [metadata, consentMissing, errorMessage]
+}
+
+export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => void] => {
+    const [tutorialCompletedInternal, setTutorialCompletedInternal] = useCookie('tutorialCompleted', 'false');
+
+    const setTutorialCompleted = (completed: boolean) => {
+        if (completed)
+            setTutorialCompletedInternal('true', {days: 9999})
+        else
+            setTutorialCompletedInternal('false', {days: 9999})
+    };
+
+    const tutorialCompleted = tutorialCompletedInternal === 'true';
+
+    return [tutorialCompleted, setTutorialCompleted];
 }

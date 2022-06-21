@@ -19,5 +19,7 @@
 @hoverBackgroundColor: #FFFFFF00;
 @hoverColor: @primaryColor;
 
+@focusColor: @primaryColorFocused;
+
 @disabledBoxShadow: 0px 0px 0px 2px @primaryColorDisabledOpaque inset !important;
 @disabledOpacity: 0.2;
