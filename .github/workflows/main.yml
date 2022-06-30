@@ -1,6 +1,9 @@
 name: Deploy To S3 & Cloudfront
 env:
   CI: false
+  REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_DEV}}
+  REACT_APP_INFURA_DEV_KEY: ${{secrets.INFURA_DEV_KEY}}
+
 on: 
   workflow_dispatch:
   push:
