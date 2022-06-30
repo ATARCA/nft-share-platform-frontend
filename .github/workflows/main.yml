@@ -1,4 +1,6 @@
 name: Deploy To S3 & Cloudfront
+env:
+  CI: false
 on: 
   workflow_dispatch:
   push:
