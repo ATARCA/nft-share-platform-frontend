@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Message } from "semantic-ui-react";
 
 import { hooks } from "../../connectors/metaMaskConnector";
-import { loadContract } from "../../contracts/demoContract";
+import { loadShareContract } from "../../contracts/demoContract";
 import { backendApolloClient } from "../../graphql/backendApolloClient";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { ADD_PENDING_METADATA, GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
@@ -14,7 +14,6 @@ import { GET_SHAREABLE_TOKEN } from "../../queries-thegraph/queries";
 import { ShareableTokenQuery } from "../../queries-thegraph/types-thegraph/ShareableTokenQuery";
 import { ShareableERC721 } from "../../typechain-types";
 import { MetadataEntryForm } from "../MetadataEntryForm";
-
 
 const { useAccounts, useIsActive, useProvider } = hooks
 
@@ -33,7 +32,6 @@ const MintPage = () => {
 
     const [ transactionHash, setTransactionHash ] = useState('')
 
-    const [ nextShareId, setNextShareId ] = useState(1)
     const [ mintInProgress, setMintInProgress ] = useState(false)
     const [ metadataSignAndUploadInProgress, setMetadataSignAndUploadInProgress ] = useState(false)
     const [ metadaSignOrUploadFailed, setMetadaSignOrUploadFailed ] = useState(false)
@@ -62,10 +60,9 @@ const MintPage = () => {
             if (provider) {
                 setMintErrorMessage('')
                 try {
-                    const contract  = loadContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
+                    const contract  = loadShareContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
                     await contract.deployed()
                     const totalTokens = shareableTokensCount || 1
-                    setNextShareId(totalTokens+2)//TODO for the new version of contract this will not be needed
                     setContract(contract)
                     setDeployedContractAddress(contract.address)
                 } catch (error) {
@@ -84,7 +81,7 @@ const MintPage = () => {
             setMintErrorMessage('')
             setMintInProgress(true)
             try {
-                const resultTransaction = await contract.share(receiverAddress,'1', nextShareId)
+                const resultTransaction = await contract.share(receiverAddress,'1')
                 resultTransaction.wait().then( () => setMintInProgress(false))
                 return resultTransaction
             } catch (error) {
@@ -142,8 +139,6 @@ const MintPage = () => {
             console.error('Transaction is null')
         }
 
-        const totalTokens = shareableTokensCount || 1
-        setNextShareId(totalTokens+2)//TODO for the new version of contract this will not be needed
     }
 
     const canMint = () => {
@@ -200,8 +195,6 @@ const MintPage = () => {
     const resetState = () => {
         setMintAndMetadaUploadCompleted(false)
         setReceiverAddress('')
-        const totalTokens = shareableTokensCount || 1
-        setNextShareId(totalTokens+2)//TODO for the new version of contract this will not be needed
     }
 
     const renderSuccessView = () => {

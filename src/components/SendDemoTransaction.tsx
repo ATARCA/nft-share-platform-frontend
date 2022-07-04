@@ -2,7 +2,7 @@
 import { Button, Input } from 'semantic-ui-react'
 import React, {  useState } from 'react'
 import { hooks } from '../connectors/metaMaskConnector'
-import { deployContract, loadContract } from '../contracts/demoContract';
+import { deployContract, loadLikeContract, loadShareContract } from '../contracts/demoContract';
 import { ShareableERC721, ShareEvent } from '../typechain-types/ShareableERC721';
 import { BigNumber } from '@ethersproject/bignumber';
 import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
@@ -15,6 +15,7 @@ import { GET_SHAREABLE_TOKEN } from '../queries-thegraph/queries';
 import { useQuery } from '@apollo/client'
 import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
 import { sleep } from '../utils';
+import { LikeERC721 } from '../typechain-types';
 
 
 const { useAccounts, useIsActive, useProvider, useChainId } = hooks
@@ -29,12 +30,14 @@ export const SendDemoTransaction = () => {
     const [deployInProgress, setdeployInProgress] = useState(false)
     const [ mintInProgress, setMintInProgress ] = useState(false)
     const [ loadEventsInProgress, setLoadEventsInProgress ] = useState(false)
-    const [ shareInProgress, setShareInProgress ] = useState(false)
+    const [ shareOrLikeInProgress, setShareOrLikeInProgress ] = useState(false)
     
     const [ deployedContractAddress, setDeployedContractAddress ] = useState('')
     const [ errorMessage, setErrorMessage ] = useState('')
     
-    const [contract, setContract] = useState<ShareableERC721 | undefined>(undefined);
+    const [shareContract, setShareContract] = useState<ShareableERC721 | undefined>(undefined);
+    const [likeContract, setLikeContract] = useState<LikeERC721 | undefined>(undefined);
+
     const [ events, setEvents ] = useState<ShareEvent[] | undefined>(undefined)
     const [ aLotOfEvents, setALotOfEvents ] = useState<ethers.Event[] | undefined>(undefined)
 
@@ -45,11 +48,11 @@ export const SendDemoTransaction = () => {
     const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
 
     const onMintClicked = async () => {
-        if (contract && accounts) {
+        if (shareContract && accounts) {
             setMintInProgress(true)
             setErrorMessage('')
             try {
-                const resultTransaction = await contract.mint(accounts[0],'1')
+                const resultTransaction = await shareContract.mint(accounts[0])
                 await resultTransaction.wait()
             } catch (error) {
                 console.log(error)
@@ -61,11 +64,11 @@ export const SendDemoTransaction = () => {
     }
 
     const onShareClicked = async () => {
-        if (contract && accounts) {
-            setShareInProgress(true)
+        if (shareContract && accounts) {
+            setShareOrLikeInProgress(true)
             setErrorMessage('')
             try {
-                const resultTransaction = await contract.share(shareToAddress,'1', nextShareId)
+                const resultTransaction = await shareContract.share(shareToAddress,nextShareId)
                 await resultTransaction.wait()
                 setNextShareId(nextShareId+1)
                 await sleep(2000)//cannot refetch the graph data immediately because they are not updated yet
@@ -75,7 +78,26 @@ export const SendDemoTransaction = () => {
                 const message = (error as any)?.message
                 setErrorMessage(message)
             }
-            setShareInProgress(false)
+            setShareOrLikeInProgress(false)
+        }
+    }
+
+    const onLikeClicked = async () => {
+        if (likeContract && accounts) {
+            setShareOrLikeInProgress(true)
+            setErrorMessage('')
+            try {
+                const resultTransaction = await likeContract.mint(nextShareId)
+                await resultTransaction.wait()
+                setNextShareId(nextShareId+1)
+                await sleep(2000)//cannot refetch the graph data immediately because they are not updated yet
+                await allgraphShareTokensResult.refetch()
+            } catch (error) {
+                console.log(error)
+                const message = (error as any)?.message
+                setErrorMessage(message)
+            }
+            setShareOrLikeInProgress(false)
         }
     }
 
@@ -87,7 +109,7 @@ export const SendDemoTransaction = () => {
                 const contract = await deployContract(provider)
                 await contract.deployed()
                 setNextShareId(3)
-                setContract(contract)
+                setShareContract(contract)
                 setDeployedContractAddress(contract.address)
             } catch (error) {
                 console.log(error)
@@ -98,16 +120,36 @@ export const SendDemoTransaction = () => {
         }
     }
 
-    const onLoadGraphIndexedContractClicked = async () => {
+    const onLoadGraphIndexedShareContractClicked = async () => {
         if (provider) {
             setdeployInProgress(true)
             setErrorMessage('')
             try {
-                const contract  = loadContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
+                const contract  = loadShareContract('0xe283Bd7c79188b594e9C19E9032ff365A37Cc4fF', provider)
                 await contract.deployed()
                 const totalTokens = allgraphShareTokensResult.data?.shareableTokens.length || 1
                 setNextShareId(totalTokens+2)
-                setContract(contract)
+                setShareContract(contract)
+                setDeployedContractAddress(contract.address)
+            } catch (error) {
+                console.log(error)
+                const message = (error as any)?.message
+                setErrorMessage(message)
+            }
+            setdeployInProgress(false)
+        }
+    }
+
+    const onLoadGraphIndexedLikeContractClicked = async () => {
+        if (provider) {
+            setdeployInProgress(true)
+            setErrorMessage('')
+            try {
+                const contract  = loadLikeContract('0xFb6394BC5EeE2F9f00ab9df3c8c489A4647f0Daf', provider)
+                await contract.deployed()
+                const totalTokens = allgraphShareTokensResult.data?.shareableTokens.length || 1
+                setNextShareId(totalTokens+2)
+                setLikeContract(contract)
                 setDeployedContractAddress(contract.address)
             } catch (error) {
                 console.log(error)
@@ -119,11 +161,11 @@ export const SendDemoTransaction = () => {
     }
 
     const onLoadEventsClicked = async () => {
-        if (contract) {
+        if (shareContract) {
             setLoadEventsInProgress(true)
             setErrorMessage('')
-            const filter = contract.filters.Share()
-            const result = await contract.queryFilter(filter)
+            const filter = shareContract.filters.Share()
+            const result = await shareContract.queryFilter(filter)
             setEvents(result)
             setLoadEventsInProgress(false)
 
@@ -154,14 +196,18 @@ export const SendDemoTransaction = () => {
         <div>
             {errorMessage ? <div> Error {errorMessage}</div>: <></>}
             <Button onClick={onDeployClicked} disabled={!active} loading={deployInProgress}>Deploy new contract</Button>
-            <Button onClick={onLoadGraphIndexedContractClicked} disabled={!active} loading={deployInProgress}>Load graph indexed contract</Button>
+            <Button onClick={onLoadGraphIndexedShareContractClicked} disabled={!active} loading={deployInProgress}>Load graph indexed Share contract</Button>
+            <Button onClick={onLoadGraphIndexedLikeContractClicked} disabled={!active} loading={deployInProgress}>Load graph indexed Like contract</Button>
 
             <div>Contract deployed at {deployedContractAddress}</div>
             <div><Input label='Share to address' value={shareToAddress} onChange={(e, { value }) => setShareToAddress(value)}/></div>
-            <Button onClick={onMintClicked} disabled={!active || !contract} loading={mintInProgress}>Mint new token</Button>
-            <Button onClick={onShareClicked} disabled={!active || !contract} loading={shareInProgress}>Share token, next ID {nextShareId}</Button>
+            <div><Input label='Token ID to share' value={nextShareId} onChange={(e, { value }) => setNextShareId(Number.parseInt(value))}/></div>
 
-            <Button onClick={onLoadEventsClicked} disabled={!active || !contract} loading={loadEventsInProgress}>Load contract share events</Button>
+            <Button onClick={onMintClicked} disabled={!active || !shareContract} loading={mintInProgress}>Mint new token</Button>
+            <Button onClick={onShareClicked} disabled={!active || !shareContract} loading={shareOrLikeInProgress}>Share token, next ID {nextShareId}</Button>
+            <Button onClick={onLikeClicked} disabled={!active || !likeContract} loading={shareOrLikeInProgress}>Like token, next ID {nextShareId}</Button>
+
+            <Button onClick={onLoadEventsClicked} disabled={!active || !shareContract} loading={loadEventsInProgress}>Load contract share events</Button>
             <div>
                 Share events
                 {events?.map( e => <div key={e.event}>{e.args[0]} {e.args[1]} {(e.args[2] as BigNumber).toString()}</div>)}
