@@ -9,8 +9,8 @@ import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
 import { XDAI_CHAIN_ID } from '../chains';
-import { ShareableTokenQuery } from '../queries-thegraph/types-thegraph/ShareableTokenQuery';
-import { GET_SHAREABLE_TOKEN } from '../queries-thegraph/queries';
+import { OriginalTokenQuery } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
+import { GET_ORIGINAL_TOKENS } from '../queries-thegraph/queries';
 
 import { useQuery } from '@apollo/client'
 import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
@@ -45,7 +45,7 @@ export const SendDemoTransaction = () => {
 
     const [ shareToAddress, setShareToAddress ] = useState('')
 
-    const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
+    const allgraphShareTokensResult = useQuery<OriginalTokenQuery,undefined>(GET_ORIGINAL_TOKENS, {client: theGraphApolloClient, pollInterval: 5000});
 
     const onMintClicked = async () => {
         if (shareContract && accounts) {
@@ -223,7 +223,7 @@ export const SendDemoTransaction = () => {
              Graph tokens/events
             </div>
 
-            {allgraphShareTokensResult.data?.shareableTokens.map( t => <div key={t.id}>{t.id} {t.owner}</div>)}
+            {allgraphShareTokensResult.data?.shareableTokens.map( t => <div key={t.id}>{t.id} {t.ownerAddress}</div>)}
 
             A lot of events directly queried size {aLotOfEvents?.length}
             {aLotOfEvents?.map( e => <div key={e.transactionHash}>From {(e as any).args.from} To {(e as any).args.to}</div>)}

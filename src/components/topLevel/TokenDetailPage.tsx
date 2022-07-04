@@ -12,7 +12,7 @@ const TokenDetailPage = () => {
 
     const tokenId = useParams().tokenId || 'undefined'
     const contractAddress = useParams().contractAddress || 'undefined'
-    const subgraphTokenId = tokenId + '-' + contractAddress
+    const subgraphTokenId = contractAddress  + '-' + tokenId
 
     const tokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {client: theGraphApolloClient, pollInterval: 5000, variables: {id: subgraphTokenId}});
     const token = tokenQuery.data?.shareableToken
@@ -32,8 +32,8 @@ const TokenDetailPage = () => {
                 <div>
                     <p> Token id is {tokenId}</p>
                     <div>
-                        shared by {token.sharedBy.map((sharingAccount,i) => 
-                            <div key={`${sharingAccount}-${i}`}>{sharingAccount}</div>)}
+                        shared by {token.sharedChildTokens.map((sharedChildToken,i) => 
+                            <div key={`${sharedChildToken.id}-${i}`}>{sharedChildToken.ownerAddress}</div>)}
                     </div>
                     {consentMissing ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
                         : renderMetadataAttributes()}

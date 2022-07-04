@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Image, Segment } from 'semantic-ui-react';
-import { ShareableTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/ShareableTokenQuery';
+import { OriginalTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shareableTokens[], isLoading:boolean}) => {
+export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_shareableTokens[], isLoading:boolean}) => {
     return (
         <div>
             {isLoading? 
@@ -21,15 +21,12 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: ShareableTokenQuery_shar
     );
 };
 
-const TokenCard = ({token}: {token:ShareableTokenQuery_shareableTokens}) => {
-
-    const tokenId = token.id.split('-')[0]
-    const contractAddress =  token.id.split('-')[1]
+const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
 
     const onCardClicked = () => {
-        navigate(`token/${contractAddress}/${tokenId}`)
+        navigate(`token/${token.contractAddress}/${token.tokenId}`)
     }
 
     return (

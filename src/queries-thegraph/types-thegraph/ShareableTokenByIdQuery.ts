@@ -7,12 +7,28 @@
 // GraphQL query operation: ShareableTokenByIdQuery
 // ====================================================
 
+export interface ShareableTokenByIdQuery_shareableToken_sharedChildTokens {
+  __typename: "ShareableToken";
+  id: string;
+  ownerAddress: any;
+}
+
+export interface ShareableTokenByIdQuery_shareableToken_likeTokens {
+  __typename: "ShareableToken";
+  id: string;
+  ownerAddress: any;
+}
+
 export interface ShareableTokenByIdQuery_shareableToken {
   __typename: "ShareableToken";
   id: string;
-  owner: any;
-  sharedBy: any[];
-  sharedWith: any[];
+  ownerAddress: any;
+  contractAddress: any;
+  isOriginal: boolean;
+  isSharedInstance: boolean;
+  tokenId: any | null;
+  sharedChildTokens: ShareableTokenByIdQuery_shareableToken_sharedChildTokens[];
+  likeTokens: ShareableTokenByIdQuery_shareableToken_likeTokens[];
 }
 
 export interface ShareableTokenByIdQuery {

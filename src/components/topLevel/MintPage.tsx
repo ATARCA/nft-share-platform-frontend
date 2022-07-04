@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { Button, Input, Message } from "semantic-ui-react";
@@ -6,12 +6,9 @@ import { Button, Input, Message } from "semantic-ui-react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { loadShareContract } from "../../contracts/demoContract";
 import { backendApolloClient } from "../../graphql/backendApolloClient";
-import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { ADD_PENDING_METADATA, GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../../queries-backend/types-backend/AddPendingMetadataMutation";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
-import { GET_SHAREABLE_TOKEN } from "../../queries-thegraph/queries";
-import { ShareableTokenQuery } from "../../queries-thegraph/types-thegraph/ShareableTokenQuery";
 import { ShareableERC721 } from "../../typechain-types";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
@@ -40,9 +37,6 @@ const MintPage = () => {
 
     const [addPendingMetadataFunction, addPendingMetadataResult] = useMutation<AddPendingMetadataMutation, AddPendingMetadataMutationVariables>(ADD_PENDING_METADATA,  {client: backendApolloClient})
 
-    const allgraphShareTokensResult = useQuery<ShareableTokenQuery,undefined>(GET_SHAREABLE_TOKEN, {client: theGraphApolloClient, pollInterval: 5000});
-    const shareableTokensCount = allgraphShareTokensResult.data?.shareableTokens.length
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [ getMetadataToSign, _metadataToSign]  = useLazyQuery<GetMessageToSignForMetadataUploadQuery, 
      GetMessageToSignForMetadataUploadQueryVariables>
@@ -62,7 +56,6 @@ const MintPage = () => {
                 try {
                     const contract  = loadShareContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
                     await contract.deployed()
-                    const totalTokens = shareableTokensCount || 1
                     setContract(contract)
                     setDeployedContractAddress(contract.address)
                 } catch (error) {
@@ -74,7 +67,7 @@ const MintPage = () => {
         }
 
         loadGraphIndexedContract()
-    },[shareableTokensCount, provider])
+    },[ provider ])
 
     const mint = async () => {
         if (contract && isActive) {
