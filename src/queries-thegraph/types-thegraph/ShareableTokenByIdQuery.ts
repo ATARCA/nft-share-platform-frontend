@@ -26,6 +26,7 @@ export interface ShareableTokenByIdQuery_shareableToken {
   contractAddress: any;
   isOriginal: boolean;
   isSharedInstance: boolean;
+  isLikeToken: boolean;
   tokenId: any | null;
   sharedChildTokens: ShareableTokenByIdQuery_shareableToken_sharedChildTokens[];
   likeTokens: ShareableTokenByIdQuery_shareableToken_likeTokens[];

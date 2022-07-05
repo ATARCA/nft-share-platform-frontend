@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react"
 import { NFTMetadata } from "../../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
+import { ShareableERC721 } from "../typechain-types/ShareableERC721";
+import { hooks } from "../connectors/metaMaskConnector";
+import { loadLikeContract, loadShareContract } from "../contracts/demoContract";
+import { LikeERC721 } from "../typechain-types/LikeERC721";
+
+const { useProvider } = hooks
 
 
 const buildMetadataUri = (contractAddress: string, tokenId: string) => {
@@ -51,4 +57,56 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     const tutorialCompleted = tutorialCompletedInternal === 'true';
 
     return [tutorialCompleted, setTutorialCompleted];
+}
+
+export const useShareContract = ( shareContractAddress: string) => {
+    const [shareContract, setShareContract] = useState<ShareableERC721 | undefined>(undefined);
+
+    const provider = useProvider();
+
+    useEffect( () => {
+        const loadContract = async () => {
+            if (provider) {
+                try {
+                    const contract = loadShareContract(shareContractAddress, provider)
+                    setShareContract(contract)
+                } catch (error) {
+                    console.log('useShareContract', error)
+                }
+            }
+            else {
+                setShareContract(undefined)
+            }
+        }
+    
+        loadContract()
+    },[shareContractAddress, provider])
+
+    return shareContract
+}
+
+export const useLikeContract = ( likeContractAddress: string) => {
+    const [likeContract, setLikeContract] = useState<LikeERC721 | undefined>(undefined);
+
+    const provider = useProvider();
+
+    useEffect( () => {
+        const loadContract = async () => {
+            if (provider) {
+                try {
+                    const contract = loadLikeContract(likeContractAddress, provider)
+                    setLikeContract(contract)
+                } catch (error) {
+                    console.log('useLikeContract',error)
+                }
+            }
+            else {
+                setLikeContract(undefined)
+            }
+        }
+    
+        loadContract()
+    },[likeContractAddress, provider])
+
+    return likeContract
 }

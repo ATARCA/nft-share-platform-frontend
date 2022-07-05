@@ -21,6 +21,7 @@ query ShareableTokenByIdQuery ($id: String!){
     contractAddress
     isOriginal
     isSharedInstance
+    isLikeToken
     tokenId
     sharedChildTokens {
       id
