@@ -148,7 +148,7 @@ const MintPage = () => {
         return <div>
             {metadaSignOrUploadFailed ?
                 <div>
-                    <p>Metadata signing and uploading failed. Please try again to avoid having minted token without metadata.</p>
+                    <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
                     <Button color='orange' onClick={() => signAndUploadMetadata(transactionHash)} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
                 </div>:<></>}
         </div>

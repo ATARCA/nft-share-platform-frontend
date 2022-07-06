@@ -34,3 +34,22 @@ query ShareableTokenByIdQuery ($id: String!){
   }
 }
 `
+
+export const GET_LIKE_TOKEN_EXISTS = gql`
+query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId: String!){
+  shareableTokens(where: {isLikeToken: true, ownerAddress:$likeTokenOwnerAddress, likedParentToken: $parentTokenEntityId}) {
+    id
+    ownerAddress
+    contractAddress
+    isLikeToken
+    isOriginal
+    isSharedInstance
+    likedParentToken {
+      id
+      ownerAddress
+      tokenId
+      contractAddress
+    }
+  }
+}
+`
