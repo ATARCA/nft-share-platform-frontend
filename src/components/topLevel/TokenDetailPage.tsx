@@ -1,17 +1,18 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_TOKEN_BY_ID, GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables } from "../../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
 import TokenAttributesView from "../TokenAttributesView";
-import { useLikeContract, useMetadata, useShareContract } from "../../hooks/hooks";
+import { useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks, metaMask as metamaskConnector } from '../../connectors/metaMaskConnector'
-import { addressesEqual, buildSubgraphTokenEntityId } from "../../utils";
+import { addressesEqual, buildSubgraphTokenEntityId, likeContractAddress, shareContractAddress } from "../../utils";
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
+import { buildTokenShareRoute } from "../../routingUtils";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -22,26 +23,18 @@ const TokenDetailPage = () => {
 
     const accounts = useAccounts()
     const active = useIsActive()
-
-    const likeContractAddress = '0xFb6394BC5EeE2F9f00ab9df3c8c489A4647f0Daf'
-    const shareContractAddress = '0xe283Bd7c79188b594e9C19E9032ff365A37Cc4fF'
+    const navigate = useNavigate()
 
     const likeContract = useLikeContract(likeContractAddress)
     const shareContract = useShareContract(shareContractAddress)
 
-    const [ shareOrLikeInProgress, setShareOrLikeInProgress ] = useState(false)
+    const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
 
     const metamaskError = useError()
 
-    const detailedTokenEntityId = buildSubgraphTokenEntityId(contractAddress, BigNumber.from(tokenId)) 
-    const detailedtokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {
-        client: theGraphApolloClient, 
-        pollInterval: 5000, 
-        onError: defaultErrorHandler,
-        variables: {id: detailedTokenEntityId}});
-
-    const detailedToken = detailedtokenQuery.data?.shareableToken
+    const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
+    const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
 
     const likeTokenExistsQuery = useQuery<LikeTokenExistsQuery,LikeTokenExistsQueryVariables>(GET_LIKE_TOKEN_EXISTS, {
         client: theGraphApolloClient, 
@@ -57,7 +50,7 @@ const TokenDetailPage = () => {
     const onLikeClicked = async () => {
         if (likeContract) {
 
-            setShareOrLikeInProgress(true)
+            setLikeInProgress(true)
             setErrorMessage('')
             try {
                 const resultTransaction = await likeContract.mint(tokenId)
@@ -67,12 +60,12 @@ const TokenDetailPage = () => {
                 const message = (error as any)?.message
                 setErrorMessage(message)
             }
-            setShareOrLikeInProgress(false)
+            setLikeInProgress(false)
         }
     }
 
     const onShareClicked = async () => {
-        //TODO not implemented
+        navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
 
     const renderMetadataAttributes = () => {
@@ -80,13 +73,12 @@ const TokenDetailPage = () => {
     }
 
     const renderShareOrLikeButton = () => {
-        const isCurrentAccountTokenOwner = (active && accounts) ? addressesEqual(accounts[0], detailedToken?.ownerAddress) : false 
 
         if (isCurrentAccountTokenOwner)
             return <Button primary 
                 disabled={!active || !shareContract} 
                 onClick={onShareClicked} 
-                loading={shareOrLikeInProgress}>Share award</Button>
+                loading={likeInProgress}>Share award</Button>
         else
             return <Popup 
                 content='You have already liked this token'
@@ -94,7 +86,7 @@ const TokenDetailPage = () => {
                 trigger={<span><Button primary 
                     disabled={!active || !likeContract || likeTokenExists} 
                     onClick={onLikeClicked} 
-                    loading={shareOrLikeInProgress}>Like</Button></span>
+                    loading={likeInProgress}>Like</Button></span>
                 }
             />
     }
@@ -108,7 +100,7 @@ const TokenDetailPage = () => {
         )
     }
 
-    if (detailedtokenQuery.loading) return (
+    if (detailedTokenLoading) return (
         <Segment placeholder vertical padded='very' loading/>
     )
     else

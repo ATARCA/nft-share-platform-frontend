@@ -5,8 +5,15 @@ import { ShareableERC721 } from "../typechain-types/ShareableERC721";
 import { hooks } from "../connectors/metaMaskConnector";
 import { loadLikeContract, loadShareContract } from "../contracts/demoContract";
 import { LikeERC721 } from "../typechain-types/LikeERC721";
+import { BigNumber } from "@ethersproject/bignumber";
+import { useQuery } from "@apollo/client";
+import { defaultErrorHandler } from "../graphql/errorHandlers";
+import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
+import { GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
+import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables, ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { addressesEqual, buildSubgraphTokenEntityId } from "../utils";
 
-const { useProvider } = hooks
+const { useProvider, useAccounts, useIsActive } = hooks
 
 
 const buildMetadataUri = (contractAddress: string, tokenId: string) => {
@@ -109,4 +116,25 @@ export const useLikeContract = ( likeContractAddress: string) => {
     },[likeContractAddress, provider])
 
     return likeContract
+}
+
+export const useTokenDetails = (contractAddress: string, tokenId: BigNumber): [ShareableTokenByIdQuery_shareableToken | null | undefined, boolean] => {
+    const detailedTokenEntityId = buildSubgraphTokenEntityId(contractAddress, BigNumber.from(tokenId)) 
+
+    const detailedtokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {
+        client: theGraphApolloClient, 
+        pollInterval: 5000, 
+        onError: defaultErrorHandler,
+        variables: {id: detailedTokenEntityId}});
+
+    const detailedToken = detailedtokenQuery.data?.shareableToken
+
+    return [detailedToken, detailedtokenQuery.loading]
+}
+
+export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
+    const accounts = useAccounts()
+    const active = useIsActive()
+
+    return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
 }

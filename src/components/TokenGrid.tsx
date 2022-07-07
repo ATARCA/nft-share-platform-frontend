@@ -1,7 +1,9 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Image, Segment } from 'semantic-ui-react';
 import { OriginalTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
+import { buildTokenDetailRoute } from '../routingUtils';
 
 export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_shareableTokens[], isLoading:boolean}) => {
     return (
@@ -26,7 +28,7 @@ const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
     const navigate = useNavigate()
 
     const onCardClicked = () => {
-        navigate(`token/${token.contractAddress}/${token.tokenId}`)
+        navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
     return (

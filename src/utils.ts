@@ -17,3 +17,6 @@ export const addressesEqual = (address1: string, address2: string): boolean => {
 export const buildSubgraphTokenEntityId = (contractAddress: string, tokenId: BigNumber) => {
     return contractAddress.toLowerCase() + '-' + tokenId.toString()
 }
+
+export const likeContractAddress = '0xFb6394BC5EeE2F9f00ab9df3c8c489A4647f0Daf'
+export const shareContractAddress = '0xe283Bd7c79188b594e9C19E9032ff365A37Cc4fF'
