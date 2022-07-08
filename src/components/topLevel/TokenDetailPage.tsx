@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
-import { GET_TOKEN_BY_ID, GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
-import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables } from "../../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
 import { useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
-import { hooks, metaMask as metamaskConnector } from '../../connectors/metaMaskConnector'
-import { addressesEqual, buildSubgraphTokenEntityId, likeContractAddress, shareContractAddress } from "../../utils";
+import { hooks } from '../../connectors/metaMaskConnector'
+import { buildSubgraphTokenEntityId, likeContractAddress, shareContractAddress } from "../../utils";
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
@@ -43,7 +42,6 @@ const TokenDetailPage = () => {
         variables: { likeTokenOwnerAddress: accounts ? accounts[0] : "" ,parentTokenEntityId: buildSubgraphTokenEntityId(shareContractAddress, BigNumber.from(tokenId))}});
 
     const likeTokenExists = likeTokenExistsQuery.data?.shareableTokens.length !== 0
-
 
     const [ metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
@@ -122,6 +120,7 @@ const TokenDetailPage = () => {
 
                     {consentMissing ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
                         : renderMetadataAttributes()}
+                    {metadata ? <div>{JSON.stringify(metadata, null, '\t')}</div> : <div>metadata N/A</div>}
 
                     {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
                                         

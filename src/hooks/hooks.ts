@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react"
 import { NFTMetadata } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
+import { ethers } from "ethers";
 import { ShareableERC721 } from "../typechain-types/ShareableERC721";
 import { hooks } from "../connectors/metaMaskConnector";
 import { loadLikeContract, loadShareContract } from "../contracts/demoContract";
 import { LikeERC721 } from "../typechain-types/LikeERC721";
 import { BigNumber } from "@ethersproject/bignumber";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables, ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId, shareContractAddress } from "../utils";
+import { backendApolloClient } from "../graphql/backendApolloClient";
+import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from "../queries-backend/queries";
+import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
+import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 
 const { useProvider, useAccounts, useIsActive } = hooks
 
@@ -143,4 +148,153 @@ export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
     const active = useIsActive()
 
     return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
+}
+
+export const useMintTokenAndUploadMetadata = (): 
+[   setMetadata: (metadata: string) => void, 
+    isMetadataValid: boolean,
+    setIsMetadataValid: (isMetadataValid: boolean) => void ,
+    receiverAddress: string, 
+    setReceiverAddress: (receiverAddress: string) => void,
+    canMint: () => boolean,
+    mintAndUploadMetadata: () => void,
+    mintInProgress: boolean,
+    metadaSignOrUploadFailed: boolean,
+    retrySignAndUploadMetadata: () => void,
+    metadataSignAndUploadInProgress: boolean,
+    mintAndMetadaUploadCompleted: boolean,
+    mintErrorMessage: string,
+    metadataUploadErrorMessage: string,
+    resetState: () => void
+] => {
+
+    const isActive = useIsActive()
+    const shareContract = useShareContract(shareContractAddress)
+    const accounts = useAccounts()
+    const provider = useProvider();
+
+    const [ metadata, setMetadata ] = useState('')
+    const [ transactionHash, setTransactionHash ] = useState('')
+    const [ receiverAddress, setReceiverAddress ] = useState('')
+    const isValidAddress = ethers.utils.isAddress(receiverAddress)
+
+
+    const [ mintErrorMessage, setMintErrorMessage ] = useState('')
+    const [ metadataUploadErrorMessage, setMetadataUploadErrorMessage ] = useState('')
+
+    const [ isMetadataValid, setIsMetadataValid ] = useState(false)
+
+
+    const [ metadataSignAndUploadInProgress, setMetadataSignAndUploadInProgress ] = useState(false)
+    const [ mintInProgress, setMintInProgress ] = useState(false)
+    const [ mintAndMetadaUploadCompleted, setMintAndMetadaUploadCompleted ] = useState(false)
+
+    const [ metadaSignOrUploadFailed, setMetadaSignOrUploadFailed ] = useState(false)
+
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [ getMetadataToSign, _metadataToSign]  = useLazyQuery<GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables>
+    (GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD,
+        {client: backendApolloClient, onError: defaultErrorHandler})
+
+    const [addPendingMetadataFunction, addPendingMetadataResult] = useMutation<AddPendingMetadataMutation, AddPendingMetadataMutationVariables>(ADD_PENDING_METADATA,  {client: backendApolloClient, onError: defaultErrorHandler})
+
+    const mint = async () => {
+        if (shareContract && isActive) {
+            setMintErrorMessage('')
+            setMintInProgress(true)
+            try {
+                const resultTransaction = await shareContract.mint(receiverAddress)
+                resultTransaction.wait().then( () => setMintInProgress(false))
+                return resultTransaction
+            } catch (error) {
+                console.log(error)
+                const message = (error as any)?.message
+                setMintErrorMessage(message)
+                setMintInProgress(false)
+            }
+        }
+    }
+
+    const retrySignAndUploadMetadata = async () => {
+        await signAndUploadMetadata(transactionHash)
+    }
+
+    const signAndUploadMetadata = async (txHash: string) => {
+        setMetadataSignAndUploadInProgress(true)
+        setMetadaSignOrUploadFailed(false)
+        setMetadataUploadErrorMessage('')
+        try {
+            const result = await getMetadataToSign({variables: {txHash: txHash, metadata: metadata}})
+            const messageToSign = result.data?.getMetadataUploadMessageToSign
+            if (messageToSign && accounts) {
+                const signingAddress = accounts[0]
+
+                const signature = await provider?.getSigner().signMessage(messageToSign) || ''
+
+                const metadataUploadResult = await addPendingMetadataFunction({variables: {pendingTxHash: txHash, metadata, signingAddress , signature}})
+                if (metadataUploadResult.data?.addPendingMetadata.success) {
+                    setMintAndMetadaUploadCompleted(true)
+                }
+                else {
+                    setMetadaSignOrUploadFailed(true)
+                    setMetadataUploadErrorMessage(metadataUploadResult.data?.addPendingMetadata.message || 'No errror message from failed metadata upload')
+                }
+            }
+            else {
+                console.error('Message to sign and account cannot be undefined')
+                setMetadaSignOrUploadFailed(true)
+            }
+        } catch (error) {
+            console.log(error)
+            setMetadaSignOrUploadFailed(true)
+            const message = (error as any)?.message
+            setMetadataUploadErrorMessage(message)
+        }
+
+        setMetadataSignAndUploadInProgress(false)
+    }
+
+    const mintAndUploadMetadata = async () => {
+        const transaction = await mint()
+       
+        if (transaction) {
+            setTransactionHash(transaction.hash)
+            signAndUploadMetadata(transaction.hash)
+        }
+        else {
+            console.error('Transaction is null')
+        }
+    }
+
+    const canMint = (): boolean => {
+        return !mintInProgress 
+        && !metadataSignAndUploadInProgress 
+        && !metadaSignOrUploadFailed
+        && isActive 
+        && isValidAddress 
+        && isMetadataValid
+        && !!shareContract
+    }
+
+    const resetState = () => {
+        setMintAndMetadaUploadCompleted(false)
+        setReceiverAddress('')
+    }
+
+    return [setMetadata, 
+        isMetadataValid, 
+        setIsMetadataValid, 
+        receiverAddress, 
+        setReceiverAddress, 
+        canMint, 
+        mintAndUploadMetadata,
+        mintInProgress,
+        metadaSignOrUploadFailed,
+        retrySignAndUploadMetadata,
+        metadataSignAndUploadInProgress, 
+        mintAndMetadaUploadCompleted, 
+        mintErrorMessage, 
+        metadataUploadErrorMessage,
+        resetState]
 }

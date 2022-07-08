@@ -11,7 +11,10 @@ export const shortenAccountAddress = (address: string) : string => {
 }
 
 export const addressesEqual = (address1: string, address2: string): boolean => {
-    return address1.toLowerCase() === address2.toLocaleLowerCase()
+    if (!!address1 && !!address2) {
+        return address1.toLowerCase() === address2.toLocaleLowerCase()
+    }
+    else return false
 }
 
 export const buildSubgraphTokenEntityId = (contractAddress: string, tokenId: BigNumber) => {
