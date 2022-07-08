@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
+import { MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 
 const MetadataEntryItem = ({
     propertyName, 
@@ -41,19 +42,6 @@ interface MetadataAttributeUIEntry {
     value: string;
 }
 
-interface MetadataAttribute {
-    trait_type: string;
-    value: string;
-}
-
-interface Metadata {
-    description: string;
-    name: string;
-    attributes: MetadataAttribute[];
-}
-
-
-
 const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Twitter'},{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
 const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
 
@@ -86,7 +74,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     
         const postMetadataToCallback = () => {
             const attributes:MetadataAttribute[] = metadataAttributesArray.map( it => {return {trait_type: it.name, value: it.value}});
-            const metadata: Metadata = {description: tokenDescription, name: tokenName, attributes}
+            const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, attributes}
             const metadataJson = JSON.stringify(metadata, null, '\t')
             onMetadataChanged(metadataJson)
         }

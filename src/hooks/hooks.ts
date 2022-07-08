@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { NFTMetadata } from "../../types/NFTMetadata"
+import { NFTMetadata } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ShareableERC721 } from "../typechain-types/ShareableERC721";
 import { hooks } from "../connectors/metaMaskConnector";
@@ -28,20 +28,26 @@ export const useMetadata = (contractAddress: string, tokenId: string): [ NFTMeta
 
     useEffect( () => {
         const fetchMetadata = async () => {
-            const uri = buildMetadataUri(contractAddress, tokenId)
-            setErrorMessage('')
-            const response = await fetch(uri)
-            console.log('metadata response',response)
 
-            if (response && response.status === 200) {
-                const body = await response.json()
-                const metadata = body as NFTMetadata
-                setMetadata(metadata)
-            } else if (response && response.status === 403) {
-                setConsentMissing(true)
-            }
-            else {
-                setErrorMessage(response.status+' '+response.statusText)
+            try {
+                const uri = buildMetadataUri(contractAddress, tokenId)
+                setErrorMessage('')
+                const response = await fetch(uri)
+                console.log('metadata response',response)
+
+                if (response && response.status === 200) {
+                    const body = await response.json()
+                    const metadata = body as NFTMetadata
+                    setMetadata(metadata)
+                } else if (response && response.status === 403) {
+                    setConsentMissing(true)
+                }
+                else {
+                    setErrorMessage(response.status+' '+response.statusText)
+                }
+            } catch (error) {
+                const message = (error as any)?.message
+                setErrorMessage(message)
             }
         }
     

@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "semantic-ui-react";
-import { MetadataAttribute } from "../../types/NFTMetadata";
+import { MetadataAttribute } from "../types/NFTMetadata";
 
 const TokenAttributesView = ({attributes}: {attributes: MetadataAttribute[]}) => {
 

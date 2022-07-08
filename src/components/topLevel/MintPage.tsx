@@ -6,10 +6,12 @@ import { Button, Input, Message } from "semantic-ui-react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { loadShareContract } from "../../contracts/demoContract";
 import { backendApolloClient } from "../../graphql/backendApolloClient";
+import { useShareContract } from "../../hooks/hooks";
 import { ADD_PENDING_METADATA, GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../../queries-backend/types-backend/AddPendingMetadataMutation";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { ShareableERC721 } from "../../typechain-types";
+import { shareContractAddress } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
 const { useAccounts, useIsActive, useProvider } = hooks
@@ -21,9 +23,9 @@ const MintPage = () => {
 
     const [ metadata, setMetadata ] = useState('')
     const [ isMetadataValid, setIsMetadataValid ] = useState(false)
+   
+    const shareContract = useShareContract(shareContractAddress)
 
-    const [contract, setContract] = useState<ShareableERC721 | undefined>(undefined);
-    const [ deployedContractAddress, setDeployedContractAddress ] = useState('')
     const [ receiverAddress, setReceiverAddress ] = useState('')
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
@@ -48,33 +50,12 @@ const MintPage = () => {
     const [ mintErrorMessage, setMintErrorMessage ] = useState('')
     const [ metadataUploadErrorMessage, setMetadataUploadErrorMessage ] = useState('')
 
-    useEffect(() => {
-
-        const loadGraphIndexedContract = async () => {
-            if (provider) {
-                setMintErrorMessage('')
-                try {
-                    const contract  = loadShareContract('0x4381dBc9b27B035f87a04995400879Cd6e977AED', provider)
-                    await contract.deployed()
-                    setContract(contract)
-                    setDeployedContractAddress(contract.address)
-                } catch (error) {
-                    console.log(error)
-                    const message = (error as any)?.message
-                    setMintErrorMessage(message)
-                }
-            }
-        }
-
-        loadGraphIndexedContract()
-    },[ provider ])
-
     const mint = async () => {
-        if (contract && isActive) {
+        if (shareContract && isActive) {
             setMintErrorMessage('')
             setMintInProgress(true)
             try {
-                const resultTransaction = await contract.share(receiverAddress,'1')
+                const resultTransaction = await shareContract.mint(receiverAddress)
                 resultTransaction.wait().then( () => setMintInProgress(false))
                 return resultTransaction
             } catch (error) {
@@ -131,7 +112,6 @@ const MintPage = () => {
         else {
             console.error('Transaction is null')
         }
-
     }
 
     const canMint = () => {
@@ -141,7 +121,7 @@ const MintPage = () => {
         && isActive 
         && isValidAddress 
         && isMetadataValid
-        && contract
+        && shareContract
     }
 
     const renderRetryMetadataSignAndUpload = () => {
@@ -161,7 +141,7 @@ const MintPage = () => {
                 && mintErrorMessage === '' 
                 && metadataUploadErrorMessage === '' ? renderSuccessView() :
                 <div>
-                    <div>Contract deployed at {deployedContractAddress ? deployedContractAddress : '(loading)'}</div>
+                    <div>Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
                         onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
