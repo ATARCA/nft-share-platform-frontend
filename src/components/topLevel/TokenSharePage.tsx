@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 import { Button, Input, Message } from "semantic-ui-react";
-import { useIsCurrentAccountTokenOwner, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
+import { useIsCurrentAccountTokenOwner, useMetadata, useMintTokenAndUploadMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { shareContractAddress } from "../../utils";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -17,82 +17,85 @@ const TokenSharePage = () => {
     const contractAddress = useParams().contractAddress || 'undefined'
 
     const shareContract = useShareContract(shareContractAddress)
-    const [ shareInProgress, setShareInProgress ] = useState(false)
 
     const [ receiverName, setReceiverName ] = useState('')
-    const [ receiverAddress, setReceiverAddress ] = useState('')
-    const isValidAddress = ethers.utils.isAddress(receiverAddress)
-
+    
     const [ subcontributionName, setSubcontributionName ] = useState('')
 
     const [ errorMessage, setErrorMessage ] = useState('')
-    const [ mintSuccess, setMintSuccess ] = useState(false)
 
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
 
-    const [ metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
-    const [ newTokenMetadata, setNewTokenMetadata ] = useState<NFTMetadata|undefined>(undefined)
+    const [ currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
-    //TODO  next test minting of permissioned sharing
-    //TODO  then
-    //TODO  add metadata extension and posting
+    const [ setNewMetadata, 
+        isMetadataValid, 
+        setIsMetadataValid, 
+        receiverAddress, 
+        setReceiverAddress, 
+        canMint, 
+        mintAndUploadMetadata, 
+        mintInProgress, 
+        metadaSignOrUploadFailed, 
+        retrySignAndUploadMetadata, 
+        metadataSignAndUploadInProgress, 
+        mintAndMetadaUploadCompleted, 
+        mintErrorMessage, 
+        metadataUploadErrorMessage, 
+        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.share(receiverAddress,tokenId))
+    
+    const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
-    console.log('metadata',metadata)
+    console.log('detailedToken',detailedToken)
 
     const isActive = useIsActive()
 
     const metamaskError = useError()
 
     const onShareClicked = async () => {
-        if (shareContract) {
-
-            setShareInProgress(true)
-            setErrorMessage('')
-            setMintSuccess(false)
-            try {
-                const resultTransaction = await shareContract.share(receiverAddress, detailedToken?.tokenId)
-                await resultTransaction.wait()
-                setReceiverAddress('')
-                setSubcontributionName('')
-                setMintSuccess(true)
-            } catch (error) {
-                console.log(error)
-                const message = (error as any)?.message
-                setErrorMessage(message)
-            }
-            setShareInProgress(false)
-        }
+        mintAndUploadMetadata()
     }
 
   
     useEffect(() => {
         const updateNewTokenMetadata = () => {
-            if (metadata) {
-                const extendedMetadata = { ...metadata}
-                extendedMetadata.attributes = metadata.attributes.map( obj => ({...obj}))
+            if (currentTokenmetadata) {
+                const extendedMetadata = { ...currentTokenmetadata}
+                extendedMetadata.attributes = currentTokenmetadata.attributes.map( obj => ({...obj}))
                
                 const contributorAttribute:MetadataAttribute = {trait_type:subContributorTraitType, value:receiverName}
                 const contributionTitleAttribute:MetadataAttribute = {trait_type:subContributionTraitType, value:subcontributionName}
                
                 extendedMetadata.attributes.push(contributorAttribute)
                 extendedMetadata.attributes.push(contributionTitleAttribute)
-                setNewTokenMetadata(extendedMetadata)
+                const extendedMetadataJson = JSON.stringify(extendedMetadata, null, '\t')
+                setNewMetadata(extendedMetadataJson)
+                setIsMetadataValid( !!subcontributionName && !!receiverName)
             }
         }
 
         updateNewTokenMetadata()
-    },[metadata, receiverName, subcontributionName])
+    },[currentTokenmetadata, receiverName, setIsMetadataValid, setNewMetadata, subcontributionName])
 
     const shareDisabled = () => {
-        return !isActive || 
-        !shareContract || 
-        !isCurrentAccountTokenOwner || 
-        !isValidAddress || 
-        !detailedToken || 
-        !subcontributionName || 
-        !receiverName || 
-        !metadata 
+        return !canMint() || 
+        !currentTokenmetadata ||
+        mintAndMetadaUploadCompleted
+    }
+
+    const onMintAnotherTokenClicked = () => {
+        setReceiverAddress('')
+        setReceiverName('')
+        setSubcontributionName('')
+        resetState()
+    }
+
+    const renderSuccessView = () => {
+        return <div>
+            <p>Token minting transaction sent. Metadata upload successful.</p>
+            <Button onClick={() => onMintAnotherTokenClicked()}>Mint another token</Button>
+        </div>
     }
 
     return <div>
@@ -100,7 +103,17 @@ const TokenSharePage = () => {
         { errorMessage ? <Message error header='Transaction error' content={errorMessage}/>: <></>}
         {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
 
-        { mintSuccess ? <Message header='Thanks for sharing your award! A new award token has been minted to your co-contributor with the given details.'/>: <></>}
+        {metadaSignOrUploadFailed ?
+            <div>
+                <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
+                <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
+            </div>:<></>}
+
+        { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! A new award token has been minted to your co-contributor with the given details.'/>: <></>}
+    
+        { mintAndMetadaUploadCompleted 
+                && mintErrorMessage === '' 
+                && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
     
         Token Share page tokenId {tokenId} contractAddress {contractAddress}
 
@@ -110,7 +123,7 @@ const TokenSharePage = () => {
             <Input fluid 
                 label='Token receiver' 
                 placeholder='address' 
-                disabled={shareInProgress}
+                disabled={mintInProgress || metadataSignAndUploadInProgress || mintAndMetadaUploadCompleted}
                 value={receiverAddress} 
                 error={!isValidAddress && !!receiverAddress}
                 onChange={(e, { value }) => setReceiverAddress( value ) }/>
@@ -120,7 +133,7 @@ const TokenSharePage = () => {
             <Input fluid 
                 label='Co-contributor' 
                 placeholder='name or username' 
-                disabled={shareInProgress}
+                disabled={mintInProgress || metadataSignAndUploadInProgress || mintAndMetadaUploadCompleted}
                 value={receiverName} 
                 onChange={(e, { value }) => setReceiverName( value ) }/>
         </div>
@@ -129,7 +142,7 @@ const TokenSharePage = () => {
             <Input fluid 
                 label='Title of sub-contribution' 
                 placeholder='token title' 
-                disabled={shareInProgress}
+                disabled={mintInProgress || metadataSignAndUploadInProgress || mintAndMetadaUploadCompleted}
                 value={subcontributionName} 
                 onChange={(e, { value }) => setSubcontributionName( value ) }/>
         </div>
@@ -137,7 +150,7 @@ const TokenSharePage = () => {
         <Button primary 
             disabled={ shareDisabled() } 
             onClick={ onShareClicked } 
-            loading={ shareInProgress }>Share award</Button>
+            loading={ mintInProgress || metadataSignAndUploadInProgress }>Share award</Button>
     </div>
 }
 

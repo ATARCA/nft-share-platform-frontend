@@ -1,16 +1,8 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import React, { useEffect, useState } from "react";
 import { Button, Input, Message } from "semantic-ui-react";
 import { ethers } from "ethers";
+import React from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
-import { loadShareContract } from "../../contracts/demoContract";
-import { backendApolloClient } from "../../graphql/backendApolloClient";
-import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { useMintTokenAndUploadMetadata, useShareContract } from "../../hooks/hooks";
-import { ADD_PENDING_METADATA, GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD } from "../../queries-backend/queries";
-import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../../queries-backend/types-backend/AddPendingMetadataMutation";
-import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
-import { ShareableERC721 } from "../../typechain-types";
 import { shareContractAddress } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
@@ -36,8 +28,8 @@ const MintPage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata()
-        
+        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress))
+
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
     const onMintAndUploadMetadataClicked = async () => {

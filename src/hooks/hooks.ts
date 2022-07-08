@@ -150,7 +150,7 @@ export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
     return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
 }
 
-export const useMintTokenAndUploadMetadata = (): 
+export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
 [   setMetadata: (metadata: string) => void, 
     isMetadataValid: boolean,
     setIsMetadataValid: (isMetadataValid: boolean) => void ,
@@ -184,13 +184,11 @@ export const useMintTokenAndUploadMetadata = ():
 
     const [ isMetadataValid, setIsMetadataValid ] = useState(false)
 
-
     const [ metadataSignAndUploadInProgress, setMetadataSignAndUploadInProgress ] = useState(false)
     const [ mintInProgress, setMintInProgress ] = useState(false)
     const [ mintAndMetadaUploadCompleted, setMintAndMetadaUploadCompleted ] = useState(false)
 
     const [ metadaSignOrUploadFailed, setMetadaSignOrUploadFailed ] = useState(false)
-
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [ getMetadataToSign, _metadataToSign]  = useLazyQuery<GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables>
@@ -204,7 +202,7 @@ export const useMintTokenAndUploadMetadata = ():
             setMintErrorMessage('')
             setMintInProgress(true)
             try {
-                const resultTransaction = await shareContract.mint(receiverAddress)
+                const resultTransaction = await contractMintCaller(receiverAddress, shareContract)
                 resultTransaction.wait().then( () => setMintInProgress(false))
                 return resultTransaction
             } catch (error) {
