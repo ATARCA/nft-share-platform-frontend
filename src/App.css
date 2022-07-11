@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+.Text-block {
+  text-align: left;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -39,6 +43,10 @@
 
 .margin-vertical {
   margin: 10px 0px
+}
+
+.margin-vertical-main-menu {
+  margin: 4vh 0vh
 }
 
 .margin-horizontal {

@@ -9,8 +9,10 @@ import TokenDetailPage from './components/topLevel/TokenDetailPage';
 import ConsentPanel from './components/ConsentPanel';
 import MintPage from './components/topLevel/MintPage';
 import MainMenuDropdown from './components/MainMenuDropdown';
-import HomeMenuButton from './components/HomeMenuButton';
+import HomeMenuButtons from './components/menu/HomeMenuButtons';
 import TokenSharePage from './components/topLevel/TokenSharePage';
+import { AboutPage } from './components/topLevel/AboutPage';
+import { aboutRoute } from './routingUtils';
 
 function App() {
 
@@ -18,13 +20,14 @@ function App() {
         <div className="App">
             <Router>
                 <Menu>
-                    <HomeMenuButton/>
+                    <HomeMenuButtons/>
                     <MetamaskConnectSubMenu/>    
                     <MainMenuDropdown/>
                 </Menu>
                 <ConsentPanel/>
 
                 <Routes>
+                    <Route path={aboutRoute} element={<AboutPage/>}/> 
                     <Route path="/mint" element={<MintPage/>}/> 
                     <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                     <Route path="shareToken/:contractAddress/:tokenId" element={<TokenSharePage/>}/>
