@@ -36,7 +36,7 @@ const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
             <Image size='medium' src='https://react.semantic-ui.com/images/wireframe/paragraph.png'/>
             <Card.Content>
                 <Card.Header>{token.id.toString().substring(0,7)}...</Card.Header>
-                <Card.Meta>Meta info</Card.Meta>
+                <Card.Meta>{token.tokenId} Meta info</Card.Meta>
                 <Card.Description>
                     Token metadata description
                 </Card.Description>

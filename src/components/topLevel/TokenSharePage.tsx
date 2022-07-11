@@ -6,17 +6,14 @@ import { useIsCurrentAccountTokenOwner, useMetadata, useMintTokenAndUploadMetada
 import { shareContractAddress } from "../../utils";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { BigNumber } from "@ethersproject/bignumber";
-import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { subContributionTraitType, subContributorTraitType, MetadataAttribute, NFTMetadata } from "../../types/NFTMetadata";
 
-const { useAccounts, useError, useIsActive } = hooks
+const { useError, useIsActive } = hooks
 
 const TokenSharePage = () => {
 
     const tokenId = useParams().tokenId || 'undefined'
     const contractAddress = useParams().contractAddress || 'undefined'
-
-    const shareContract = useShareContract(shareContractAddress)
 
     const [ receiverName, setReceiverName ] = useState('')
     
@@ -103,17 +100,7 @@ const TokenSharePage = () => {
         { errorMessage ? <Message error header='Transaction error' content={errorMessage}/>: <></>}
         {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
 
-        {metadaSignOrUploadFailed ?
-            <div>
-                <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
-                <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
-            </div>:<></>}
-
         { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! A new award token has been minted to your co-contributor with the given details.'/>: <></>}
-    
-        { mintAndMetadaUploadCompleted 
-                && mintErrorMessage === '' 
-                && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
     
         Token Share page tokenId {tokenId} contractAddress {contractAddress}
 
@@ -151,6 +138,16 @@ const TokenSharePage = () => {
             disabled={ shareDisabled() } 
             onClick={ onShareClicked } 
             loading={ mintInProgress || metadataSignAndUploadInProgress }>Share award</Button>
+
+        { mintAndMetadaUploadCompleted 
+                && mintErrorMessage === '' 
+                && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
+
+        {metadaSignOrUploadFailed ?
+            <div>
+                <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
+                <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
+            </div>:<></>}
     </div>
 }
 
