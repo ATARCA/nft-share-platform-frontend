@@ -7,6 +7,7 @@ export interface MetadataAttribute {
 export interface NFTMetadata {
     description: string,
     name: string,
+    image: string,
     attributes: MetadataAttribute[]
 }
 

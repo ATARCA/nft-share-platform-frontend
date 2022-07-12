@@ -53,6 +53,9 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     const [ tokenDescription, setTokenDescription ] = useState('')
     const [ tokenDescriptionEverChanged, setTokenDescriptionEverChanged ] = useState(false)
 
+    const [ imageURL, setImageURL ] = useState('')
+    const [ imageURLEverChanged, setImageURLEverChanged ] = useState(false)
+
     const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
 
     const [ isValid, setIsValid ] = useState(false)
@@ -66,7 +69,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
-            const isValidNew = !!tokenName && !!tokenDescription && propertiesNotEmpty
+            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty
     
             setIsValid(isValidNew)
             onIsValid(isValidNew)
@@ -74,13 +77,13 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     
         const postMetadataToCallback = () => {
             const attributes:MetadataAttribute[] = metadataAttributesArray.map( it => {return {trait_type: it.name, value: it.value}});
-            const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, attributes}
+            const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, image: imageURL, attributes}
             const metadataJson = JSON.stringify(metadata, null, '\t')
             onMetadataChanged(metadataJson)
         }
         validateFields()
         postMetadataToCallback()
-    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged])
+    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged, imageURL])
 
     const updatePropertyName = (uuid: string, newPropertyName:string) => {
         const arrayCopy = [...metadataAttributesArray]
@@ -116,6 +119,15 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
                     value={tokenDescription} 
                     error={!tokenDescription && tokenDescriptionEverChanged} 
                     onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
+            </div>
+
+            <div className='margin-vertical'>
+                <Input fluid
+                    label='Image URL' 
+                    placeholder='http://..' 
+                    value={imageURL} 
+                    error={!imageURL && imageURLEverChanged} 
+                    onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
             </div>
 
             <Header as='h2' dividing>

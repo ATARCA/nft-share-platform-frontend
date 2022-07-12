@@ -1,3 +1,9 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+.ui.cards > .card > :first-child,
+.ui.card > :first-child {
+  border-radius: @borderRadius !important;
+  border-top: none !important;
+}
