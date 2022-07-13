@@ -6,10 +6,10 @@ import icon_Share from '../images/icon_ShareNetwork.svg';
 import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Icon, Image, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
-import { OriginalTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
+import { TokensQuery_shareableTokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_shareableTokens[], isLoading:boolean}) => {
+export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTokens[], isLoading:boolean}) => {
     return (
         <div>
             {isLoading? 
@@ -27,7 +27,7 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_share
     );
 };
 
-const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
+const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
     const [metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
@@ -44,22 +44,49 @@ const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
 
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === 'Category')?.value //TODO extract these strings
 
+    let likesCount
+    if (token.isLikeToken) {
+        likesCount = token.likedParentToken?.likeTokens.length ?? 0
+    }
+    else {
+        likesCount = token.likeTokens.length
+    }
+
+    const sharesCount = token.sharedChildTokens.length
+
     if (errorMessage) console.error('Token card metadata loading errror', errorMessage)
 
     const onCardClicked = () => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
-    return (
+
+    //TODO add label tag in corner
+
+    if (consentMissing)
+        return (
+            <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
+                <Image rounded size='medium' className='Square' src={imageURL}/>
+                <Card.Content className='No-top-border'>
+                    <Card.Header>Owner consent missing</Card.Header>
+                    <Card.Description>
+                Owner has to connect a wallet and sign consent before metadata will be available.
+                    </Card.Description>
+                </Card.Content>
+                <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
+
+            </Card>
+        )
+    else return (
         <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
             <Image rounded size='medium' className='Square' src={imageURL}/>
             <Card.Content className='No-top-border'>
-                <Card.Header>{tokenHolderDisplayName} {token.id.toString().substring(0,7)}...</Card.Header>
+                <Card.Header>{tokenHolderDisplayName}</Card.Header>
                 <Card.Description>
                     {tokenDisplayName}
                 </Card.Description>
                 <Card.Meta>Category: {tokenCategory}</Card.Meta>
             </Card.Content>
-            <TokenCardBottomIcons likesCount={1} sharesCount={2}/>
+            <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
         </Card>
     )
 }

@@ -6,19 +6,23 @@ import { MultiplyQuery, MultiplyQueryVariables } from '../../queries-backend/typ
 import { AllBooksQuery } from '../../queries-backend/types-backend/AllBooksQuery';
 import { SendDemoTransaction } from '../../components/SendDemoTransaction';
 import { backendApolloClient } from '../../graphql/backendApolloClient';
-import { GET_ORIGINAL_TOKENS } from '../../queries-thegraph/queries';
+import { GET_TOKENS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import TokenGrid from '../../components/TokenGrid';
 import OnboardingCarousel from '../onboarding/OnboardingCarouselModal';
-import { OriginalTokenQuery } from '../../queries-thegraph/types-thegraph/OriginalTokenQuery';
+import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
 
 const Home = () => {
 
     const [value1, setValue1] = useState('');
     const [value2, setValue2] = useState('');
 
-    const allgraphShareTokensResult = useQuery<OriginalTokenQuery,undefined>(GET_ORIGINAL_TOKENS, {client: theGraphApolloClient, pollInterval: 5000, onError: defaultErrorHandler});
+    const allgraphShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, 
+        {client: theGraphApolloClient, 
+            pollInterval: 5000, 
+            onError: defaultErrorHandler, 
+            variables: {isOriginal: true, isSharedInstance: false}});
     
     const renderBooks = () => {
         if (allBooksResult.loading)
@@ -62,7 +66,6 @@ const Home = () => {
     return (
         <div>
             <OnboardingCarousel/>
-            <SendDemoTransaction/>
             <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}

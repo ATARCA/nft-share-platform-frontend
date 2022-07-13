@@ -82,7 +82,7 @@ const TokenDetailPage = () => {
                 content='You have already liked this token'
                 disabled={!likeTokenExists}
                 trigger={<span><Button primary 
-                    disabled={!active || !likeContract || likeTokenExists} 
+                    disabled={!active || !likeContract || likeTokenExists || likeInProgress} 
                     onClick={onLikeClicked} 
                     loading={likeInProgress}>Like</Button></span>
                 }
