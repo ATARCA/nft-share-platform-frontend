@@ -3,11 +3,13 @@
 *******************************/
 
 @borderRadius: 2em;
-@headerFontSize: @relativeSmall;
+@headerFontSize: @relativeMedium;
 @headerColor: rgba(19, 1, 61, 1.0);
 
-@contentFontSize: @relativeSmall;
+@contentFontSize: @relativeMedium;
 @descriptionColor: rgba(19, 1, 61, 1.0);
 
-@metaFontSize: @relativeTiny;
+@metaFontSize: @relativeSmall;
 @metaColor: rgba(19, 1, 61, 1.0);
+
+@contentPadding: 1em 1em;

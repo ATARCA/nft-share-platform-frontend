@@ -4,7 +4,7 @@ import icon_thumbsUp from '../images/icon_ThumbsUp.svg';
 import icon_Share from '../images/icon_ShareNetwork.svg';
 
 import { useNavigate } from 'react-router-dom';
-import { Card, Grid, Icon, Image, Segment } from 'semantic-ui-react';
+import { Card, Grid, Icon, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_shareableTokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
@@ -60,11 +60,9 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
-    //TODO add label tag in corner
-
     if (consentMissing)
         return (
-            <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
+            <Card onClick={onCardClicked}>
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header>Owner consent missing</Card.Header>
@@ -77,18 +75,33 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
             </Card>
         )
     else return (
-        <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
-            <Image rounded size='medium' className='Square' src={imageURL}/>
-            <Card.Content className='No-top-border'>
-                <Card.Header>{tokenHolderDisplayName}</Card.Header>
-                <Card.Description>
-                    {tokenDisplayName}
-                </Card.Description>
-                <Card.Meta>Category: {tokenCategory}</Card.Meta>
-            </Card.Content>
-            <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
-        </Card>
+        <div>
+            <Card onClick={onCardClicked} >
+            
+                <Image rounded size='medium' className='Square' src={imageURL}/>
+                <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
+                <Card.Content className='No-top-border'>
+                    <Card.Header>{tokenHolderDisplayName}</Card.Header>
+                    <Card.Description>
+                        {tokenDisplayName}
+                    </Card.Description>
+                    <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>
+                </Card.Content>
+                <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
+            </Card>
+        </div>
     )
+}
+
+const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean}) => {
+    let labelText = 'N/A'
+    if (isOriginal) labelText = 'ORIGINAL AWARD'
+    else if (isSharedInstance) labelText = 'COMMUNITY AWARD'
+    else if (isLikeToken) labelText = 'LIKED AWARD'
+
+    return  <Rail attached internal  position='left' style={{margin: '10px'}}>
+        <Label circular size='mini'>{labelText}</Label>
+    </Rail>
 }
 
 const TokenCardBottomIcons = ({likesCount, sharesCount}:{likesCount: number, sharesCount: number}) => {
