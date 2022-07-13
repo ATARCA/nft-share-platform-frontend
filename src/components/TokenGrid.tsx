@@ -8,6 +8,7 @@ import { Card, Grid, Icon, Image, Label, Rail, Segment } from 'semantic-ui-react
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_shareableTokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
+import { authorPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
 
 export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTokens[], isLoading:boolean}) => {
     return (
@@ -34,15 +35,15 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === 'Author')?.value //TODO extract these strings
-    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === 'subcontributor')?.value //TODO extract these strings
+    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
+    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
 
     const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === 'subcontribution title')?.value //TODO extract these strings
+    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
     const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
-    const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === 'Category')?.value //TODO extract these strings
+    const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
     let likesCount
     if (token.isLikeToken) {
