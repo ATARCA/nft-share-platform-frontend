@@ -37,11 +37,14 @@ query ShareableTokenByIdQuery ($id: String!){
     tokenId
     sharedChildTokens {
       id
-      ownerAddress
     }
     likeTokens {
       id
-      ownerAddress
+    }
+    likedParentToken {
+      likeTokens {
+        id
+      }
     }
   }
 }

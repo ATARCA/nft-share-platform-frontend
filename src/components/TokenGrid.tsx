@@ -23,12 +23,12 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTok
                         </Grid.Column>
                     )}
                 </Grid>
-            }
+            } 
         </div>
     );
 };
 
-const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
+export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
     const [metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
@@ -61,9 +61,11 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
+    const cardStyle = {'text-align': 'left'}
+
     if (consentMissing)
         return (
-            <Card onClick={onCardClicked}>
+            <Card onClick={onCardClicked} centered style={cardStyle}>
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header>Owner consent missing</Card.Header>
@@ -77,7 +79,7 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         )
     else return (
         <div>
-            <Card onClick={onCardClicked} >
+            <Card onClick={onCardClicked} centered style={cardStyle}>
             
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>

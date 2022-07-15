@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Message, Popup, Segment } from "semantic-ui-react";
+import { Button, Grid, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
@@ -12,6 +12,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
+import { ShareableTokenByIdQuery_shareableToken } from "../../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { TokenCard } from "../TokenGrid";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -98,33 +100,43 @@ const TokenDetailPage = () => {
         )
     }
 
+    const renderTokenDetailsPage = (token:ShareableTokenByIdQuery_shareableToken) => {
+        return <Grid columns={2}>
+            {renderLeftColumn(token)}
+            {renderRightColumn(token)}
+        </Grid>
+    }
+
+    const renderLeftColumn = (token:ShareableTokenByIdQuery_shareableToken) => {
+        return <Grid.Column style={{'text-align': 'center'}} >
+            <TokenCard token={token}/>
+        </Grid.Column>
+    }
+
+    const renderRightColumn = (token:ShareableTokenByIdQuery_shareableToken) => {
+        return <Grid.Column><div>
+            { errorMessage ? 
+                <Message error header='Transaction error' content={errorMessage}/>: <></>}
+            { metamaskError ? 
+                <Message error header='Metamask error' content={metamaskError}/>: <></>}
+
+            { renderActionButtonArea() }
+
+            {consentMissing ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
+                : renderMetadataAttributes()}
+            {metadata ? <div>{JSON.stringify(metadata, null, '\t')}</div> : <div>metadata N/A</div>}
+
+            {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
+                        
+        </div></Grid.Column>
+    }
+
     if (detailedTokenLoading) return (
         <Segment placeholder vertical padded='very' loading/>
     )
     else
         return (
-            detailedToken? 
-                <div>
-                    { errorMessage ? 
-                        <Message error header='Transaction error' content={errorMessage}/>: <></>}
-                    { metamaskError ? 
-                        <Message error header='Metamask error' content={metamaskError}/>: <></>}
-
-                    <p> Token id is {tokenId}</p>
-                    <div>
-                        shared by {detailedToken.sharedChildTokens.map((sharedChildToken,i) => 
-                            <div key={`${sharedChildToken.id}-${i}`}>{sharedChildToken.ownerAddress}</div>)}
-                    </div>
-
-                    { renderActionButtonArea() }
-
-                    {consentMissing ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
-                        : renderMetadataAttributes()}
-                    {metadata ? <div>{JSON.stringify(metadata, null, '\t')}</div> : <div>metadata N/A</div>}
-
-                    {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
-                                        
-                </div>
+            detailedToken? renderTokenDetailsPage(detailedToken)
                 :
                 <div>
                     Token with id {tokenId} not found in contract {contractAddress}.

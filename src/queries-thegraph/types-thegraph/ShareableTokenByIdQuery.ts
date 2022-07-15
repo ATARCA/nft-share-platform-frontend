@@ -10,13 +10,21 @@
 export interface ShareableTokenByIdQuery_shareableToken_sharedChildTokens {
   __typename: "ShareableToken";
   id: string;
-  ownerAddress: any;
 }
 
 export interface ShareableTokenByIdQuery_shareableToken_likeTokens {
   __typename: "ShareableToken";
   id: string;
-  ownerAddress: any;
+}
+
+export interface ShareableTokenByIdQuery_shareableToken_likedParentToken_likeTokens {
+  __typename: "ShareableToken";
+  id: string;
+}
+
+export interface ShareableTokenByIdQuery_shareableToken_likedParentToken {
+  __typename: "ShareableToken";
+  likeTokens: ShareableTokenByIdQuery_shareableToken_likedParentToken_likeTokens[];
 }
 
 export interface ShareableTokenByIdQuery_shareableToken {
@@ -30,6 +38,7 @@ export interface ShareableTokenByIdQuery_shareableToken {
   tokenId: any | null;
   sharedChildTokens: ShareableTokenByIdQuery_shareableToken_sharedChildTokens[];
   likeTokens: ShareableTokenByIdQuery_shareableToken_likeTokens[];
+  likedParentToken: ShareableTokenByIdQuery_shareableToken_likedParentToken | null;
 }
 
 export interface ShareableTokenByIdQuery {
