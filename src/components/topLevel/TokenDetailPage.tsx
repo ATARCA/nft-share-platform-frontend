@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Card, Grid, Message, Popup, Segment } from "semantic-ui-react";
+import { Button, Card, Grid, Header, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
@@ -74,8 +74,8 @@ const TokenDetailPage = () => {
         navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
 
-    const renderMetadataAttributes = () => {
-        return <div>{metadata?.attributes ? <TokenAttributesView attributes={metadata.attributes}/> : <></>}</div>
+    const renderMetadataAttributes = (token:ShareableTokenByIdQuery_shareableToken) => {
+        return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <>metadata not available</>}</div>
     }
 
     const renderShareOrLikeButton = () => {
@@ -98,7 +98,6 @@ const TokenDetailPage = () => {
     }
 
     const renderActionButtonArea = () => {
-    
         return (
             <div>
                 {detailedToken?.isLikeToken ? <></> : renderShareOrLikeButton() }
@@ -109,21 +108,21 @@ const TokenDetailPage = () => {
     const renderTokenDetailsPage = (token:ShareableTokenByIdQuery_shareableToken) => {
         return <div style={{'margin': '0 10vw'}}>
             <Grid columns={2} style={{'margin': '3vh 0'}}>
-            <Grid.Column style={{'text-align': 'center'}} >
-            {tokenDisplayName}
-        </Grid.Column> <Grid.Column style={{'text-align': 'right'}} >
-        { renderActionButtonArea() }
-        </Grid.Column>
+                <Grid.Column style={{'text-align': 'left'}} >
+                    <Header.Subheader className="Award-subheader">Award details</Header.Subheader>
+                    <Header as='h1'>{tokenDisplayName}</Header>
+                </Grid.Column> <Grid.Column style={{'justify-content': 'right', 'display': 'flex', 'align-items': 'center'}} >
+                    { renderActionButtonArea() }
+                </Grid.Column>
             </Grid>
             
-           
             <div style={{'margin': '2vh 0 4vh 0'}}>
-            <Card fluid>
-                <Grid columns={2} style={{'margin': '2vh 2vw'}}>
-                    {renderLeftColumn(token)}
-                    {renderRightColumn(token)}
-                </Grid>
-            </Card>
+                <Card fluid>
+                    <Grid columns={2} style={{'margin': '2vh 2vw'}}>
+                        {renderLeftColumn(token)}
+                        {renderRightColumn(token)}
+                    </Grid>
+                </Card>
             </div>
         </div>
     }
@@ -142,8 +141,7 @@ const TokenDetailPage = () => {
                 <Message error header='Metamask error' content={metamaskError}/>: <></>}
 
             {consentMissing ? <div>Consent for this metadata is missing. If you hold this token, connect your wallet to give consent and publish this metadata.</div> 
-                : renderMetadataAttributes()}
-            {metadata ? <div>{JSON.stringify(metadata, null, '\t')}</div> : <div>metadata N/A</div>}
+                : renderMetadataAttributes(token)}
 
             {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
                         

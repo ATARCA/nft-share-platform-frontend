@@ -44,6 +44,22 @@
   color: #61dafb;
 }
 
+.Token-attribute-table-title {
+  color: #748296;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.Award-subheader{
+  color: #848484;
+  font-size: 0.8em;
+}
+
+.Token-attribute-table-value {
+  color: #000000;
+  font-size: 0.9em;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
