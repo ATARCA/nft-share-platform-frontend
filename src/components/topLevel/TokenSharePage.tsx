@@ -5,7 +5,7 @@ import { Button, Input, Message } from "semantic-ui-react";
 import { useIsCurrentAccountTokenOwner, useMetadata, useMintTokenAndUploadMetadata, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { BigNumber } from "@ethersproject/bignumber";
-import { subContributionTraitType, subContributorTraitType, MetadataAttribute, NFTMetadata } from "../../types/NFTMetadata";
+import { subContributionPropertyName, subContributorPropertyName, MetadataAttribute, NFTMetadata } from "../../types/NFTMetadata";
 
 const { useError, useIsActive } = hooks
 
@@ -60,8 +60,8 @@ const TokenSharePage = () => {
                 const extendedMetadata = { ...currentTokenmetadata}
                 extendedMetadata.attributes = currentTokenmetadata.attributes.map( obj => ({...obj}))
                
-                const contributorAttribute:MetadataAttribute = {trait_type:subContributorTraitType, value:receiverName}
-                const contributionTitleAttribute:MetadataAttribute = {trait_type:subContributionTraitType, value:subcontributionName}
+                const contributorAttribute:MetadataAttribute = {trait_type:subContributorPropertyName, value:receiverName}
+                const contributionTitleAttribute:MetadataAttribute = {trait_type:subContributionPropertyName, value:subcontributionName}
                
                 extendedMetadata.attributes.push(contributorAttribute)
                 extendedMetadata.attributes.push(contributionTitleAttribute)

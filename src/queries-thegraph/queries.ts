@@ -1,14 +1,26 @@
 import { gql } from '@apollo/client'
 
-export const GET_ORIGINAL_TOKENS = gql`
-query OriginalTokenQuery {
-  shareableTokens ( where: {isOriginal: true}){
+export const GET_TOKENS = gql`
+query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!){
+  shareableTokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance}){
     id
     ownerAddress
     contractAddress
     isOriginal
     isSharedInstance
+    isLikeToken
     tokenId
+    sharedChildTokens {
+      id
+    }
+    likeTokens {
+      id
+    }
+    likedParentToken {
+      likeTokens {
+        id
+      }
+    }
   }
 }
 `

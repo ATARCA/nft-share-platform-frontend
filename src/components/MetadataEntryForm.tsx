@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
-import { MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
+import { authorPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 
 const MetadataEntryItem = ({
     propertyName, 
@@ -42,8 +42,8 @@ interface MetadataAttributeUIEntry {
     value: string;
 }
 
-const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Twitter'},{ id:uuidv4(), name:'Author', value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
-const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:'Category', value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
+const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Twitter'},{ id:uuidv4(), name:authorPropertyName, value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
+const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
 
 export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void}) => {
 
@@ -52,6 +52,9 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
 
     const [ tokenDescription, setTokenDescription ] = useState('')
     const [ tokenDescriptionEverChanged, setTokenDescriptionEverChanged ] = useState(false)
+
+    const [ imageURL, setImageURL ] = useState('')
+    const [ imageURLEverChanged, setImageURLEverChanged ] = useState(false)
 
     const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
 
@@ -66,7 +69,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
-            const isValidNew = !!tokenName && !!tokenDescription && propertiesNotEmpty
+            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty
     
             setIsValid(isValidNew)
             onIsValid(isValidNew)
@@ -74,13 +77,13 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     
         const postMetadataToCallback = () => {
             const attributes:MetadataAttribute[] = metadataAttributesArray.map( it => {return {trait_type: it.name, value: it.value}});
-            const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, attributes}
+            const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, image: imageURL, attributes}
             const metadataJson = JSON.stringify(metadata, null, '\t')
             onMetadataChanged(metadataJson)
         }
         validateFields()
         postMetadataToCallback()
-    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged])
+    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged, imageURL])
 
     const updatePropertyName = (uuid: string, newPropertyName:string) => {
         const arrayCopy = [...metadataAttributesArray]
@@ -116,6 +119,15 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
                     value={tokenDescription} 
                     error={!tokenDescription && tokenDescriptionEverChanged} 
                     onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
+            </div>
+
+            <div className='margin-vertical'>
+                <Input fluid
+                    label='Image URL' 
+                    placeholder='http://..' 
+                    value={imageURL} 
+                    error={!imageURL && imageURLEverChanged} 
+                    onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
             </div>
 
             <Header as='h2' dividing>

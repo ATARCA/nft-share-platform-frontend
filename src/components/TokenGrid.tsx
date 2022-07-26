@@ -1,17 +1,22 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, Grid, Image, Segment } from 'semantic-ui-react';
-import { OriginalTokenQuery_shareableTokens } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
-import { buildTokenDetailRoute } from '../routingUtils';
+import icon_thumbsUp from '../images/icon_ThumbsUp.svg';
+import icon_Share from '../images/icon_ShareNetwork.svg';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_shareableTokens[], isLoading:boolean}) => {
+import { useNavigate } from 'react-router-dom';
+import { Card, Grid, Icon, Image, Label, Rail, Segment } from 'semantic-ui-react';
+import { useMetadata } from '../hooks/hooks';
+import { TokensQuery_shareableTokens } from '../queries-thegraph/types-thegraph/TokensQuery';
+import { buildTokenDetailRoute } from '../routingUtils';
+import { authorPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
+
+export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTokens[], isLoading:boolean}) => {
     return (
         <div>
             {isLoading? 
                 <Segment placeholder vertical padded='very' loading/>
                 :
-                <Grid doubling centered columns={5} style={{padding: '10vw'}}>
+                <Grid doubling centered columns={4} style={{padding: '10vw'}}>
                     {tokens.map(t => 
                         <Grid.Column key={t.id}>
                             <TokenCard token={t}/>
@@ -23,29 +28,96 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: OriginalTokenQuery_share
     );
 };
 
-const TokenCard = ({token}: {token:OriginalTokenQuery_shareableTokens}) => {
+const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
+    const [metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+
+    const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
+    
+    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
+    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
+    const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
+
+    const tokenName = metadata?.name
+    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
+    const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
+
+    const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
+
+    let likesCount
+    if (token.isLikeToken) {
+        likesCount = token.likedParentToken?.likeTokens.length ?? 0
+    }
+    else {
+        likesCount = token.likeTokens.length
+    }
+
+    const sharesCount = token.sharedChildTokens.length
+
+    if (errorMessage) console.error('Token card metadata loading errror', errorMessage)
 
     const onCardClicked = () => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
-    return (
-        <Card onClick={onCardClicked} style={{margin: '20px', textAlign: 'left'}}>
-            <Image size='medium' src='https://react.semantic-ui.com/images/wireframe/paragraph.png'/>
-            <Card.Content>
-                <Card.Header>{token.id.toString().substring(0,7)}...</Card.Header>
-                <Card.Meta>{token.tokenId} Meta info</Card.Meta>
-                <Card.Description>
-                    Token metadata description
-                </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                    Under line content
-            </Card.Content>
-        </Card>
+    if (consentMissing)
+        return (
+            <Card onClick={onCardClicked}>
+                <Image rounded size='medium' className='Square' src={imageURL}/>
+                <Card.Content className='No-top-border'>
+                    <Card.Header>Owner consent missing</Card.Header>
+                    <Card.Description>
+                Owner has to connect a wallet and sign consent before metadata will be available.
+                    </Card.Description>
+                </Card.Content>
+                <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
+
+            </Card>
+        )
+    else return (
+        <div>
+            <Card onClick={onCardClicked} >
+            
+                <Image rounded size='medium' className='Square' src={imageURL}/>
+                <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
+                <Card.Content className='No-top-border'>
+                    <Card.Header>{tokenHolderDisplayName}</Card.Header>
+                    <Card.Description>
+                        {tokenDisplayName}
+                    </Card.Description>
+                    <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>
+                </Card.Content>
+                <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
+            </Card>
+        </div>
     )
+}
+
+const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean}) => {
+    let labelText = 'N/A'
+    if (isOriginal) labelText = 'ORIGINAL AWARD'
+    else if (isSharedInstance) labelText = 'COMMUNITY AWARD'
+    else if (isLikeToken) labelText = 'LIKED AWARD'
+
+    return  <Rail attached internal  position='left' style={{margin: '10px'}}>
+        <Label circular size='mini'>{labelText}</Label>
+    </Rail>
+}
+
+const TokenCardBottomIcons = ({likesCount, sharesCount}:{likesCount: number, sharesCount: number}) => {
+    return <Card.Content className='Card-footer'>
+        <Grid columns={2} relaxed='very' centered stackable>
+            <Grid.Column textAlign='center' >
+                <Image src={icon_thumbsUp} ></Image>
+                <span> {likesCount}</span>
+            </Grid.Column>
+            <Grid.Column textAlign='center'>
+                <Image src={icon_Share} ></Image>
+                <span> {sharesCount}</span>
+            </Grid.Column>
+        </Grid>
+    </Card.Content>
 }
 
 export default TokenGrid;

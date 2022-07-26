@@ -9,8 +9,8 @@ import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
 import { XDAI_CHAIN_ID } from '../chains';
-import { OriginalTokenQuery } from '../queries-thegraph/types-thegraph/OriginalTokenQuery';
-import { GET_ORIGINAL_TOKENS } from '../queries-thegraph/queries';
+import { TokensQuery, TokensQueryVariables } from '../queries-thegraph/types-thegraph/TokensQuery';
+import { GET_TOKENS } from '../queries-thegraph/queries';
 
 import { useQuery } from '@apollo/client'
 import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
@@ -45,7 +45,7 @@ export const SendDemoTransaction = () => {
 
     const [ shareToAddress, setShareToAddress ] = useState('')
 
-    const allgraphShareTokensResult = useQuery<OriginalTokenQuery,undefined>(GET_ORIGINAL_TOKENS, {client: theGraphApolloClient, pollInterval: 5000});
+    const allgraphShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, {client: theGraphApolloClient, pollInterval: 5000, variables: {isOriginal: true, isSharedInstance: false}});
 
     const onMintClicked = async () => {
         if (shareContract && accounts) {

@@ -6,6 +6,14 @@
   text-align: left;
 }
 
+.Square {
+  aspect-ratio : 1 / 1;
+}
+
+.No-top-border {
+  border: 0px !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -15,6 +23,10 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.Card-footer {
+  color: #525252;
 }
 
 .App-header {
@@ -46,7 +58,7 @@
 }
 
 .margin-vertical-main-menu {
-  margin: 4vh 0vh
+  margin: 2vh 0vh
 }
 
 .margin-horizontal {

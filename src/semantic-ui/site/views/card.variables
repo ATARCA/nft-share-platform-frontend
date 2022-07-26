@@ -1,3 +1,15 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@borderRadius: 2em;
+@headerFontSize: @relativeMedium;
+@headerColor: rgba(19, 1, 61, 1.0);
+
+@contentFontSize: @relativeMedium;
+@descriptionColor: rgba(19, 1, 61, 1.0);
+
+@metaFontSize: @relativeSmall;
+@metaColor: rgba(19, 1, 61, 1.0);
+
+@contentPadding: 1em 1em;
