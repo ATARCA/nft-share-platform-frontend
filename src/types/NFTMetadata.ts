@@ -9,3 +9,6 @@ export interface NFTMetadata {
     name: string,
     attributes: MetadataAttribute[]
 }
+
+export const subContributorTraitType = 'subcontributor'
+export const subContributionTraitType = 'subcontribution title'

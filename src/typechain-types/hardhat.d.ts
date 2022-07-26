@@ -45,6 +45,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
+      name: "ContributionLikes",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ContributionLikes__factory>;
+    getContractFactory(
+      name: "EndorseERC721",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.EndorseERC721__factory>;
+    getContractFactory(
+      name: "ProjectContributions",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ProjectContributions__factory>;
+    getContractFactory(
+      name: "LikeERC721",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LikeERC721__factory>;
+    getContractFactory(
+      name: "ProjectContributions",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ProjectContributions__factory>;
+    getContractFactory(
       name: "ShareableERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ShareableERC721__factory>;
@@ -89,6 +109,31 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "ContributionLikes",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ContributionLikes>;
+    getContractAt(
+      name: "EndorseERC721",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.EndorseERC721>;
+    getContractAt(
+      name: "ProjectContributions",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ProjectContributions>;
+    getContractAt(
+      name: "LikeERC721",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LikeERC721>;
+    getContractAt(
+      name: "ProjectContributions",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ProjectContributions>;
     getContractAt(
       name: "ShareableERC721",
       address: string,

@@ -17,28 +17,19 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface ShareableERC721Interface extends utils.Interface {
-  contractName: "ShareableERC721";
+export interface ContributionLikesInterface extends utils.Interface {
+  contractName: "ContributionLikes";
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "hasLikedContribution(address,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address)": FunctionFragment;
-    "name()": FunctionFragment;
-    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setBaseURI(string)": FunctionFragment;
-    "share(address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "symbol()": FunctionFragment;
-    "tokenExists(uint256)": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -51,19 +42,16 @@ export interface ShareableERC721Interface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "hasLikedContribution",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [string]): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -73,31 +61,13 @@ export interface ShareableERC721Interface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "share",
-    values: [string, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenExists",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
   ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -107,17 +77,14 @@ export interface ShareableERC721Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "hasLikedContribution",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -126,41 +93,23 @@ export interface ShareableERC721Interface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "share", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenExists",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "Mint(address,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "Share(address,address,uint256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Share"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -178,33 +127,6 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
-export type MintEvent = TypedEvent<
-  [string, BigNumber],
-  { to: string; tokenId: BigNumber }
->;
-
-export type MintEventFilter = TypedEventFilter<MintEvent>;
-
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  { previousOwner: string; newOwner: string }
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export type ShareEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  {
-    from: string;
-    to: string;
-    tokenId: BigNumber;
-    derivedFromTokenId: BigNumber;
-  }
->;
-
-export type ShareEventFilter = TypedEventFilter<ShareEvent>;
-
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
   { from: string; to: string; tokenId: BigNumber }
@@ -212,13 +134,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface ShareableERC721 extends BaseContract {
-  contractName: "ShareableERC721";
+export interface ContributionLikes extends BaseContract {
+  contractName: "ContributionLikes";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ShareableERC721Interface;
+  interface: ContributionLikesInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -246,12 +168,21 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    balanceOf(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { balance: BigNumber }>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[string] & { operator: string }>;
+
+    hasLikedContribution(
+      endorser: string,
+      contributionTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     isApprovedForAll(
       owner: string,
@@ -259,53 +190,29 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    mint(
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    name(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[string] & { owner: string }>;
 
-    renounceOwnership(
+    "safeTransferFrom(address,address,uint256)"(
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "safeTransferFrom(address,address,uint256)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
     "safeTransferFrom(address,address,uint256,bytes)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setBaseURI(
-      baseURI_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    share(
-      to: string,
-      tokenIdToBeShared: BigNumberish,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -314,27 +221,10 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    tokenExists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     transferFrom(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    transferOwnership(
-      newOwner: string,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -352,56 +242,38 @@ export interface ShareableERC721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  hasLikedContribution(
+    endorser: string,
+    contributionTokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mint(
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  name(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  renounceOwnership(
+  "safeTransferFrom(address,address,uint256)"(
+    from: string,
+    to: string,
+    tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "safeTransferFrom(address,address,uint256)"(
-    arg0: string,
-    arg1: string,
-    arg2: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
   "safeTransferFrom(address,address,uint256,bytes)"(
-    arg0: string,
-    arg1: string,
-    arg2: BigNumberish,
-    arg3: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
+    from: string,
+    to: string,
+    tokenId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   setApprovalForAll(
     operator: string,
-    approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setBaseURI(
-    baseURI_: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  share(
-    to: string,
-    tokenIdToBeShared: BigNumberish,
+    _approved: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -410,24 +282,10 @@ export interface ShareableERC721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  tokenExists(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
   transferFrom(
-    arg0: string,
-    arg1: string,
-    arg2: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  transferOwnership(
-    newOwner: string,
+    from: string,
+    to: string,
+    tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -445,48 +303,38 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    hasLikedContribution(
+      endorser: string,
+      contributionTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(account: string, overrides?: CallOverrides): Promise<void>;
-
-    name(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
     "safeTransferFrom(address,address,uint256)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256,bytes)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setBaseURI(baseURI_: string, overrides?: CallOverrides): Promise<void>;
-
-    share(
-      to: string,
-      tokenIdToBeShared: BigNumberish,
+      _approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -495,24 +343,10 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    tokenExists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
     transferFrom(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -540,34 +374,6 @@ export interface ShareableERC721 extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
-    "Mint(address,uint256)"(
-      to?: string | null,
-      tokenId?: BigNumberish | null
-    ): MintEventFilter;
-    Mint(to?: string | null, tokenId?: BigNumberish | null): MintEventFilter;
-
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-
-    "Share(address,address,uint256,uint256)"(
-      from?: string | null,
-      to?: string | null,
-      tokenId?: BigNumberish | null,
-      derivedFromTokenId?: null
-    ): ShareEventFilter;
-    Share(
-      from?: string | null,
-      to?: string | null,
-      tokenId?: BigNumberish | null,
-      derivedFromTokenId?: null
-    ): ShareEventFilter;
-
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -594,59 +400,41 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    hasLikedContribution(
+      endorser: string,
+      contributionTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mint(
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    renounceOwnership(
+    "safeTransferFrom(address,address,uint256)"(
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "safeTransferFrom(address,address,uint256)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     "safeTransferFrom(address,address,uint256,bytes)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: CallOverrides
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setBaseURI(
-      baseURI_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    share(
-      to: string,
-      tokenIdToBeShared: BigNumberish,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -655,27 +443,10 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenExists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     transferFrom(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -697,59 +468,41 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    hasLikedContribution(
+      endorser: string,
+      contributionTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mint(
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
+    "safeTransferFrom(address,address,uint256)"(
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "safeTransferFrom(address,address,uint256)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     "safeTransferFrom(address,address,uint256,bytes)"(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: CallOverrides
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setBaseURI(
-      baseURI_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    share(
-      to: string,
-      tokenIdToBeShared: BigNumberish,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -758,27 +511,10 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenExists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     transferFrom(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
+      from: string,
+      to: string,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -3,13 +3,14 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import './App.css';
 
 import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
-import { Dropdown, Menu } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import Home from './components/topLevel/Home';
 import TokenDetailPage from './components/topLevel/TokenDetailPage';
 import ConsentPanel from './components/ConsentPanel';
 import MintPage from './components/topLevel/MintPage';
 import MainMenuDropdown from './components/MainMenuDropdown';
 import HomeMenuButton from './components/HomeMenuButton';
+import TokenSharePage from './components/topLevel/TokenSharePage';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
                 <Routes>
                     <Route path="/mint" element={<MintPage/>}/> 
                     <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
+                    <Route path="shareToken/:contractAddress/:tokenId" element={<TokenSharePage/>}/>
                     <Route path="/" element={<Home/>}/>
                 </Routes>
             </Router>
