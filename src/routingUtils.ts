@@ -7,3 +7,5 @@ export const buildTokenDetailRoute = (contractAddress: string, tokenId: BigNumbe
 export const buildTokenShareRoute = (contractAddress: string, tokenId: BigNumber) => {
     return `/shareToken/${contractAddress}/${tokenId.toString()}`
 }
+
+export const aboutRoute = '/about'
