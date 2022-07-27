@@ -2,6 +2,10 @@ import React from "react";
 import { Card, Table } from "semantic-ui-react";
 import { ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
 import { MetadataAttribute } from "../types/NFTMetadata";
+import { Link } from "react-router-dom"
+import urlRegex from "url-regex";
+import { buildWalletPageRoute } from "../routingUtils";
+import { shortenAccountAddress } from "../utils";
 
 const TokenAttributesView = ({token, attributes}: { token:ShareableTokenByIdQuery_shareableToken ,attributes: MetadataAttribute[]}) => {
     return (
@@ -11,9 +15,13 @@ const TokenAttributesView = ({token, attributes}: { token:ShareableTokenByIdQuer
                     {attributes.map( attribute => {
                         return <Table.Row key={attribute.trait_type}>
                             <TitleTableCell>{attribute.trait_type}</TitleTableCell>
-                            <ValueTableCell>{attribute.value}</ValueTableCell> 
+                            <ValueTableCell>{formatAsLinkIfLink(attribute.value)}</ValueTableCell> 
                         </Table.Row>
                     })}
+                    <Table.Row>
+                        <TitleTableCell>Owner</TitleTableCell>
+                        <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress)}</Link></ValueTableCell> 
+                    </Table.Row>
                     <Table.Row>
                         <TitleTableCell>Likes</TitleTableCell>
                         <ValueTableCell>{token.likeTokens.length}</ValueTableCell> 
@@ -26,6 +34,12 @@ const TokenAttributesView = ({token, attributes}: { token:ShareableTokenByIdQuer
             </Table>
         </div>
     )
+}
+
+const formatAsLinkIfLink = ( text: string ) => {
+    if (urlRegex().test(text))
+        return <a href={text}>{text}</a>
+    else return text
 }
 
 const TitleTableCell = (  {children}: { children: JSX.Element | string} ) => {

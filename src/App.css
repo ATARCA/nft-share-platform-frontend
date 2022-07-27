@@ -55,6 +55,11 @@
   font-size: 0.8em;
 }
 
+a {
+  color: #f96d5d;
+  text-decoration: underline;
+}
+
 .Token-attribute-table-value {
   color: #000000;
   font-size: 0.9em;

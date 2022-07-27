@@ -61,7 +61,7 @@ export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
-    const cardStyle = {'text-align': 'left'}
+    const cardStyle = {'text-align': 'left', 'text-decoration': 'none'}
 
     if (consentMissing)
         return (
