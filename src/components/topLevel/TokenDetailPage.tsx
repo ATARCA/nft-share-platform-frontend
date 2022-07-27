@@ -46,12 +46,7 @@ const TokenDetailPage = () => {
 
     const likeTokenExists = likeTokenExistsQuery.data?.shareableTokens.length !== 0
 
-    const [ metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
-
-    //TODO refactor this - copied from TokenGrid
-    const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
-    const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
+    const [ tokenDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
     const onLikeClicked = async () => {
         if (likeContract) {
@@ -108,10 +103,10 @@ const TokenDetailPage = () => {
     const renderTokenDetailsPage = (token:ShareableTokenByIdQuery_shareableToken) => {
         return <div style={{'margin': '0 10vw'}}>
             <Grid columns={2} style={{'margin': '3vh 0'}}>
-                <Grid.Column style={{'text-align': 'left'}} >
+                <Grid.Column style={{'textAlign': 'left'}} >
                     <Header.Subheader className="Award-subheader">Award details</Header.Subheader>
                     <Header as='h1'>{tokenDisplayName}</Header>
-                </Grid.Column> <Grid.Column style={{'justify-content': 'right', 'display': 'flex', 'align-items': 'center'}} >
+                </Grid.Column> <Grid.Column style={{'justifyContent': 'right', 'display': 'flex', 'alignItems': 'center'}} >
                     { renderActionButtonArea() }
                 </Grid.Column>
             </Grid>
@@ -128,7 +123,7 @@ const TokenDetailPage = () => {
     }
 
     const renderLeftColumn = (token:ShareableTokenByIdQuery_shareableToken) => {
-        return <Grid.Column style={{'text-align': 'center'}} >
+        return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token}/>
         </Grid.Column>
     }

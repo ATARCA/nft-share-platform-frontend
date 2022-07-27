@@ -31,17 +31,13 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTok
 export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
-    const [metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+    const [tokenDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
     const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
     const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
-
-    const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
-    const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
@@ -61,7 +57,7 @@ export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
-    const cardStyle = {'text-align': 'left', 'text-decoration': 'none'}
+    const cardStyle = {'textAlign': 'left', 'textDecoration': 'none'}
 
     if (consentMissing)
         return (
