@@ -13,3 +13,5 @@
 @metaColor: rgba(19, 1, 61, 1.0);
 
 @contentPadding: 1em 1em;
+
+@boxShadow: 0px 4px 10px 3px #0000001f;
