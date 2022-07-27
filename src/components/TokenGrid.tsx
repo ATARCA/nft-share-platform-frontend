@@ -80,8 +80,8 @@ export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
                 <Card.Content className='No-top-border'>
-                    <Card.Header>{tokenHolderDisplayName}</Card.Header>
-                    <Card.Description>
+                    <Card.Header className='No-overflow'>{tokenHolderDisplayName}</Card.Header>
+                    <Card.Description className='No-overflow'>
                         {tokenDisplayName}
                     </Card.Description>
                     <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>
