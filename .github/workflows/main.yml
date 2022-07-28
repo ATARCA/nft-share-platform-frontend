@@ -1,4 +1,9 @@
 name: Deploy To S3 & Cloudfront
+env:
+  CI: false
+  REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_DEV}}
+  REACT_APP_INFURA_DEV_KEY: ${{secrets.INFURA_DEV_KEY}}
+
 on: 
   workflow_dispatch:
   push:
@@ -16,10 +21,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: borales/actions-yarn@v2.3.0
+    - uses: borales/actions-yarn@v3.0.0
       with:
        cmd: install # will run `yarn install` command
-    - uses: borales/actions-yarn@v2.3.0
+    - uses: borales/actions-yarn@v3.0.0
       with:
        cmd: build
     - name: Run s3-sync-action
