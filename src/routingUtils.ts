@@ -8,4 +8,8 @@ export const buildTokenShareRoute = (contractAddress: string, tokenId: BigNumber
     return `/shareToken/${contractAddress}/${tokenId.toString()}`
 }
 
+export const buildWalletPageRoute = (address: string) => {
+    return `/wallet/${address}`
+}
+
 export const aboutRoute = '/about'

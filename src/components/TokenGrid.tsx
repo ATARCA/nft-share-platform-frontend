@@ -23,25 +23,21 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTok
                         </Grid.Column>
                     )}
                 </Grid>
-            }
+            } 
         </div>
     );
 };
 
-const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
+export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
 
     const navigate = useNavigate()
-    const [metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+    const [tokenDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
     const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
     const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
-
-    const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
-    const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
@@ -61,9 +57,11 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
     }
 
+    const cardStyle = {'textAlign': 'left', 'textDecoration': 'none'}
+
     if (consentMissing)
         return (
-            <Card onClick={onCardClicked}>
+            <Card onClick={onCardClicked} centered style={cardStyle}>
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header>Owner consent missing</Card.Header>
@@ -77,13 +75,13 @@ const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
         )
     else return (
         <div>
-            <Card onClick={onCardClicked} >
+            <Card onClick={onCardClicked} centered style={cardStyle}>
             
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
                 <Card.Content className='No-top-border'>
-                    <Card.Header>{tokenHolderDisplayName}</Card.Header>
-                    <Card.Description>
+                    <Card.Header className='No-overflow'>{tokenHolderDisplayName}</Card.Header>
+                    <Card.Description className='No-overflow'>
                         {tokenDisplayName}
                     </Card.Description>
                     <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>

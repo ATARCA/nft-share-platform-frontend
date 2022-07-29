@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { NFTMetadata } from "../types/NFTMetadata"
+import { NFTMetadata, subContributionPropertyName } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
 import { ShareableERC721 } from "../typechain-types/ShareableERC721";
@@ -26,7 +26,7 @@ const buildMetadataUri = (contractAddress: string, tokenId: string) => {
     return `${process.env.REACT_APP_BACKEND_URI}/metadata/${contractAddress}/${tokenId}`
 }
 
-export const useMetadata = (contractAddress: string, tokenId: string): [ NFTMetadata | undefined ,boolean, string] => {
+export const useMetadata = (contractAddress: string, tokenId: string): [ string , NFTMetadata | undefined ,boolean, string] => {
     const [ metadata, setMetadata ] = useState<NFTMetadata|undefined>(undefined)
     const [ consentMissing, setConsentMissing ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
@@ -59,7 +59,11 @@ export const useMetadata = (contractAddress: string, tokenId: string): [ NFTMeta
         fetchMetadata()
     },[contractAddress, tokenId])
 
-    return [metadata, consentMissing, errorMessage]
+    const tokenName = metadata?.name
+    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
+    const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
+
+    return [tokenDisplayName || '', metadata, consentMissing, errorMessage]
 }
 
 export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => void] => {

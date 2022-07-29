@@ -23,7 +23,7 @@ const TokenSharePage = () => {
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
 
-    const [ currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
+    const [ tokenDisplayName, currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
     const [ setNewMetadata, 
         isMetadataValid, 

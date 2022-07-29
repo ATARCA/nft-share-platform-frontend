@@ -1,24 +1,53 @@
 import React from "react";
-import { Card } from "semantic-ui-react";
+import { Card, Table } from "semantic-ui-react";
+import { ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
 import { MetadataAttribute } from "../types/NFTMetadata";
+import { Link } from "react-router-dom"
+import urlRegex from "url-regex";
+import { buildWalletPageRoute } from "../routingUtils";
+import { shortenAccountAddress } from "../utils";
 
-const TokenAttributesView = ({attributes}: {attributes: MetadataAttribute[]}) => {
-
+const TokenAttributesView = ({token, attributes}: { token:ShareableTokenByIdQuery_shareableToken ,attributes: MetadataAttribute[]}) => {
     return (
         <div>
-            <h2>Properties</h2>
-            <Card.Group>
-                {attributes.map( attribute => {
-                    return <Card key={attribute.trait_type}>
-                        <Card.Content>
-                            <Card.Header>{attribute.trait_type}</Card.Header>
-                            <Card.Description>{attribute.value}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                })}
-            </Card.Group>
+            <Table basic='very' >
+                <Table.Body>
+                    {attributes.map( attribute => {
+                        return <Table.Row key={attribute.trait_type}>
+                            <TitleTableCell>{attribute.trait_type}</TitleTableCell>
+                            <ValueTableCell>{formatAsLinkIfLink(attribute.value)}</ValueTableCell> 
+                        </Table.Row>
+                    })}
+                    <Table.Row>
+                        <TitleTableCell>Owner</TitleTableCell>
+                        <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress)}</Link></ValueTableCell> 
+                    </Table.Row>
+                    <Table.Row>
+                        <TitleTableCell>Likes</TitleTableCell>
+                        <ValueTableCell>{token.likeTokens.length}</ValueTableCell> 
+                    </Table.Row>
+                    <Table.Row>
+                        <TitleTableCell>Shares</TitleTableCell>
+                        <ValueTableCell>{token.sharedChildTokens.length}</ValueTableCell> 
+                    </Table.Row>
+                </Table.Body>
+            </Table>
         </div>
     )
+}
+
+const formatAsLinkIfLink = ( text: string ) => {
+    if (urlRegex().test(text))
+        return <a href={text}>{text}</a>
+    else return text
+}
+
+const TitleTableCell = (  {children}: { children: JSX.Element | string} ) => {
+    return <Table.Cell collapsing className="Token-attribute-table-title">{children}</Table.Cell>
+}
+
+const ValueTableCell = (  {children}: { children: JSX.Element | string | number} ) => {
+    return <Table.Cell className="Token-attribute-table-value">{children}</Table.Cell>
 }
 
 export default TokenAttributesView

@@ -29,6 +29,11 @@
   color: #525252;
 }
 
+.No-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -42,6 +47,28 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.Token-attribute-table-title {
+  color: #748296;
+  font-size: 0.9em;
+  font-weight: bold;
+  line-height: 2.5em;
+}
+
+.Award-subheader{
+  color: #848484;
+  font-size: 0.8em;
+}
+
+a {
+  color: #f96d5d;
+  text-decoration: underline;
+}
+
+.Token-attribute-table-value {
+  color: #000000;
+  font-size: 0.9em;
 }
 
 @keyframes App-logo-spin {

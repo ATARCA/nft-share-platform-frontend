@@ -2,11 +2,11 @@
      User Global Variables
 *******************************/
 
-@primaryColor: #3D00B7;
+@primaryColor: #F96D5D;
 @primaryColorFocused: #2E008A;
 
-@primaryColorDisabledOpaque: #3D00B744;
+@primaryColorDisabledOpaque: #F96D5D44;
 @secondaryColor : @grey;
-@pageBackground: #eff0f1;
+@pageBackground: #fcfcfc;
 
 @fontName: 'Inter', sans-serif;
