@@ -8,7 +8,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
 import { ethers } from 'ethers';
-import { XDAI_CHAIN_ID } from '../chains';
+import { POLYGON_CHAIN_ID } from '../chains';
 import { TokensQuery, TokensQueryVariables } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { GET_TOKENS } from '../queries-thegraph/queries';
 
@@ -213,7 +213,7 @@ export const SendDemoTransaction = () => {
                 {events?.map( e => <div key={e.event}>{e.args[0]} {e.args[1]} {(e.args[2] as BigNumber).toString()}</div>)}
             </div>
 
-            <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== XDAI_CHAIN_ID} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
+            <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== POLYGON_CHAIN_ID} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
             
             <div>            
                 Graph tokens/events size {allgraphShareTokensResult.data?.shareableTokens.length}
