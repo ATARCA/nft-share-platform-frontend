@@ -3,7 +3,6 @@ import { Button, Input } from 'semantic-ui-react'
 import React, {  useState } from 'react'
 import { hooks } from '../connectors/metaMaskConnector'
 import { deployContract, loadLikeContract, loadShareContract } from '../contracts/demoContract';
-import { ShareableERC721, ShareEvent } from '../typechain-types/ShareableERC721';
 import { BigNumber } from '@ethersproject/bignumber';
 import niftyInkContractABI from '../eventTestContract/Nifty.InkABI.json';
 
@@ -15,6 +14,7 @@ import { GET_TOKENS } from '../queries-thegraph/queries';
 import { useQuery } from '@apollo/client'
 import { theGraphApolloClient } from '../graphql/theGraphApolloClient';
 import { sleep } from '../utils';
+import { ShareableERC721, ShareEvent } from '../typechain-types/ShareableERC721';
 import { LikeERC721 } from '../typechain-types';
 
 
@@ -106,11 +106,11 @@ export const SendDemoTransaction = () => {
             setdeployInProgress(true)
             setErrorMessage('')
             try {
-                const contract = await deployContract(provider)
-                await contract.deployed()
+                const contractTrasaction = await deployContract(provider)
+                await contractTrasaction
                 setNextShareId(3)
-                setShareContract(contract)
-                setDeployedContractAddress(contract.address)
+                //setShareContract(contract)
+                //setDeployedContractAddress(contract.address)
             } catch (error) {
                 console.log(error)
                 const message = (error as any)?.message
