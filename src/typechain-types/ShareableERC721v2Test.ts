@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface ShareableERC721Interface extends utils.Interface {
-  contractName: "ShareableERC721";
+export interface ShareableERC721v2TestInterface extends utils.Interface {
+  contractName: "ShareableERC721v2Test";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "OPERATOR_ROLE()": FunctionFragment;
@@ -28,6 +28,7 @@ export interface ShareableERC721Interface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getIndex()": FunctionFragment;
+    "getIndex2()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
@@ -71,6 +72,7 @@ export interface ShareableERC721Interface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "getIndex", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getIndex2", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [BytesLike]
@@ -161,6 +163,7 @@ export interface ShareableERC721Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getIndex", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getIndex2", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
@@ -302,13 +305,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface ShareableERC721 extends BaseContract {
-  contractName: "ShareableERC721";
+export interface ShareableERC721v2Test extends BaseContract {
+  contractName: "ShareableERC721v2Test";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ShareableERC721Interface;
+  interface: ShareableERC721v2TestInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -340,7 +343,7 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     addOperator(
-      newOperator: string,
+      newOperater: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -358,6 +361,8 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<[string]>;
 
     getIndex(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getIndex2(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
@@ -487,7 +492,7 @@ export interface ShareableERC721 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   addOperator(
-    newOperator: string,
+    newOperater: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -505,6 +510,8 @@ export interface ShareableERC721 extends BaseContract {
   ): Promise<string>;
 
   getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getIndex2(overrides?: CallOverrides): Promise<BigNumber>;
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -624,7 +631,7 @@ export interface ShareableERC721 extends BaseContract {
 
     addAdmin(newAdmin: string, overrides?: CallOverrides): Promise<void>;
 
-    addOperator(newOperator: string, overrides?: CallOverrides): Promise<void>;
+    addOperator(newOperater: string, overrides?: CallOverrides): Promise<void>;
 
     approve(
       to: string,
@@ -640,6 +647,8 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<string>;
 
     getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getIndex2(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -847,7 +856,7 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<BigNumber>;
 
     addOperator(
-      newOperator: string,
+      newOperater: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -865,6 +874,8 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<BigNumber>;
 
     getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getIndex2(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRoleAdmin(
       role: BytesLike,
@@ -1000,7 +1011,7 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     addOperator(
-      newOperator: string,
+      newOperater: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1021,6 +1032,8 @@ export interface ShareableERC721 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getIndex(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getIndex2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getRoleAdmin(
       role: BytesLike,

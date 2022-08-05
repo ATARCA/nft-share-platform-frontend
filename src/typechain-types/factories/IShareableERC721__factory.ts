@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type {
-  ProjectContributions,
-  ProjectContributionsInterface,
-} from "../ProjectContributions";
+  IShareableERC721,
+  IShareableERC721Interface,
+} from "../IShareableERC721";
 
 const _abi = [
   {
@@ -361,19 +361,15 @@ const _abi = [
   },
 ];
 
-export class ProjectContributions__factory {
+export class IShareableERC721__factory {
   static readonly abi = _abi;
-  static createInterface(): ProjectContributionsInterface {
-    return new utils.Interface(_abi) as ProjectContributionsInterface;
+  static createInterface(): IShareableERC721Interface {
+    return new utils.Interface(_abi) as IShareableERC721Interface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): ProjectContributions {
-    return new Contract(
-      address,
-      _abi,
-      signerOrProvider
-    ) as ProjectContributions;
+  ): IShareableERC721 {
+    return new Contract(address, _abi, signerOrProvider) as IShareableERC721;
   }
 }

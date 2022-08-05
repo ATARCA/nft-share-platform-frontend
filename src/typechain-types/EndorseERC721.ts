@@ -20,18 +20,29 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface EndorseERC721Interface extends utils.Interface {
   contractName: "EndorseERC721";
   functions: {
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "OPERATOR_ROLE()": FunctionFragment;
+    "addAdmin(address)": FunctionFragment;
+    "addOperator(address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getIndex()": FunctionFragment;
     "getProjectAddress()": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
     "hasEndorsedContribution(address,uint256)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "initialize(string,string,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
-    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
+    "removeAdmin(address)": FunctionFragment;
+    "removeOperator(address)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setProjectAddress(address)": FunctionFragment;
@@ -39,9 +50,18 @@ export interface EndorseERC721Interface extends utils.Interface {
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OPERATOR_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "addAdmin", values: [string]): string;
+  encodeFunctionData(functionFragment: "addOperator", values: [string]): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -52,13 +72,30 @@ export interface EndorseERC721Interface extends utils.Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "getIndex", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getProjectAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "hasEndorsedContribution",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -66,14 +103,22 @@ export interface EndorseERC721Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "removeAdmin", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: "removeOperator",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -100,11 +145,20 @@ export interface EndorseERC721Interface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OPERATOR_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "addAdmin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addOperator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
@@ -112,26 +166,42 @@ export interface EndorseERC721Interface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getIndex", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProjectAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "hasEndorsedContribution",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
+    functionFragment: "removeAdmin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeOperator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -154,23 +224,25 @@ export interface EndorseERC721Interface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "Endorse(address,address,uint256,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Endorse"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -200,13 +272,31 @@ export type EndorseEvent = TypedEvent<
 
 export type EndorseEventFilter = TypedEventFilter<EndorseEvent>;
 
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  { previousOwner: string; newOwner: string }
+export type InitializedEvent = TypedEvent<[number], { version: number }>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  { role: string; previousAdminRole: string; newAdminRole: string }
 >;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
+
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  { role: string; account: string; sender: string }
+>;
+
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  { role: string; account: string; sender: string }
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -243,6 +333,20 @@ export interface EndorseERC721 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    OPERATOR_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    addAdmin(
+      newAdmin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    addOperator(
+      newOperater: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -261,13 +365,36 @@ export interface EndorseERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getIndex(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getProjectAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     hasEndorsedContribution(
       endorser: string,
       contributionTokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    initialize(
+      _name: string,
+      _symbol: string,
+      _owner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     isApprovedForAll(
       owner: string,
@@ -282,14 +409,30 @@ export interface EndorseERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    renounceOwnership(
+    removeAdmin(
+      admin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    removeOperator(
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -337,12 +480,21 @@ export interface EndorseERC721 extends BaseContract {
       arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[void]>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
+
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  OPERATOR_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  addAdmin(
+    newAdmin: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  addOperator(
+    newOperater: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   approve(
     to: string,
@@ -362,13 +514,36 @@ export interface EndorseERC721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
   getProjectAddress(overrides?: CallOverrides): Promise<string>;
+
+  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+  grantRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   hasEndorsedContribution(
     endorser: string,
     contributionTokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  hasRole(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  initialize(
+    _name: string,
+    _symbol: string,
+    _owner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isApprovedForAll(
     owner: string,
@@ -383,11 +558,27 @@ export interface EndorseERC721 extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  renounceOwnership(
+  removeAdmin(
+    admin: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  removeOperator(
+    operator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: BytesLike,
+    account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -436,12 +627,15 @@ export interface EndorseERC721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<void>;
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    OPERATOR_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    addAdmin(newAdmin: string, overrides?: CallOverrides): Promise<void>;
+
+    addOperator(newOperater: string, overrides?: CallOverrides): Promise<void>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -457,13 +651,36 @@ export interface EndorseERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
     getProjectAddress(overrides?: CallOverrides): Promise<string>;
+
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     hasEndorsedContribution(
       endorser: string,
       contributionTokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    initialize(
+      _name: string,
+      _symbol: string,
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     isApprovedForAll(
       owner: string,
@@ -478,11 +695,23 @@ export interface EndorseERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+    removeAdmin(admin: string, overrides?: CallOverrides): Promise<void>;
+
+    removeOperator(operator: string, overrides?: CallOverrides): Promise<void>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -528,11 +757,6 @@ export interface EndorseERC721 extends BaseContract {
       arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -571,14 +795,41 @@ export interface EndorseERC721 extends BaseContract {
       contributionTokenId?: null
     ): EndorseEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+
+    "RoleGranted(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -593,6 +844,20 @@ export interface EndorseERC721 extends BaseContract {
   };
 
   estimateGas: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    OPERATOR_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    addAdmin(
+      newAdmin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addOperator(
+      newOperater: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -611,12 +876,38 @@ export interface EndorseERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
     getProjectAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     hasEndorsedContribution(
       endorser: string,
       contributionTokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      _name: string,
+      _symbol: string,
+      _owner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -632,14 +923,30 @@ export interface EndorseERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    renounceOwnership(
+    removeAdmin(
+      admin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    removeOperator(
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -687,14 +994,25 @@ export interface EndorseERC721 extends BaseContract {
       arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    OPERATOR_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    addAdmin(
+      newAdmin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addOperator(
+      newOperater: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -716,12 +1034,38 @@ export interface EndorseERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getIndex(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getProjectAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     hasEndorsedContribution(
       endorser: string,
       contributionTokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _name: string,
+      _symbol: string,
+      _owner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
@@ -737,14 +1081,30 @@ export interface EndorseERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
+    removeAdmin(
+      admin: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    removeOperator(
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -791,11 +1151,6 @@ export interface EndorseERC721 extends BaseContract {
       arg1: string,
       arg2: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

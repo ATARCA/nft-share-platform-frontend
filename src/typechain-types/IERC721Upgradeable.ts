@@ -17,20 +17,17 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface ERC721Interface extends utils.Interface {
-  contractName: "ERC721";
+export interface IERC721UpgradeableInterface extends utils.Interface {
+  contractName: "IERC721Upgradeable";
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "symbol()": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
@@ -47,7 +44,6 @@ export interface ERC721Interface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
@@ -64,11 +60,6 @@ export interface ERC721Interface extends utils.Interface {
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
@@ -84,7 +75,6 @@ export interface ERC721Interface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
@@ -98,8 +88,6 @@ export interface ERC721Interface extends utils.Interface {
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
@@ -137,13 +125,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface ERC721 extends BaseContract {
-  contractName: "ERC721";
+export interface IERC721Upgradeable extends BaseContract {
+  contractName: "IERC721Upgradeable";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ERC721Interface;
+  interface: IERC721UpgradeableInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -171,12 +159,15 @@ export interface ERC721 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    balanceOf(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { balance: BigNumber }>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[string] & { operator: string }>;
 
     isApprovedForAll(
       owner: string,
@@ -184,12 +175,10 @@ export interface ERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    name(overrides?: CallOverrides): Promise<[string]>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[string] & { owner: string }>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -202,13 +191,13 @@ export interface ERC721 extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -216,13 +205,6 @@ export interface ERC721 extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     transferFrom(
       from: string,
@@ -251,8 +233,6 @@ export interface ERC721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  name(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "safeTransferFrom(address,address,uint256)"(
@@ -266,13 +246,13 @@ export interface ERC721 extends BaseContract {
     from: string,
     to: string,
     tokenId: BigNumberish,
-    _data: BytesLike,
+    data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setApprovalForAll(
     operator: string,
-    approved: boolean,
+    _approved: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -280,10 +260,6 @@ export interface ERC721 extends BaseContract {
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   transferFrom(
     from: string,
@@ -312,8 +288,6 @@ export interface ERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    name(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -327,13 +301,13 @@ export interface ERC721 extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -341,10 +315,6 @@ export interface ERC721 extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     transferFrom(
       from: string,
@@ -409,8 +379,6 @@ export interface ERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -427,25 +395,18 @@ export interface ERC721 extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenURI(
-      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -480,8 +441,6 @@ export interface ERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -498,25 +457,18 @@ export interface ERC721 extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenURI(
-      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
