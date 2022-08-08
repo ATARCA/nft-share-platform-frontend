@@ -21,5 +21,7 @@ export const buildSubgraphTokenEntityId = (contractAddress: string, tokenId: Big
     return contractAddress.toLowerCase() + '-' + tokenId.toString()
 }
 
-export const likeContractAddress = '0xFb6394BC5EeE2F9f00ab9df3c8c489A4647f0Daf'
-export const shareContractAddress = '0xe283Bd7c79188b594e9C19E9032ff365A37Cc4fF'
+export const likeContractAddress = '0xc8F302f41a588Ac5B8c45269a1B001C572CB7AC1'
+export const shareContractAddress = '0x4F494D371f71969140Bf03754C8be787c42BfA70'
+
+export const factoryContractAddress = '0xb4CEA12BaF1529DFdE908016B81A2D668b321CDd'

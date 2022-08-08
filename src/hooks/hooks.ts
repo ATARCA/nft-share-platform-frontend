@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { NFTMetadata, subContributionPropertyName } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
-import { ShareableERC721 } from "../typechain-types/ShareableERC721";
+import { ShareableERC721 } from "../typechain-types";
 import { hooks } from "../connectors/metaMaskConnector";
 import { loadLikeContract, loadShareContract } from "../contracts/demoContract";
-import { LikeERC721 } from "../typechain-types/LikeERC721";
+import { LikeERC721 } from "../typechain-types";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { defaultErrorHandler } from "../graphql/errorHandlers";

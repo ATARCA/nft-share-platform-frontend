@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface ERC721URIStorageInterface extends utils.Interface {
-  contractName: "ERC721URIStorage";
+export interface ERC721UpgradeableInterface extends utils.Interface {
+  contractName: "ERC721Upgradeable";
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -108,11 +108,13 @@ export interface ERC721URIStorageInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -130,6 +132,10 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
+export type InitializedEvent = TypedEvent<[number], { version: number }>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
   { from: string; to: string; tokenId: BigNumber }
@@ -137,13 +143,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface ERC721URIStorage extends BaseContract {
-  contractName: "ERC721URIStorage";
+export interface ERC721Upgradeable extends BaseContract {
+  contractName: "ERC721Upgradeable";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ERC721URIStorageInterface;
+  interface: ERC721UpgradeableInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -202,7 +208,7 @@ export interface ERC721URIStorage extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -266,7 +272,7 @@ export interface ERC721URIStorage extends BaseContract {
     from: string,
     to: string,
     tokenId: BigNumberish,
-    _data: BytesLike,
+    data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -327,7 +333,7 @@ export interface ERC721URIStorage extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -376,6 +382,9 @@ export interface ERC721URIStorage extends BaseContract {
       operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -427,7 +436,7 @@ export interface ERC721URIStorage extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -498,7 +507,7 @@ export interface ERC721URIStorage extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

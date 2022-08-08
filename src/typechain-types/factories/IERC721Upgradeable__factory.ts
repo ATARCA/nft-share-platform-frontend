@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type {
-  IERC721Metadata,
-  IERC721MetadataInterface,
-} from "../IERC721Metadata";
+  IERC721Upgradeable,
+  IERC721UpgradeableInterface,
+} from "../IERC721Upgradeable";
 
 const _abi = [
   {
@@ -166,19 +166,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "name",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -286,38 +273,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "symbol",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "tokenURI",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -342,15 +297,15 @@ const _abi = [
   },
 ];
 
-export class IERC721Metadata__factory {
+export class IERC721Upgradeable__factory {
   static readonly abi = _abi;
-  static createInterface(): IERC721MetadataInterface {
-    return new utils.Interface(_abi) as IERC721MetadataInterface;
+  static createInterface(): IERC721UpgradeableInterface {
+    return new utils.Interface(_abi) as IERC721UpgradeableInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IERC721Metadata {
-    return new Contract(address, _abi, signerOrProvider) as IERC721Metadata;
+  ): IERC721Upgradeable {
+    return new Contract(address, _abi, signerOrProvider) as IERC721Upgradeable;
   }
 }
