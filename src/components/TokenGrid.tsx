@@ -6,11 +6,11 @@ import icon_Share from '../images/icon_ShareNetwork.svg';
 import { useNavigate } from 'react-router-dom';
 import { Card, Grid, Icon, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
-import { TokensQuery_shareableTokens } from '../queries-thegraph/types-thegraph/TokensQuery';
+import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
 import { authorPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTokens[], isLoading:boolean}) => {
+export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[], isLoading:boolean}) => {
     return (
         <div>
             {isLoading? 
@@ -28,7 +28,7 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_shareableTok
     );
 };
 
-export const TokenCard = ({token}: {token:TokensQuery_shareableTokens}) => {
+export const TokenCard = ({token}: {token:TokensQuery_tokens}) => {
 
     const navigate = useNavigate()
     const [tokenDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)

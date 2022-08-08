@@ -66,7 +66,7 @@ const Home = () => {
     return (
         <div>
             <OnboardingCarousel/>
-            <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
+            <TokenGrid tokens={allgraphShareTokensResult.data?.tokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}

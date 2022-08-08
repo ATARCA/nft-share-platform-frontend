@@ -7,28 +7,28 @@
 // GraphQL query operation: TokensQuery
 // ====================================================
 
-export interface TokensQuery_shareableTokens_sharedChildTokens {
-  __typename: "ShareableToken";
+export interface TokensQuery_tokens_sharedChildTokens {
+  __typename: "Token";
   id: string;
 }
 
-export interface TokensQuery_shareableTokens_likeTokens {
-  __typename: "ShareableToken";
+export interface TokensQuery_tokens_likeTokens {
+  __typename: "Token";
   id: string;
 }
 
-export interface TokensQuery_shareableTokens_likedParentToken_likeTokens {
-  __typename: "ShareableToken";
+export interface TokensQuery_tokens_likedParentToken_likeTokens {
+  __typename: "Token";
   id: string;
 }
 
-export interface TokensQuery_shareableTokens_likedParentToken {
-  __typename: "ShareableToken";
-  likeTokens: TokensQuery_shareableTokens_likedParentToken_likeTokens[];
+export interface TokensQuery_tokens_likedParentToken {
+  __typename: "Token";
+  likeTokens: TokensQuery_tokens_likedParentToken_likeTokens[];
 }
 
-export interface TokensQuery_shareableTokens {
-  __typename: "ShareableToken";
+export interface TokensQuery_tokens {
+  __typename: "Token";
   id: string;
   ownerAddress: any;
   contractAddress: any;
@@ -36,13 +36,13 @@ export interface TokensQuery_shareableTokens {
   isSharedInstance: boolean;
   isLikeToken: boolean;
   tokenId: any | null;
-  sharedChildTokens: TokensQuery_shareableTokens_sharedChildTokens[];
-  likeTokens: TokensQuery_shareableTokens_likeTokens[];
-  likedParentToken: TokensQuery_shareableTokens_likedParentToken | null;
+  sharedChildTokens: TokensQuery_tokens_sharedChildTokens[];
+  likeTokens: TokensQuery_tokens_likeTokens[];
+  likedParentToken: TokensQuery_tokens_likedParentToken | null;
 }
 
 export interface TokensQuery {
-  shareableTokens: TokensQuery_shareableTokens[];
+  tokens: TokensQuery_tokens[];
 }
 
 export interface TokensQueryVariables {

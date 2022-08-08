@@ -127,7 +127,7 @@ export const SendDemoTransaction = () => {
             try {
                 const contract  = loadShareContract('0xe283Bd7c79188b594e9C19E9032ff365A37Cc4fF', provider)
                 await contract.deployed()
-                const totalTokens = allgraphShareTokensResult.data?.shareableTokens.length || 1
+                const totalTokens = allgraphShareTokensResult.data?.tokens.length || 1
                 setNextShareId(totalTokens+2)
                 setShareContract(contract)
                 setDeployedContractAddress(contract.address)
@@ -147,7 +147,7 @@ export const SendDemoTransaction = () => {
             try {
                 const contract  = loadLikeContract('0xFb6394BC5EeE2F9f00ab9df3c8c489A4647f0Daf', provider)
                 await contract.deployed()
-                const totalTokens = allgraphShareTokensResult.data?.shareableTokens.length || 1
+                const totalTokens = allgraphShareTokensResult.data?.tokens.length || 1
                 setNextShareId(totalTokens+2)
                 setLikeContract(contract)
                 setDeployedContractAddress(contract.address)
@@ -216,14 +216,14 @@ export const SendDemoTransaction = () => {
             <Button onClick={onLoadALotOfEventsClicked} disabled={!active || chainId !== XDAI_CHAIN_ID} loading={loadEventsInProgress}>Load a lot of events (xDai only)</Button>
             
             <div>            
-                Graph tokens/events size {allgraphShareTokensResult.data?.shareableTokens.length}
+                Graph tokens/events size {allgraphShareTokensResult.data?.tokens.length}
             </div>
 
             <div> 
              Graph tokens/events
             </div>
 
-            {allgraphShareTokensResult.data?.shareableTokens.map( t => <div key={t.id}>{t.id} {t.ownerAddress}</div>)}
+            {allgraphShareTokensResult.data?.tokens.map( t => <div key={t.id}>{t.id} {t.ownerAddress}</div>)}
 
             A lot of events directly queried size {aLotOfEvents?.length}
             {aLotOfEvents?.map( e => <div key={e.transactionHash}>From {(e as any).args.from} To {(e as any).args.to}</div>)}

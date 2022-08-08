@@ -11,7 +11,7 @@ import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
-import { ShareableTokenByIdQuery, ShareableTokenByIdQueryVariables, ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { addressesEqual, buildSubgraphTokenEntityId, shareContractAddress } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from "../queries-backend/queries";
@@ -133,16 +133,16 @@ export const useLikeContract = ( likeContractAddress: string) => {
     return likeContract
 }
 
-export const useTokenDetails = (contractAddress: string, tokenId: BigNumber): [ShareableTokenByIdQuery_shareableToken | null | undefined, boolean] => {
+export const useTokenDetails = (contractAddress: string, tokenId: BigNumber): [TokenByIdQuery_token | null | undefined, boolean] => {
     const detailedTokenEntityId = buildSubgraphTokenEntityId(contractAddress, BigNumber.from(tokenId)) 
 
-    const detailedtokenQuery = useQuery<ShareableTokenByIdQuery,ShareableTokenByIdQueryVariables>(GET_TOKEN_BY_ID, {
+    const detailedtokenQuery = useQuery<TokenByIdQuery,TokenByIdQueryVariables>(GET_TOKEN_BY_ID, {
         client: theGraphApolloClient, 
         pollInterval: 5000, 
         onError: defaultErrorHandler,
         variables: {id: detailedTokenEntityId}});
 
-    const detailedToken = detailedtokenQuery.data?.shareableToken
+    const detailedToken = detailedtokenQuery.data?.token
 
     return [detailedToken, detailedtokenQuery.loading]
 }
