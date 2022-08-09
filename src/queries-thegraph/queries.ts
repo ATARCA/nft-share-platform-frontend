@@ -68,3 +68,14 @@ query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId
   }
 }
 `
+
+export const GET_PROJECT_DETAILS = gql`
+query ProjectDetailsQuery ($projectId: String!){
+  project(id: $projectId) {
+    id
+    owner
+    shareableContractAddress
+    likeContractAddress
+  }
+}
+`

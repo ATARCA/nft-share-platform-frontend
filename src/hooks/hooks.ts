@@ -10,13 +10,14 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
-import { GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
+import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId, shareContractAddress } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId, projectId, shareContractAddress } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
+import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 
 const { useProvider, useAccounts, useIsActive } = hooks
 
@@ -299,4 +300,30 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
         mintErrorMessage, 
         metadataUploadErrorMessage,
         resetState]
+}
+
+export const useIsProjectOwner = (): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
+    const accounts = useAccounts()
+    const active = useIsActive()
+    const [projectDetails, projectDetailsLoading] =  useProjectDetails(projectId)
+
+    if (!active) return [false, projectDetailsLoading]
+
+    const activeAccount = accounts?.at(0) || "no account"
+
+    const isProjectOwner = addressesEqual( activeAccount , projectDetails?.owner)
+
+    return [isProjectOwner, projectDetailsLoading]
+}
+
+export const useProjectDetails = (projectId: string): [projectDetails: ProjectDetailsQuery_project | null | undefined, projectDetailsLoading: boolean] => {
+    const projectDetailQuery = useQuery<ProjectDetailsQuery,ProjectDetailsQueryVariables>(GET_PROJECT_DETAILS, {
+        client: theGraphApolloClient, 
+        pollInterval: 5000, 
+        onError: defaultErrorHandler,
+        variables: { projectId }});
+
+    const projectDetails = projectDetailQuery.data?.project
+    
+    return [ projectDetails, projectDetailQuery.loading ]
 }

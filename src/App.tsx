@@ -8,7 +8,7 @@ import Home from './components/topLevel/Home';
 import TokenDetailPage from './components/topLevel/TokenDetailPage';
 import ConsentPanel from './components/ConsentPanel';
 import MintPage from './components/topLevel/MintPage';
-import MainMenuDropdown from './components/MainMenuDropdown';
+import MainMenuWalletDropdown from './components/MainMenuWalletDropdown';
 import HomeMenuButtons from './components/menu/HomeMenuButtons';
 import TokenSharePage from './components/topLevel/TokenSharePage';
 import { AboutPage } from './components/topLevel/AboutPage';
@@ -22,7 +22,7 @@ function App() {
                 <Menu>
                     <HomeMenuButtons/>
                     <MetamaskConnectSubMenu/>    
-                    <MainMenuDropdown/>
+                    <MainMenuWalletDropdown/>
                 </Menu>
                 <ConsentPanel/>
 

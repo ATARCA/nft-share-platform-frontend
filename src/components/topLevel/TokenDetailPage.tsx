@@ -69,8 +69,7 @@ const TokenDetailPage = () => {
         navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
 
-    const renderMetadataAttributes = (token:TokenByIdQuery_token
-) => {
+    const renderMetadataAttributes = (token:TokenByIdQuery_token) => {
         return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <>metadata not available</>}</div>
     }
 

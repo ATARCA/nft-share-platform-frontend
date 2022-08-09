@@ -110,76 +110,8 @@ const Status = ({connector}: { connector: Connector }) => {
     )
 }
 
-const Accounts = () => {
-    const provider = useProvider()
-    const accounts = useAccounts()
-    const chainId = useChainId()
-    const isActive = useIsActive()
-
-    const shortenedAccounts = accounts?.map(a => shortenAccountAddress(a))
 
 
-    const balances = useBalances(provider, accounts)
-
-    return (
-        isActive ?
-            <Menu.Item>
-                <div>
-                    Account:
-                    {accounts === undefined
-                        ? ' -'
-                        : accounts.length === 0
-                            ? ' None'
-                            : shortenedAccounts?.map((account, i) => (
-                                <ul key={account} style={{ margin: 0, padding:0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    <b>{account}</b>
-                                    {balances?.[i] ? ` (${formatEther(balances[i])} ${getCurrencySymbol(chainId)})` : null}
-                                </ul>
-                            ))}
-                </div>
-            </Menu.Item> 
-            : <></>
-    )
-}
-
-
-const getCurrencySymbol = (chainId: number | undefined): string => {
-    if (chainId) {
-        const chain = CHAINS[chainId]
-        const extendedInfoChain = chain as ExtendedChainInformation
-        if (extendedInfoChain.nativeCurrency) {
-            return extendedInfoChain.nativeCurrency.symbol
-        }
-    }
-
-    return 'Ξ'
-}
-
-const useBalances = (
-    provider?: ReturnType<Web3ReactHooks['useProvider']>,
-    accounts?: string[]
-): BigNumber[] | undefined => {
-    const [balances, setBalances] = useState<BigNumber[] | undefined>()
-  
-    useEffect(() => {
-        if (provider && accounts?.length) {
-            let stale = false
-  
-            void Promise.all(accounts.map((account) => provider.getBalance(account))).then((balances) => {
-                if (!stale) {
-                    setBalances(balances)
-                }
-            })
-  
-            return () => {
-                stale = true
-                setBalances(undefined)
-            }
-        }
-    }, [provider, accounts])
-  
-    return balances
-}
 
 export const MetamaskConnectSubMenu = () => {
     return (          
@@ -187,9 +119,7 @@ export const MetamaskConnectSubMenu = () => {
            
             <Status  connector={metamaskConnector}/>
             <ChainDetails/>
-           
-            <Accounts />
-           
+                      
             <SwitchNetworkButton connector={metamaskConnector}/>       
 
             <Menu.Item>
