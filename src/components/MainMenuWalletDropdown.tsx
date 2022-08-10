@@ -23,10 +23,16 @@ const MainMenuWalletDropdown = () => {
         else return 'No address'
     }
     
+    const options = [
+        { key: 'edit', icon: 'edit', text: 'Edit Post', value: 'edit' },
+        { key: 'delete', icon: 'delete', text: 'Remove Post', value: 'delete' },
+        { key: 'hide', icon: 'hide', text: 'Hide Post', value: 'hide' },
+    ]
+
     if (active) return (
-        <Menu.Menu>
+        <Menu.Menu position='right'>
             <Menu.Item>
-                <Dropdown  as={Button} className="Menu-dropdown-button" item text={getAccountLabel()}>
+                <Dropdown  as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 
                         {isProjectOwner ? <Dropdown.Item onClick={() => navigate('mint')}>Mint a token</Dropdown.Item> : <></>}
                         <DisconnectItem/>
