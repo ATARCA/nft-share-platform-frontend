@@ -12,23 +12,6 @@ import { shortenAccountAddress } from '../utils';
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider } = hooks
 
-const ChainDetails = () => {
-    const chainId = useChainId()
-    const active = useIsActive()
-
-    return (
-        active ?
-            <Menu.Item>
-
-                <label>
-            Chain:  {chainId ? CHAINS[chainId].name : '-'}
-                </label>
-            </Menu.Item>
-
-            : <></>
-    )
-}
-
 const SwitchNetworkButton = ( {connector}: {connector: MetaMask} ) => {
     const chainID = useChainId()
     const active = useIsActive()
@@ -48,7 +31,7 @@ const isDesiredChainID = (chainId: number | undefined) => {
     return chainId === DESIRED_CHAIN_ID
 }
 
-const MetaMaskConnect = ({connector}: {connector: MetaMask}) => {
+export const MetaMaskConnectOnlyButton = ({connector}: {connector: MetaMask}) => {
     const isActivating = useIsActivating()
     const error = useError()
     const active = useIsActive()
@@ -63,7 +46,7 @@ const MetaMaskConnect = ({connector}: {connector: MetaMask}) => {
         )
     } else if (active) {
         return (
-            <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+            <></>
         )
     } else {
         return (
@@ -89,7 +72,7 @@ const getName = (connector: Connector) => {
     }
 }
 
-const Status = ({connector}: { connector: Connector }) => {
+const SwitchNetworkWarning = ({connector}: { connector: Connector }) => {
     const chainId = useChainId()
     const error = useError()
     const isActive = useIsActive()
@@ -99,15 +82,10 @@ const Status = ({connector}: { connector: Connector }) => {
     )
 
     if (isActive) 
-        if(isDesiredChainID(chainId)) return (
-            <Menu.Item>✅ Connected </Menu.Item>
-        )
-        else return (
+        if(!isDesiredChainID(chainId)) return (
             <Menu.Item>⚠️ Switch network </Menu.Item>
         )
-    else return (
-        <Menu.Item>⚠️ Disconnected </Menu.Item>
-    )
+    return <></>
 }
 
 
@@ -117,13 +95,12 @@ export const MetamaskConnectSubMenu = () => {
     return (          
         <Menu.Menu position='right'>
            
-            <Status  connector={metamaskConnector}/>
-            <ChainDetails/>
+            <SwitchNetworkWarning  connector={metamaskConnector}/>
                       
             <SwitchNetworkButton connector={metamaskConnector}/>       
 
             <Menu.Item>
-                <MetaMaskConnect connector={metamaskConnector}/>
+                <MetaMaskConnectOnlyButton connector={metamaskConnector}/>
             </Menu.Item>
         </Menu.Menu>
     )
