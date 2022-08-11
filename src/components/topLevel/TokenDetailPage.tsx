@@ -12,7 +12,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
-import { ShareableTokenByIdQuery_shareableToken } from "../../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { TokenCard } from "../TokenGrid";
 import { authorPropertyName, subContributionPropertyName, subContributorPropertyName } from "../../types/NFTMetadata";
 
@@ -44,7 +44,7 @@ const TokenDetailPage = () => {
         onError: defaultErrorHandler,
         variables: { likeTokenOwnerAddress: accounts ? accounts[0] : "" ,parentTokenEntityId: buildSubgraphTokenEntityId(shareContractAddress, BigNumber.from(tokenId))}});
 
-    const likeTokenExists = likeTokenExistsQuery.data?.shareableTokens.length !== 0
+    const likeTokenExists = likeTokenExistsQuery.data?.tokens.length !== 0
 
     const [ tokenDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
@@ -69,7 +69,7 @@ const TokenDetailPage = () => {
         navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
 
-    const renderMetadataAttributes = (token:ShareableTokenByIdQuery_shareableToken) => {
+    const renderMetadataAttributes = (token:TokenByIdQuery_token) => {
         return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <>metadata not available</>}</div>
     }
 
@@ -100,7 +100,8 @@ const TokenDetailPage = () => {
         )
     }
 
-    const renderTokenDetailsPage = (token:ShareableTokenByIdQuery_shareableToken) => {
+    const renderTokenDetailsPage = (token:TokenByIdQuery_token
+) => {
         return <div style={{'margin': '0 10vw'}}>
             <Grid columns={2} style={{'margin': '3vh 0'}}>
                 <Grid.Column style={{'textAlign': 'left'}} >
@@ -122,13 +123,15 @@ const TokenDetailPage = () => {
         </div>
     }
 
-    const renderLeftColumn = (token:ShareableTokenByIdQuery_shareableToken) => {
+    const renderLeftColumn = (token:TokenByIdQuery_token
+) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token}/>
         </Grid.Column>
     }
 
-    const renderRightColumn = (token:ShareableTokenByIdQuery_shareableToken) => {
+    const renderRightColumn = (token:TokenByIdQuery_token
+) => {
         return <Grid.Column><div>
             { errorMessage ? 
                 <Message error header='Transaction error' content={errorMessage}/>: <></>}

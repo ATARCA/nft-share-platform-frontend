@@ -2,8 +2,8 @@ import { Button, Input, Message } from "semantic-ui-react";
 import { ethers } from "ethers";
 import React from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
-import { useMintTokenAndUploadMetadata, useShareContract } from "../../hooks/hooks";
-import { shareContractAddress } from "../../utils";
+import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
+import { projectId, shareContractAddress } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
 const { useAccounts, useIsActive, useProvider } = hooks
@@ -11,6 +11,8 @@ const { useAccounts, useIsActive, useProvider } = hooks
 const MintPage = () => {
 
     const isActive = useIsActive()
+    const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner()
+    const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
    
     const shareContract = useShareContract(shareContractAddress)
    
@@ -84,12 +86,17 @@ const MintPage = () => {
         </div>
     }
    
+    if (isActive && !isProjectOwner) return <div>
+        <Message warning> This wallet is not a project owner of this project. </Message>
+        <p>Wallet {projectDetails?.owner} is the owner of this project.</p>
+    </div>
+
     return (
         isActive? 
             renderContent()
             :
-            <div>
-                    Connect your wallet to continue.
+            <div className="margin-vertical margin-horizontal">
+                <Message info> Connect your wallet to continue.</Message>
             </div>
     )
 }

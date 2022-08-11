@@ -50,7 +50,7 @@ const ConsentPanelContent = () => {
     }
       
     return consentNeeded ? 
-        <Menu fluid vertical>
+        <Menu fluid vertical style={{marginTop: '1vw'}}>
             <Menu.Item>
                 <p>Give consent and sign it with your metamask before using the platform. TODO complete text.</p>
                 <Button primary onClick={onGiveConsentClicked}>Sign consent</Button>

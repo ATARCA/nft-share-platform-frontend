@@ -23,3 +23,7 @@
 
 @disabledBoxShadow: 0px 0px 0px 2px @primaryColorDisabledOpaque inset !important;
 @disabledOpacity: 0.2;
+
+@activeBoxShadow: 0px 0px 0px 2px @primaryColor !important;
+@downBoxShadow: 0px 0px 0px 2px @primaryColor;
+

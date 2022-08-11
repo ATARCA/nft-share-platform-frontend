@@ -45,6 +45,10 @@
   color: white;
 }
 
+.Menu-dropdown-button {
+  color: #F96D5D !important;
+}
+
 .App-link {
   color: #61dafb;
 }

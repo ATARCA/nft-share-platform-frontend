@@ -7,27 +7,27 @@
 // GraphQL query operation: LikeTokenExistsQuery
 // ====================================================
 
-export interface LikeTokenExistsQuery_shareableTokens_likedParentToken {
-  __typename: "ShareableToken";
+export interface LikeTokenExistsQuery_tokens_likedParentToken {
+  __typename: "Token";
   id: string;
   ownerAddress: any;
   tokenId: any | null;
   contractAddress: any;
 }
 
-export interface LikeTokenExistsQuery_shareableTokens {
-  __typename: "ShareableToken";
+export interface LikeTokenExistsQuery_tokens {
+  __typename: "Token";
   id: string;
   ownerAddress: any;
   contractAddress: any;
   isLikeToken: boolean;
   isOriginal: boolean;
   isSharedInstance: boolean;
-  likedParentToken: LikeTokenExistsQuery_shareableTokens_likedParentToken | null;
+  likedParentToken: LikeTokenExistsQuery_tokens_likedParentToken | null;
 }
 
 export interface LikeTokenExistsQuery {
-  shareableTokens: LikeTokenExistsQuery_shareableTokens[];
+  tokens: LikeTokenExistsQuery_tokens[];
 }
 
 export interface LikeTokenExistsQueryVariables {

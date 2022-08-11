@@ -3,12 +3,12 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import './App.css';
 
 import MetamaskConnectSubMenu from './components/MetamaskConnectSubmenu';
-import { Menu } from 'semantic-ui-react';
+import { Divider, Menu } from 'semantic-ui-react';
 import Home from './components/topLevel/Home';
 import TokenDetailPage from './components/topLevel/TokenDetailPage';
 import ConsentPanel from './components/ConsentPanel';
 import MintPage from './components/topLevel/MintPage';
-import MainMenuDropdown from './components/MainMenuDropdown';
+import MainMenuWalletDropdown from './components/MainMenuWalletDropdown';
 import HomeMenuButtons from './components/menu/HomeMenuButtons';
 import TokenSharePage from './components/topLevel/TokenSharePage';
 import { AboutPage } from './components/topLevel/AboutPage';
@@ -19,11 +19,12 @@ function App() {
     return (
         <div className="App">
             <Router>
-                <Menu>
+                <Menu secondary>
                     <HomeMenuButtons/>
                     <MetamaskConnectSubMenu/>    
-                    <MainMenuDropdown/>
+                    <MainMenuWalletDropdown/>
                 </Menu>
+                <Divider fitted />
                 <ConsentPanel/>
 
                 <Routes>

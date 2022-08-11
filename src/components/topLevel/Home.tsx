@@ -4,7 +4,6 @@ import { GET_ALL_BOOKS, GET_MULTIPLY } from '../../queries-backend/queries';
 import { useQuery, useLazyQuery } from '@apollo/client'
 import { MultiplyQuery, MultiplyQueryVariables } from '../../queries-backend/types-backend/MultiplyQuery';
 import { AllBooksQuery } from '../../queries-backend/types-backend/AllBooksQuery';
-import { SendDemoTransaction } from '../../components/SendDemoTransaction';
 import { backendApolloClient } from '../../graphql/backendApolloClient';
 import { GET_TOKENS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
@@ -66,7 +65,7 @@ const Home = () => {
     return (
         <div>
             <OnboardingCarousel/>
-            <TokenGrid tokens={allgraphShareTokensResult.data?.shareableTokens || []} isLoading={allgraphShareTokensResult.loading}/>
+            <TokenGrid tokens={allgraphShareTokensResult.data?.tokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}
             {renderValuesForm()}

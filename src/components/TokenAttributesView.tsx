@@ -1,13 +1,13 @@
 import React from "react";
 import { Card, Table } from "semantic-ui-react";
-import { ShareableTokenByIdQuery_shareableToken } from "../queries-thegraph/types-thegraph/ShareableTokenByIdQuery";
+import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { MetadataAttribute } from "../types/NFTMetadata";
 import { Link } from "react-router-dom"
 import urlRegex from "url-regex";
 import { buildWalletPageRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
 
-const TokenAttributesView = ({token, attributes}: { token:ShareableTokenByIdQuery_shareableToken ,attributes: MetadataAttribute[]}) => {
+const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,attributes: MetadataAttribute[]}) => {
     return (
         <div>
             <Table basic='very' >

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const GET_TOKENS = gql`
 query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!){
-  shareableTokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance}){
+  tokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance}){
     id
     ownerAddress
     contractAddress
@@ -26,8 +26,8 @@ query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!){
 `
 
 export const GET_TOKEN_BY_ID = gql`
-query ShareableTokenByIdQuery ($id: String!){
-  shareableToken( id: $id) {
+query TokenByIdQuery ($id: String!){
+  token( id: $id) {
     id
     ownerAddress
     contractAddress
@@ -52,7 +52,7 @@ query ShareableTokenByIdQuery ($id: String!){
 
 export const GET_LIKE_TOKEN_EXISTS = gql`
 query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId: String!){
-  shareableTokens(where: {isLikeToken: true, ownerAddress:$likeTokenOwnerAddress, likedParentToken: $parentTokenEntityId}) {
+  tokens(where: {isLikeToken: true, ownerAddress:$likeTokenOwnerAddress, likedParentToken: $parentTokenEntityId}) {
     id
     ownerAddress
     contractAddress
@@ -65,6 +65,17 @@ query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId
       tokenId
       contractAddress
     }
+  }
+}
+`
+
+export const GET_PROJECT_DETAILS = gql`
+query ProjectDetailsQuery ($projectId: String!){
+  project(id: $projectId) {
+    id
+    owner
+    shareableContractAddress
+    likeContractAddress
   }
 }
 `
