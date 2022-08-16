@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Dropdown, Menu } from "semantic-ui-react";
 import { hooks, metaMask as metamaskConnector } from "../connectors/metaMaskConnector";
 import { useIsProjectOwner } from "../hooks/hooks";
+import { buildWalletPageRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
 import { MetaMaskConnectOnlyButton } from "./MetamaskConnectSubmenu";
 
@@ -22,12 +23,17 @@ const MainMenuWalletDropdown = () => {
         }
         else return 'No address'
     }
+
+    const DisconnectItem = () => {
+        const active = useIsActive()
     
-    const options = [
-        { key: 'edit', icon: 'edit', text: 'Edit Post', value: 'edit' },
-        { key: 'delete', icon: 'delete', text: 'Remove Post', value: 'delete' },
-        { key: 'hide', icon: 'hide', text: 'Hide Post', value: 'hide' },
-    ]
+        if (active) return <Dropdown.Item onClick={() => metamaskConnector.deactivate()}>Disconnect wallet</Dropdown.Item>
+        return <></>
+    }
+    
+    const MyWalletItem = () => {
+        return <Dropdown.Item onClick={() => {if (accounts) navigate(buildWalletPageRoute(accounts[0]))}}>My wallet</Dropdown.Item>
+    }
 
     if (active) return (
         <Menu.Menu position='right'>
@@ -35,6 +41,7 @@ const MainMenuWalletDropdown = () => {
                 <Dropdown  as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 
                         {isProjectOwner ? <Dropdown.Item onClick={() => navigate('mint')}>Mint a token</Dropdown.Item> : <></>}
+                        <MyWalletItem/>
                         <DisconnectItem/>
                     </Dropdown.Menu>
                 </Dropdown>
@@ -42,13 +49,6 @@ const MainMenuWalletDropdown = () => {
         </Menu.Menu>
     )
     else return <></>
-}
-
-const DisconnectItem = () => {
-    const active = useIsActive()
-
-    if (active) return <Dropdown.Item onClick={() => metamaskConnector.deactivate()}>Disconnect wallet</Dropdown.Item>
-    return <></>
 }
 
 export default MainMenuWalletDropdown

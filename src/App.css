@@ -45,6 +45,16 @@
   color: white;
 }
 
+.Category-switch-inactive {
+  text-decoration: none;
+}
+
+.Category-switch-active {
+  text-decoration: none;
+  background-color: #DF739E1A !important;
+  color: #F96D5D !important;
+}
+
 .Menu-dropdown-button {
   color: #F96D5D !important;
 }
@@ -60,9 +70,13 @@
   line-height: 2.5em;
 }
 
-.Award-subheader{
+.Page-subheader{
   color: #848484;
   font-size: 0.8em;
+}
+
+.TokenGridBackground{
+  background-color: #EFF4FA;
 }
 
 a {

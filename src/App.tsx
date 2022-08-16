@@ -13,6 +13,7 @@ import HomeMenuButtons from './components/menu/HomeMenuButtons';
 import TokenSharePage from './components/topLevel/TokenSharePage';
 import { AboutPage } from './components/topLevel/AboutPage';
 import { aboutRoute } from './routingUtils';
+import { WalletDetailPage } from './components/topLevel/WalletDetailPage';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
                     <Route path="/mint" element={<MintPage/>}/> 
                     <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                     <Route path="shareToken/:contractAddress/:tokenId" element={<TokenSharePage/>}/>
+                    <Route path="wallet/:walletAddress" element={<WalletDetailPage/>}/>
                     <Route path="/" element={<Home/>}/>
                 </Routes>
             </Router>

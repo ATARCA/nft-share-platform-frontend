@@ -11,6 +11,7 @@ import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import TokenGrid from '../../components/TokenGrid';
 import OnboardingCarousel from '../onboarding/OnboardingCarouselModal';
 import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
+import { Header } from 'semantic-ui-react';
 
 const Home = () => {
 
@@ -65,6 +66,9 @@ const Home = () => {
     return (
         <div>
             <OnboardingCarousel/>
+            <div style={{'textAlign': 'left', padding: '5vh 10vw 5vh 10vw'}}>
+                <Header className="No-overflow" as='h1'>Welcome</Header>
+            </div>
             <TokenGrid tokens={allgraphShareTokensResult.data?.tokens || []} isLoading={allgraphShareTokensResult.loading}/>
             <Welcome name='developer'/>
             {renderBooks()}

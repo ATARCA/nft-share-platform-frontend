@@ -101,8 +101,6 @@ const TokenSharePage = () => {
 
         { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! A new award token has been minted to your co-contributor with the given details.'/>: <></>}
     
-        Token Share page tokenId {tokenId} contractAddress {contractAddress}
-
         { (!isCurrentAccountTokenOwner && isActive) ? <Message warning header='Cannot share token' content='Current account is not owner of this token and cannot share it.'/>: <></>}
 
         <div className='margin-vertical' >
