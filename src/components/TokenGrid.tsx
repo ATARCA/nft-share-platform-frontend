@@ -36,14 +36,10 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
 export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens}) => {
 
     const navigate = useNavigate()
-    const [tokenDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
-    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
-    const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
-
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
     let likesCount

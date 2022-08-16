@@ -14,7 +14,6 @@ import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
 import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { TokenCard } from "../TokenGrid";
-import { authorPropertyName, subContributionPropertyName, subContributorPropertyName } from "../../types/NFTMetadata";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -46,7 +45,7 @@ const TokenDetailPage = () => {
 
     const likeTokenExists = likeTokenExistsQuery.data?.tokens.length !== 0
 
-    const [ tokenDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
+    const [ tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
     const onLikeClicked = async () => {
         if (likeContract) {
