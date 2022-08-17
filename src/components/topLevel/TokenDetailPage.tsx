@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import React, { useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Grid, Header, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
@@ -7,7 +7,7 @@ import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
 import { useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from '../../connectors/metaMaskConnector'
-import { buildSubgraphTokenEntityId, likeContractAddress, shareContractAddress } from "../../utils";
+import { buildSubgraphTokenEntityId, projectId } from "../../utils";
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
@@ -26,8 +26,8 @@ const TokenDetailPage = () => {
     const active = useIsActive()
     const navigate = useNavigate()
 
-    const likeContract = useLikeContract(likeContractAddress)
-    const shareContract = useShareContract(shareContractAddress)
+    const likeContract = useLikeContract(projectId)
+    const shareContract = useShareContract(projectId)
 
     const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
@@ -37,13 +37,23 @@ const TokenDetailPage = () => {
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
 
-    const likeTokenExistsQuery = useQuery<LikeTokenExistsQuery,LikeTokenExistsQueryVariables>(GET_LIKE_TOKEN_EXISTS, {
-        client: theGraphApolloClient, 
-        pollInterval: 5000, 
-        onError: defaultErrorHandler,
-        variables: { likeTokenOwnerAddress: accounts ? accounts[0] : "" ,parentTokenEntityId: buildSubgraphTokenEntityId(shareContractAddress, BigNumber.from(tokenId))}});
+    const isLikeToken = detailedToken?.isLikeToken
+    const originalTokenEntityId =  isLikeToken ? detailedToken?.likedParentToken?.id : detailedToken?.id
 
-    const likeTokenExists = likeTokenExistsQuery.data?.tokens.length !== 0
+    //TODO extract this to custom hook after switching to subgraph web sockets 
+    const [ getLikeTokenExists, likeTokenExistsResult] = useLazyQuery<LikeTokenExistsQuery,LikeTokenExistsQueryVariables>(GET_LIKE_TOKEN_EXISTS, {
+        client: theGraphApolloClient, 
+        pollInterval: 5000,
+        onError: defaultErrorHandler,
+    });
+
+    useEffect(() => {
+        if (originalTokenEntityId) {
+            getLikeTokenExists({variables: { likeTokenOwnerAddress: accounts ? accounts[0] : "" ,parentTokenEntityId: originalTokenEntityId }})
+        }
+    },[accounts, originalTokenEntityId, getLikeTokenExists, likeInProgress])
+
+    const likeTokenExists = likeTokenExistsResult.data?.tokens.length !== 0
 
     const [ tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
@@ -94,7 +104,7 @@ const TokenDetailPage = () => {
     const renderActionButtonArea = () => {
         return (
             <div>
-                {detailedToken?.isLikeToken ? <></> : renderShareOrLikeButton() }
+                { isLikeToken ? <></> : renderShareOrLikeButton() }
             </div>
         )
     }

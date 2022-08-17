@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import React from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
-import { projectId, shareContractAddress } from "../../utils";
+import { projectId } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 
 const { useAccounts, useIsActive, useProvider } = hooks
@@ -14,7 +14,7 @@ const MintPage = () => {
     const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner()
     const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
    
-    const shareContract = useShareContract(shareContractAddress)
+    const shareContract = useShareContract(projectId)
    
     const [ setMetadata, 
         isMetadataValid, 
