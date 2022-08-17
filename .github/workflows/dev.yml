@@ -1,4 +1,4 @@
-name: Deploy To S3 & Cloudfront
+name: Deploy to dev S3 & Cloudfront
 env:
   CI: false
   REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_DEV}}
