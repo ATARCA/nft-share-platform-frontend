@@ -1,0 +1,44 @@
+name: Deploy to Production S3 & Cloudfront
+env:
+  CI: false
+  REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_TEST}}
+  REACT_APP_INFURA_DEV_KEY: ${{secrets.INFURA_TEST_KEY}}
+
+on: 
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+          matrix:
+            node-version: [14.17.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: borales/actions-yarn@v3.0.0
+      with:
+       cmd: install # will run `yarn install` command
+    - uses: borales/actions-yarn@v3.0.0
+      with:
+       cmd: build
+    - name: Run s3-sync-action
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --follow-symlinks --delete
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_S3_BUCKET: prod-atarca-frontend
+        AWS_REGION: 'eu-central-1'
+        SOURCE_DIR: './build'
+    - name: Run invalidate-cloudfront-action
+      uses: chetan/invalidate-cloudfront-action@master
+      env:
+        PATHS: '/*'
+        DISTRIBUTION: 'E28DBL3PB90HBJ'
+        AWS_REGION: 'eu-central-1'
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
