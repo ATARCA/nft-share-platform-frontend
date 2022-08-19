@@ -45,7 +45,7 @@ interface MetadataAttributeUIEntry {
 const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Twitter'},{ id:uuidv4(), name:authorPropertyName, value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
 const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
 
-export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void}) => {
+export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void, onCategoryChanged: (category:string | undefined) => void}) => {
 
     const [ tokenName, setTokenName ] = useState('')
     const [ tokenNameEverChanged, setTokenNameEverChanged ] = useState(false)
@@ -69,7 +69,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
-            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty
+            const categoryExists = !! metadataAttributesArray.find( ( value ) => value.name === categoryPropertyName )
+            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty && categoryExists
     
             setIsValid(isValidNew)
             onIsValid(isValidNew)
@@ -80,10 +81,13 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged}: {onIsValid: (i
             const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, image: imageURL, attributes}
             const metadataJson = JSON.stringify(metadata, null, '\t')
             onMetadataChanged(metadataJson)
+
+            const category = metadataAttributesArray.find( ( value ) => value.name === categoryPropertyName )?.value
+            onCategoryChanged(category)
         }
         validateFields()
         postMetadataToCallback()
-    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged, imageURL])
+    }, [tokenDescription, tokenName, metadataAttributesArray, onIsValid, isValid, onMetadataChanged, imageURL, onCategoryChanged])
 
     const updatePropertyName = (uuid: string, newPropertyName:string) => {
         const arrayCopy = [...metadataAttributesArray]

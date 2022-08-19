@@ -52,7 +52,7 @@ export const SendDemoTransaction = () => {
             setMintInProgress(true)
             setErrorMessage('')
             try {
-                const resultTransaction = await shareContract.mint(accounts[0])
+                const resultTransaction = await shareContract.mint(accounts[0], 'test category')
                 await resultTransaction.wait()
             } catch (error) {
                 console.log(error)

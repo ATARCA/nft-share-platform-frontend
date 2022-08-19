@@ -1,6 +1,6 @@
 import { Button, Input, Message } from "semantic-ui-react";
 import { ethers } from "ethers";
-import React from "react";
+import React, { useState } from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
 import { projectId } from "../../utils";
@@ -13,6 +13,7 @@ const MintPage = () => {
     const isActive = useIsActive()
     const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner()
     const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
+    const [category, setCategory] = useState<string | undefined>('')
    
     const shareContract = useShareContract(projectId)
    
@@ -30,7 +31,7 @@ const MintPage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress))
+        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
 
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
@@ -58,7 +59,8 @@ const MintPage = () => {
                     <div>Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
-                        onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}/>
+                        onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}
+                        onCategoryChanged={ category => setCategory(category)}/>
             
                     <div className='margin-vertical' >
                         <Input fluid 
