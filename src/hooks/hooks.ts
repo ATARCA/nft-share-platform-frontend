@@ -12,7 +12,7 @@ import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId, projectId, shareContractAddress } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId, projectId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
@@ -92,14 +92,16 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     return [tutorialCompleted, setTutorialCompleted];
 }
 
-export const useShareContract = ( shareContractAddress: string) => {
+export const useShareContract = ( projectId: string) => {
     const [shareContract, setShareContract] = useState<ShareableERC721 | undefined>(undefined);
-
+    const [ projectDetails, loading ] = useProjectDetails(projectId)
     const provider = useProvider();
+
+    const shareContractAddress = projectDetails?.shareableContractAddress
 
     useEffect( () => {
         const loadContract = async () => {
-            if (provider) {
+            if (provider && shareContractAddress) {
                 try {
                     const contract = loadShareContract(shareContractAddress, provider)
                     setShareContract(contract)
@@ -118,14 +120,16 @@ export const useShareContract = ( shareContractAddress: string) => {
     return shareContract
 }
 
-export const useLikeContract = ( likeContractAddress: string) => {
+export const useLikeContract = ( projectId: string) => {
     const [likeContract, setLikeContract] = useState<LikeERC721 | undefined>(undefined);
-
+    const [ projectDetails, loading ] = useProjectDetails(projectId)
     const provider = useProvider();
+    
+    const likeContractAddress = projectDetails?.likeContractAddress
 
     useEffect( () => {
         const loadContract = async () => {
-            if (provider) {
+            if (provider && likeContractAddress) {
                 try {
                     const contract = loadLikeContract(likeContractAddress, provider)
                     setLikeContract(contract)
@@ -184,7 +188,7 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
 ] => {
 
     const isActive = useIsActive()
-    const shareContract = useShareContract(shareContractAddress)
+    const shareContract = useShareContract(projectId)
     const accounts = useAccounts()
     const provider = useProvider();
 

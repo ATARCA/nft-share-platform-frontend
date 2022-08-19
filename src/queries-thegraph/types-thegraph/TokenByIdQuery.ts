@@ -24,6 +24,7 @@ export interface TokenByIdQuery_token_likedParentToken_likeTokens {
 
 export interface TokenByIdQuery_token_likedParentToken {
   __typename: "Token";
+  id: string;
   likeTokens: TokenByIdQuery_token_likedParentToken_likeTokens[];
 }
 

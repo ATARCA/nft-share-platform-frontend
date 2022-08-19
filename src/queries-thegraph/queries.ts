@@ -42,6 +42,7 @@ query TokenByIdQuery ($id: ID!){
       id
     }
     likedParentToken {
+      id
       likeTokens {
         id
       }
