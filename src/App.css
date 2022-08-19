@@ -79,6 +79,10 @@
   background-color: #EFF4FA;
 }
 
+i.icon {
+  margin: 0em 0.25rem 0em 2rem
+}
+
 a {
   color: #f96d5d;
   text-decoration: underline;
