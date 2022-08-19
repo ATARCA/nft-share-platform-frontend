@@ -23,7 +23,7 @@ const TokenSharePage = () => {
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
 
-    const [ tokenDisplayName, currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
+    const [ tokenDisplayName, tokenHolderDisplayName, currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
 
     const [ setNewMetadata, 
         isMetadataValid, 
@@ -99,10 +99,8 @@ const TokenSharePage = () => {
         { errorMessage ? <Message error header='Transaction error' content={errorMessage}/>: <></>}
         {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
 
-        { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! A new award token has been minted to your co-contributor with the given details.'/>: <></>}
+        { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! Mint transaction was sent and your co-contributor details metadata were uploaded'/>: <></>}
     
-        Token Share page tokenId {tokenId} contractAddress {contractAddress}
-
         { (!isCurrentAccountTokenOwner && isActive) ? <Message warning header='Cannot share token' content='Current account is not owner of this token and cannot share it.'/>: <></>}
 
         <div className='margin-vertical' >

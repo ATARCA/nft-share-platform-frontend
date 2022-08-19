@@ -31,6 +31,6 @@ export interface LikeTokenExistsQuery {
 }
 
 export interface LikeTokenExistsQueryVariables {
-  likeTokenOwnerAddress: string;
+  likeTokenOwnerAddress: any;
   parentTokenEntityId: string;
 }

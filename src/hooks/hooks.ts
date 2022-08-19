@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { NFTMetadata, subContributionPropertyName } from "../types/NFTMetadata"
+import { authorPropertyName, NFTMetadata, subContributionPropertyName, subContributorPropertyName } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
 import { ShareableERC721 } from "../typechain-types";
@@ -27,7 +27,13 @@ const buildMetadataUri = (contractAddress: string, tokenId: string) => {
     return `${process.env.REACT_APP_BACKEND_URI}/metadata/${contractAddress}/${tokenId}`
 }
 
-export const useMetadata = (contractAddress: string, tokenId: string): [ string , NFTMetadata | undefined ,boolean, string] => {
+export const useMetadata = (contractAddress: string, tokenId: string): 
+      [ tokenDisplayName: string , 
+        tokenHolderDisplayName: string, 
+        metadata: NFTMetadata | undefined , 
+        consentMissing: boolean, 
+        errorMessage: string] => {
+
     const [ metadata, setMetadata ] = useState<NFTMetadata|undefined>(undefined)
     const [ consentMissing, setConsentMissing ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
@@ -61,10 +67,14 @@ export const useMetadata = (contractAddress: string, tokenId: string): [ string 
     },[contractAddress, tokenId])
 
     const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type === subContributionPropertyName)?.value 
+    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
     const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
-    return [tokenDisplayName || '', metadata, consentMissing, errorMessage]
+    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
+    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
+    const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
+
+    return [tokenDisplayName || '', tokenHolderDisplayName || '', metadata, consentMissing, errorMessage]
 }
 
 export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => void] => {

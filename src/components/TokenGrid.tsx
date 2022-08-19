@@ -4,19 +4,24 @@ import icon_thumbsUp from '../images/icon_ThumbsUp.svg';
 import icon_Share from '../images/icon_ShareNetwork.svg';
 
 import { useNavigate } from 'react-router-dom';
-import { Card, Grid, Icon, Image, Label, Rail, Segment } from 'semantic-ui-react';
+import { Card, Grid, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
 import { authorPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
+import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[], isLoading:boolean}) => {
+export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean}) => {
+    if (isLoading) return <div className='TokenGridBackground'>
+        <Segment placeholder vertical padded='very' loading/>
+        </div>
+    
     return (
-        <div>
-            {isLoading? 
-                <Segment placeholder vertical padded='very' loading/>
+        <div className='TokenGridBackground'>
+            {tokens.length === 0? 
+                <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
-                <Grid doubling centered columns={4} style={{padding: '10vw'}}>
+                <Grid doubling centered columns={4} style={{ padding: '10vh 10vw 10vh 10vw'}}>
                     {tokens.map(t => 
                         <Grid.Column key={t.id}>
                             <TokenCard token={t}/>
@@ -28,17 +33,13 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[], is
     );
 };
 
-export const TokenCard = ({token}: {token:TokensQuery_tokens}) => {
+export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens}) => {
 
     const navigate = useNavigate()
-    const [tokenDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
-    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type === subContributorPropertyName)?.value 
-    const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
-
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
     let likesCount

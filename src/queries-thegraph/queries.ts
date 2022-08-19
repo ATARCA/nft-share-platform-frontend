@@ -26,7 +26,7 @@ query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!){
 `
 
 export const GET_TOKEN_BY_ID = gql`
-query TokenByIdQuery ($id: String!){
+query TokenByIdQuery ($id: ID!){
   token( id: $id) {
     id
     ownerAddress
@@ -51,7 +51,7 @@ query TokenByIdQuery ($id: String!){
 `
 
 export const GET_LIKE_TOKEN_EXISTS = gql`
-query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId: String!){
+query LikeTokenExistsQuery ($likeTokenOwnerAddress: Bytes!,$parentTokenEntityId: String!){
   tokens(where: {isLikeToken: true, ownerAddress:$likeTokenOwnerAddress, likedParentToken: $parentTokenEntityId}) {
     id
     ownerAddress
@@ -70,7 +70,7 @@ query LikeTokenExistsQuery ($likeTokenOwnerAddress: String!,$parentTokenEntityId
 `
 
 export const GET_PROJECT_DETAILS = gql`
-query ProjectDetailsQuery ($projectId: String!){
+query ProjectDetailsQuery ($projectId: ID!){
   project(id: $projectId) {
     id
     owner
@@ -79,3 +79,44 @@ query ProjectDetailsQuery ($projectId: String!){
   }
 }
 `
+
+export const GET_TOKENS_OF_ADDRESS = gql`
+query TokensOfAddressQuery ($projectId: String!, $address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!){
+  tokens(
+    where: {
+      project: $projectId, 
+    	ownerAddress: $address, 
+    	isOriginal: $isOriginal, 
+    	isSharedInstance: $isSharedInstance, 
+    	isLikeToken: $isLikeToken}) {
+    id
+    project {
+      id
+    }
+    ownerAddress
+    contractAddress
+    isOriginal
+    isSharedInstance
+    isLikeToken
+    tokenId
+    parentTokenId
+    likedParentToken {
+      likeTokens {
+        id
+      }
+    }
+    sharedChildTokens {
+      id
+    }
+    likeTokens {
+      id
+    }
+    metadataUri
+  }
+}
+`
+
+
+
+
+
