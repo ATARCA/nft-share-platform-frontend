@@ -14,6 +14,7 @@ import TokenSharePage from './components/topLevel/TokenSharePage';
 import { AboutPage } from './components/topLevel/AboutPage';
 import { aboutRoute } from './routingUtils';
 import { WalletDetailPage } from './components/topLevel/WalletDetailPage';
+import Footer from './components/Footer';
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
                     <Route path="/" element={<Home/>}/>
                 </Routes>
             </Router>
+            <Footer/>
         </div>
     );
 }
