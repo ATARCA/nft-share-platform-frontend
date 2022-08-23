@@ -4,6 +4,8 @@ import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
 import { authorPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 
+const CATEGORY_MAX_LENGTH = 32
+
 const MetadataEntryItem = ({
     propertyName, 
     propertyValue, 
@@ -21,9 +23,12 @@ const MetadataEntryItem = ({
     const [ currentPropertyName, setCurrentPropertyName ] = useState(propertyName)
     const [ currentPropertyValue, setcurrentPropertyValue ] = useState(propertyValue)
 
+    const isCategoryItem = propertyName === categoryPropertyName
+
     return (
         <div className={className}>
             <Input placeholder='propertyName' className='margin-bottom'
+                disabled={isCategoryItem}
                 value={currentPropertyName} 
                 error={!currentPropertyName}
                 onChange={(e, { value }) => {setCurrentPropertyName( value ); onPropertyNameChanged(value)}}/>
@@ -31,7 +36,7 @@ const MetadataEntryItem = ({
                 value={currentPropertyValue} 
                 error={!currentPropertyValue}
                 onChange={(e, { value }) => {setcurrentPropertyValue( value ); onPropertyValueChanged(value)}}/>
-            <Icon name='delete' size='small' onClick={onRemoveClicked}/>
+            <Icon name='delete' size='small' onClick={onRemoveClicked} disabled={isCategoryItem}/>
         </div>
     )
 };
@@ -69,8 +74,10 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
-            const categoryExists = !! metadataAttributesArray.find( ( value ) => value.name === categoryPropertyName )
-            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty && categoryExists
+            const categoryEntry = metadataAttributesArray.find( ( value ) => value.name === categoryPropertyName )
+            const categoryExists = !! categoryEntry
+            const categoryNotTooLong = (categoryEntry?.value.length || 0) <= CATEGORY_MAX_LENGTH
+            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty && categoryExists && categoryNotTooLong
     
             setIsValid(isValidNew)
             onIsValid(isValidNew)

@@ -341,3 +341,9 @@ export const useProjectDetails = (projectId: string): [projectDetails: ProjectDe
     
     return [ projectDetails, projectDetailQuery.loading ]
 }
+
+export const useProjectCategories = (projectId: string): [categories: string[] | undefined, projectDetailsLoading: boolean] => {
+    const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
+    const categoryNames = projectDetails?.categories.map(value => value.id)
+    return [categoryNames, projectDetailsLoading]
+}
