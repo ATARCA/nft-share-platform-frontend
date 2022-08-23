@@ -31,10 +31,14 @@
       j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-KCKRGJ3');</script>
-      <!-- End Google Tag Manager -->
-<script type="text/javascript">
-  var _iub = _iub || [];
-  _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"consentOnContinuedBrowsing":false,"floatingPreferencesButtonDisplay":"bottom-right","invalidateConsentWithoutLog":true,"lang":"en","perPurposeConsent":true,"purposes":"1,4","siteId":2748411,"whitelabel":false,"cookiePolicyId":50379461, "callback":{ "onPreferenceExpressedOrNotNeeded":function(preference) {
+    <!-- End Google Tag Manager -->
+
+      <script type="text/javascript">
+        var _iub = _iub || [];
+        _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"consentOnContinuedBrowsing":false,"floatingPreferencesButtonDisplay":"bottom-right","invalidateConsentWithoutLog":true,"lang":"en","perPurposeConsent":true,"purposes":"1,4","siteId":2748411,"whitelabel":false,"cookiePolicyId":50379461, "callback":{ 
+          "onBannerClosed": function() {
+            location.reload();
+          },"onPreferenceExpressedOrNotNeeded":function(preference) {
                   dataLayer.push({
                       iubenda_ccpa_opted_out: _iub.cs.api.isCcpaOptedOut()
                   });
@@ -53,10 +57,10 @@
                               event: "iubenda_consent_rejected"
                           });
                       } else if (preference.purposes) {
-                          console.log('preference', preference)
+                          //console.log('preference', preference)
                           for (var purposeId in preference.purposes) {
                               if(preference.purposes[purposeId] === true) {
-                                console.log('purpose granted for', purposeId)
+                                //console.log('purpose granted for', purposeId)
                                 dataLayer.push({
                                       event: "iubenda_consent_given_purpose_" + purposeId
                                   });
@@ -64,6 +68,7 @@
                           }
                       }
                   }
+                  
               } }, "banner":{ "acceptButtonDisplay":true,"closeButtonDisplay":false,"customizeButtonDisplay":true,"explicitWithdrawal":true,"listPurposes":true,"position":"bottom","rejectButtonDisplay":true }};
   </script>
   <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
