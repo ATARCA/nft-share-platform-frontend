@@ -118,3 +118,30 @@ a {
   margin: 0px 20vw 0px 20vw
 }
 
+.Footer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #152F3D;
+  padding: 5vh 10vw;
+  color: #FFFFFF;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 170%;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.Footer div.divider {
+  background: #969696;
+  border: 1px solid #969696;
+}
+
+.Footer img.talko {
+  margin-bottom: 57px;
+}
+
+.Footer img.eu-flag {
+  margin-top: 0;
+}
