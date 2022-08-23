@@ -17,7 +17,7 @@ const Footer = () => {
                                 Talko has been created as part of ATARCA research project. Project website: <Item href="https://atarca.eu">atarca.eu</Item>
                             </Grid.Column>
                             <Grid.Column>
-                                General inquiries: <Item href="mailto: info@atarca.eu">info@atarca.eu</Item> Privacy related matters: <Item href="mailto: privacy@atarca.eu">privacy@atarca.eu</Item>
+                                General inquiries: <Item href="mailto: info@atarca.eu">info@atarca.eu</Item> <br/> Privacy related matters: <Item href="mailto: privacy@atarca.eu">privacy@atarca.eu</Item>
                             </Grid.Column>
                             <Grid.Column>
                                 Please read our <Item href="#">Privacy policy</Item> and <Item href="#">Consent</Item> from platform users.
