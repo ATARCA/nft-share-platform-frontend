@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import Welcome from '../../components/Welcome';
-import { GET_ALL_BOOKS, GET_MULTIPLY } from '../../queries-backend/queries';
-import { useQuery, useLazyQuery } from '@apollo/client'
-import { MultiplyQuery, MultiplyQueryVariables } from '../../queries-backend/types-backend/MultiplyQuery';
-import { AllBooksQuery } from '../../queries-backend/types-backend/AllBooksQuery';
-import { backendApolloClient } from '../../graphql/backendApolloClient';
+import React, { useState } from 'react';
+import { useQuery } from '@apollo/client'
 import { GET_TOKENS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
@@ -18,9 +13,6 @@ import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDro
 
 const Home = () => {
 
-    const [value1, setValue1] = useState('');
-    const [value2, setValue2] = useState('');
-
     const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES_VALUE);
 
     const navigate = useNavigate()
@@ -30,45 +22,6 @@ const Home = () => {
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
             variables: {isOriginal: true, isSharedInstance: false, category: selectedCategory}});
-
-    const renderBooks = () => {
-        if (allBooksResult.loading)
-            return <div>Loading</div>
-        else
-            return (
-                allBooksResult.data?.allBooks.map( (b) => <div key={b.title}>{b.author} {b.title}</div>)
-            )
-    }
-
-    const allBooksResult = useQuery<AllBooksQuery,undefined>(GET_ALL_BOOKS, {client: backendApolloClient});
-   
-    const [getMultiply, multiplyResult] = useLazyQuery<MultiplyQuery, MultiplyQueryVariables>(GET_MULTIPLY,{ client: backendApolloClient, onError: defaultErrorHandler})
-
-    useEffect(() => {
-        getMultiply({variables: {value1: Number(value1), value2: Number(value2)}})
-    }, [value1, value2, getMultiply])
-
-    const handleSubmit = (event: React.SyntheticEvent) => {
-        event.preventDefault()
-    }
-
-    const renderValuesForm = () => {
-        return <form onSubmit={handleSubmit}>
-            <label> Value1
-                <input type="text" 
-                    value={value1}
-                    onChange={({ target }) => setValue1(target.value)}/>
-            </label>
-            <label> Value2
-                <input type="text"
-                    value={value2}
-                    onChange={({ target }) => setValue2(target.value)}/>
-            </label>
-            <div>
-                {multiplyResult.data?.multiply.value}
-            </div>
-        </form>
-    }
 
     return (
         <div>
@@ -80,9 +33,6 @@ const Home = () => {
             </div>
             
             <TokenGrid tokens={allgraphShareTokensResult.data?.tokens || []} isLoading={allgraphShareTokensResult.loading}/>
-            <Welcome name='developer'/>
-            {renderBooks()}
-            {renderValuesForm()}
         </div>
     )
 }
