@@ -57,19 +57,19 @@ const MintPage = () => {
                 && metadataUploadErrorMessage === '' ? renderSuccessView() :
                 <div>
                     <div>Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
+                    <div className='margin-vertical' >
+                        <Input fluid 
+                            label='Contributor’s wallet address' 
+                            placeholder='Wallet address' 
+                            value={receiverAddress} 
+                            error={!isValidAddress && !!receiverAddress}
+                            onChange={(e, { value }) => setReceiverAddress( value ) }/>
+                    </div>
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
                         onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}
                         onCategoryChanged={ category => setCategory(category)}/>
             
-                    <div className='margin-vertical' >
-                        <Input fluid 
-                            label='Token receiver' 
-                            placeholder='address' 
-                            value={receiverAddress} 
-                            error={!isValidAddress && !!receiverAddress}
-                            onChange={(e, { value }) => setReceiverAddress( value ) }/>
-                    </div>
                     { mintErrorMessage ? 
                         <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
                     { metadataUploadErrorMessage ? 

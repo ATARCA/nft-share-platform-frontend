@@ -14,5 +14,5 @@ export interface NFTMetadata {
 export const subContributorPropertyName = 'Subcontributor'
 export const subContributionPropertyName = 'Subcontribution title'
 
-export const authorPropertyName = 'Author'
+export const receiverPropertyName = 'Receiver'
 export const categoryPropertyName = 'Category'

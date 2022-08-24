@@ -8,7 +8,7 @@ import { Card, Grid, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
-import { authorPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
+import { receiverPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
 import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
 
 export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean}) => {

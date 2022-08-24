@@ -102,6 +102,10 @@ a {
   }
 }
 
+.MetadataTemplateButton {
+  margin: 0.5em !important;
+}
+
 /* gives us the illusion of a "centered" slide 
 with preview of previous and next slide */
 .carousel__slider {

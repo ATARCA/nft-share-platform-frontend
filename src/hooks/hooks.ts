@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { authorPropertyName, NFTMetadata, subContributionPropertyName, subContributorPropertyName } from "../types/NFTMetadata"
+import { receiverPropertyName, NFTMetadata, subContributionPropertyName, subContributorPropertyName } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
 import { ShareableERC721 } from "../typechain-types";
@@ -70,7 +70,7 @@ export const useMetadata = (contractAddress: string, tokenId: string):
     const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
     const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === authorPropertyName)?.value 
+    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === receiverPropertyName)?.value 
     const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
 
