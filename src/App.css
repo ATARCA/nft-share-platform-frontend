@@ -102,6 +102,22 @@ a {
   }
 }
 
+.OnboardingCarouselBackground {
+  background-image: url('images/slide_gradient_background.png') !important;
+  border-radius: 2em !important;
+}
+
+.OnboardingCarouselTextParagraph {  
+  text-align: left;
+  font-size: 0.9em;
+}
+
+.OnboardingCarouselSlideIndex {
+  font-size: 0.7em;
+  padding: 1.5em;
+  color: #848484;
+
+}
 .margin-vertical {
   margin: 10px 0px
 }
