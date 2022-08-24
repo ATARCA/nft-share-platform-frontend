@@ -32,7 +32,6 @@
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-KCKRGJ3');</script>
     <!-- End Google Tag Manager -->
-
       <script type="text/javascript">
         var _iub = _iub || [];
         _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"consentOnContinuedBrowsing":false,"floatingPreferencesButtonDisplay":"bottom-right","invalidateConsentWithoutLog":true,"lang":"en","perPurposeConsent":true,"purposes":"1,4","siteId":2748411,"whitelabel":false,"cookiePolicyId":50379461, "callback":{ 
@@ -57,10 +56,8 @@
                               event: "iubenda_consent_rejected"
                           });
                       } else if (preference.purposes) {
-                          //console.log('preference', preference)
                           for (var purposeId in preference.purposes) {
                               if(preference.purposes[purposeId] === true) {
-                                //console.log('purpose granted for', purposeId)
                                 dataLayer.push({
                                       event: "iubenda_consent_given_purpose_" + purposeId
                                   });
