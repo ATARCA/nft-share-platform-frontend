@@ -3,6 +3,7 @@ env:
   CI: false
   REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_DEV}}
   REACT_APP_INFURA_DEV_KEY: ${{secrets.INFURA_DEV_KEY}}
+  REACT_APP_DESIRED_CHAIN_ID: ${{secrets.DESIRED_CHAIN_ID_DEV}}
 
 on: 
   workflow_dispatch:
