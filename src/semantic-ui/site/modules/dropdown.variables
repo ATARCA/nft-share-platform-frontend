@@ -1,3 +1,11 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@selectionBackground: #F2F2F2;
+@selectionBorder: none;
+@selectionBorderRadius: 0.5em;
+
+@selectionVisibleBorderColor: #F2F2F2;
+@selectionActiveHoverBorderColor: #E2E2E2;
+@selectionFocusBorderColor: #E2E2E2;

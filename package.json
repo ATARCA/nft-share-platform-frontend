@@ -47,7 +47,7 @@
     "build": "craco build",
     "backend:schema:download": "apollo schema:download --endpoint=http://localhost:4000/graphql backend-graphql-schema.json",
     "backend:schema:codegen": "apollo codegen:generate --localSchemaFile=backend-graphql-schema.json --target=typescript --includes=src/queries-backend/**/*.ts --tagName=gql --addTypename --globalTypesFile=src/types-backend/graphql-global-types.ts types-backend",
-    "thegraph:schema:download": "apollo schema:download --endpoint=https://api.thegraph.com/subgraphs/name/atarca/nft-share-platform-ropsten thegraph-graphql-schema.json",
+    "thegraph:schema:download": "apollo schema:download --endpoint=https://api.thegraph.com/subgraphs/name/atarca/nft-share-platform-goerli thegraph-graphql-schema.json",
     "thegraph:schema:codegen": "apollo codegen:generate --localSchemaFile=thegraph-graphql-schema.json --target=typescript --includes=src/queries-thegraph/**/*.ts --tagName=gql --addTypename --globalTypesFile=src/types-thegraph/thegraph-global-types.ts types-thegraph",
     "test": "craco test",
     "eject": "craco eject",

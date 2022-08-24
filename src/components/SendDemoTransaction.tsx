@@ -45,14 +45,14 @@ export const SendDemoTransaction = () => {
 
     const [ shareToAddress, setShareToAddress ] = useState('')
 
-    const allgraphShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, {client: theGraphApolloClient, pollInterval: 5000, variables: {isOriginal: true, isSharedInstance: false}});
+    const allgraphShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, {client: theGraphApolloClient, pollInterval: 5000, variables: {isOriginal: true, isSharedInstance: false, category: ''}});
 
     const onMintClicked = async () => {
         if (shareContract && accounts) {
             setMintInProgress(true)
             setErrorMessage('')
             try {
-                const resultTransaction = await shareContract.mint(accounts[0])
+                const resultTransaction = await shareContract.mint(accounts[0], 'test category')
                 await resultTransaction.wait()
             } catch (error) {
                 console.log(error)

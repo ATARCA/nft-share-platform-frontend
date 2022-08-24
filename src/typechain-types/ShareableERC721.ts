@@ -33,7 +33,7 @@ export interface ShareableERC721Interface extends utils.Interface {
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address)": FunctionFragment;
+    "mint(address,string)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "removeAdmin(address)": FunctionFragment;
@@ -91,7 +91,10 @@ export interface ShareableERC721Interface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -217,7 +220,7 @@ export interface ShareableERC721Interface extends utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "Initialized(uint8)": EventFragment;
-    "Mint(address,address,uint256)": EventFragment;
+    "Mint(address,address,uint256,bytes32)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
@@ -255,8 +258,8 @@ export type InitializedEvent = TypedEvent<[number], { version: number }>;
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export type MintEvent = TypedEvent<
-  [string, string, BigNumber],
-  { from: string; to: string; tokenId: BigNumber }
+  [string, string, BigNumber, string],
+  { from: string; to: string; tokenId: BigNumber; categoryHash: string }
 >;
 
 export type MintEventFilter = TypedEventFilter<MintEvent>;
@@ -388,6 +391,7 @@ export interface ShareableERC721 extends BaseContract {
 
     mint(
       account: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -535,6 +539,7 @@ export interface ShareableERC721 extends BaseContract {
 
   mint(
     account: string,
+    category: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -668,7 +673,11 @@ export interface ShareableERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(account: string, overrides?: CallOverrides): Promise<void>;
+    mint(
+      account: string,
+      category: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -767,15 +776,17 @@ export interface ShareableERC721 extends BaseContract {
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
-    "Mint(address,address,uint256)"(
+    "Mint(address,address,uint256,bytes32)"(
       from?: string | null,
       to?: string | null,
-      tokenId?: BigNumberish | null
+      tokenId?: BigNumberish | null,
+      categoryHash?: null
     ): MintEventFilter;
     Mint(
       from?: string | null,
       to?: string | null,
-      tokenId?: BigNumberish | null
+      tokenId?: BigNumberish | null,
+      categoryHash?: null
     ): MintEventFilter;
 
     "RoleAdminChanged(bytes32,bytes32,bytes32)"(
@@ -898,6 +909,7 @@ export interface ShareableERC721 extends BaseContract {
 
     mint(
       account: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1054,6 +1066,7 @@ export interface ShareableERC721 extends BaseContract {
 
     mint(
       account: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_TOKENS = gql`
-query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!){
-  tokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance}){
+query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!, $category: String!){
+  tokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance, category_starts_with: $category, category_ends_with: $category}){
     id
     ownerAddress
     contractAddress
@@ -77,6 +77,9 @@ query ProjectDetailsQuery ($projectId: ID!){
     owner
     shareableContractAddress
     likeContractAddress
+    categories {
+      id
+    }
   }
 }
 `
