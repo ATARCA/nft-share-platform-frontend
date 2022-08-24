@@ -18,7 +18,7 @@ const carouselContent : CarouselEntry[] =
         {image: slideIcon2, title: 'Shareable awards',text: 'Community awards highlight the talent, activities and knowledge sharing taking place in the community. They are kept in everyone’s own wallet and can be  publicly browsed on the Talko site. '},
         {image: slideIcon3, title: 'All about the good vibes!', text: 'If you get an award you can show your appreciation to those who helped you by sharing a copy with them. You can also ‘like’ other people’s awards. Share the good vibes!'}]
 
-const OnboardingCarousel = ( { onCloseClicked } : {onCloseClicked: () => void}) => {
+const OnboardingCarouselSlider = ( { onCloseClicked } : {onCloseClicked: () => void}) => {
 
     const carouselContext = useContext(CarouselContext);
     const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide);
@@ -33,12 +33,12 @@ const OnboardingCarousel = ( { onCloseClicked } : {onCloseClicked: () => void}) 
     const isLastSlide = currentSlide !== carouselContent.length -1
 
     return (
-        <Container textAlign="center" text>
+        <div>
            
-            <Slider style={{'paddingTop':'4em'}}>
+            <Slider>
                 {carouselContent.map( (item,i) =>     
                     <Slide   index={i} key={i}>
-                        <div style={{'padding':'4em'}} className="OnboardingCarouselBackground">
+                        <div style={{'padding':'4vw', margin:'2vw 4vw 1vw 4vw'}} className="OnboardingCarouselBackground">
                             <Image size="small" centered src={item.image}/>
                             <Header textAlign="left">{item.title}</Header>    
                             <p className="OnboardingCarouselTextParagraph">{item.text}</p>
@@ -56,24 +56,24 @@ const OnboardingCarousel = ( { onCloseClicked } : {onCloseClicked: () => void}) 
                 <Button onClick={onCloseClicked}>Close</Button>
             }
             
-        </Container>
+        </div>
     )
 }
 
-const OnboardingCarouselModal = () => {
+const OnboardingCarousel = () => {
 
     const [tutorialCompleted, setTutorialCompleted] = useTutorialCompletedCookie();
+
     return (
         <CarouselProvider
-            naturalSlideWidth={1.8}
+            naturalSlideWidth={3.3}
             naturalSlideHeight={1}
             totalSlides={carouselContent.length}
-            isIntrinsicHeight={true}
-            >
-            <OnboardingCarousel onCloseClicked={() => setTutorialCompleted(true)}/>
+            isIntrinsicHeight={true}>
+            {tutorialCompleted ? <></> : <OnboardingCarouselSlider onCloseClicked={() => setTutorialCompleted(true)}/>} 
         </CarouselProvider>
 
     )
 }
 
-export default OnboardingCarouselModal
+export default OnboardingCarousel
