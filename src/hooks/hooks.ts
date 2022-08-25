@@ -325,7 +325,7 @@ export const useIsProjectOwner = (): [isProjectOwner: boolean, projectDetailsLoa
 
     const activeAccount = accounts?.at(0) || "no account"
 
-    const isProjectOwner = addressesEqual( activeAccount , projectDetails?.owner)
+    const isProjectOwner = !! projectDetails?.operators.find(value => addressesEqual( activeAccount , value)) 
 
     return [isProjectOwner, projectDetailsLoading]
 }
