@@ -3,7 +3,7 @@
 *******************************/
 
 @primaryColor: #F96D5D;
-@primaryColorFocused: #2E008A;
+@primaryColorFocused: #F96D5D;
 
 @primaryColorDisabledOpaque: #F96D5D44;
 @secondaryColor : @grey;

@@ -2,19 +2,21 @@ import { useEffect, useState } from "react"
 import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
-import { authorPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
+import { receiverPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 
 const CATEGORY_MAX_LENGTH = 32
 
 const MetadataEntryItem = ({
     propertyName, 
     propertyValue, 
+    placeholder,
     onRemoveClicked,
     onPropertyNameChanged,
     onPropertyValueChanged,
     className}: {
         propertyName: string, 
         propertyValue: string, 
+        placeholder: string,
         onRemoveClicked: () => void,
         onPropertyNameChanged: (newName: string) => void,
         onPropertyValueChanged: (newValue: string) => void,
@@ -32,7 +34,8 @@ const MetadataEntryItem = ({
                 value={currentPropertyName} 
                 error={!currentPropertyName}
                 onChange={(e, { value }) => {setCurrentPropertyName( value ); onPropertyNameChanged(value)}}/>
-            <Input placeholder='propertyValue' className='margin-bottom'
+            <Input placeholder={placeholder} className='margin-bottom'
+                disabled={isCategoryItem}
                 value={currentPropertyValue} 
                 error={!currentPropertyValue}
                 onChange={(e, { value }) => {setcurrentPropertyValue( value ); onPropertyValueChanged(value)}}/>
@@ -45,10 +48,65 @@ interface MetadataAttributeUIEntry {
     id: string;
     name: string;
     value: string;
+    placeholder: string;
 }
 
-const twitterContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Twitter'},{ id:uuidv4(), name:authorPropertyName, value:''}, { id:uuidv4(), name:'Topic', value:''}, { id:uuidv4(), name:'Contribution URI', value:'http://'}]
-const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [{ id:uuidv4(), name:categoryPropertyName, value:'Event'}, { id:uuidv4(), name:'Organizer', value:''}, { id:uuidv4(), name:'Event Name', value:''}, { id:uuidv4(), name:'Event date', value:''}, { id:uuidv4(), name:'Event location', value:''}]
+const authoeNamePlaceholder = 'John Smith'
+const discordHandlePlaceholder = 'johnsmith#1234'
+
+const linkToContributionPropertyName = 'Link to contribution'
+
+const socialsContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Socials', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+
+const educationContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Education', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+
+const technologyContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Technology', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    
+const securityContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Security', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+        
+const contentContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Content', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+            
+const competitionContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Competition', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+                
+                        
+const communityHeroContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Community Hero', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+                
+
+const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Events', placeholder:''}, 
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:'Event name', value:'', placeholder:'Hackathon in Helsinki'}, 
+    { id:uuidv4(), name:'Event date', value:'', placeholder:'20/12/2022'}, 
+    { id:uuidv4(), name:'Event location', value:'', placeholder:'Helsinki, Finland'}]
 
 export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void, onCategoryChanged: (category:string | undefined) => void}) => {
 
@@ -109,7 +167,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
 
     const addEmptyProperty = () => {
         const arrayCopy = [...metadataAttributesArray]
-        arrayCopy.push({ id:uuidv4(), name:'',value:''})
+        arrayCopy.push({ id:uuidv4(), name:'',value:'', placeholder:''})
         setMetadataAttributesArray(arrayCopy)
     }
 
@@ -117,8 +175,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
         <div>
             <div className='margin-vertical' >
                 <Input fluid 
-                    label='Token name' 
-                    placeholder='Title' 
+                    label='Contribution title' 
+                    placeholder='e.g. Tutorial videos or Community help' 
                     value={tokenName} 
                     error={!tokenName && tokenNameEverChanged} 
                     onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
@@ -126,7 +184,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
             <div className='margin-vertical'>
                 <Input fluid
                     label='Description' 
-                    placeholder='Token description' 
+                    placeholder='Additional details - for token metadata only'//TODO show this in the token detail page 
                     value={tokenDescription} 
                     error={!tokenDescription && tokenDescriptionEverChanged} 
                     onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
@@ -146,12 +204,19 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
             </Header>
             
             <div className='margin-vertical'>Choose a template</div>
-            <Button basic onClick={() => { setMetadataAttributesArray(twitterContributionPropertiesTemplate)}}>Twitter contribution</Button>
-            <Button basic onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Event organiser</Button>
+            <Button basic className="MetadataTemplateButton" onClick={() => { setMetadataAttributesArray(socialsContributionPropertiesTemplate)}}>Socials</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(educationContributionPropertiesTemplate)}}>Education</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(technologyContributionPropertiesTemplate)}}>Technology</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(securityContributionPropertiesTemplate)}}>Security</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(contentContributionPropertiesTemplate)}}>Content</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(competitionContributionPropertiesTemplate)}}>Competition</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(communityHeroContributionPropertiesTemplate)}}>Community Hero</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Events</Button>
             {Array.from( metadataAttributesArray ).map( entry => { 
                 const uuid = entry.id
                 const propertyName = entry.name
                 const propertyValue = entry.value
+                const placeholder = entry.placeholder
 
                 return (
                     <MetadataEntryItem
@@ -159,6 +224,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                         key={uuid} 
                         propertyName={propertyName} 
                         propertyValue={propertyValue}
+                        placeholder={placeholder}
                         onRemoveClicked={() => removeProperty(uuid)}
                         onPropertyNameChanged={(newName) => updatePropertyName(uuid, newName) }
                         onPropertyValueChanged={(newValue => updatePropertyValue(uuid, newValue))}/>)})}

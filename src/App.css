@@ -102,6 +102,33 @@ a {
   }
 }
 
+.MetadataTemplateButton {
+  margin: 0.5em !important;
+}
+
+/* gives us the illusion of a "centered" slide 
+with preview of previous and next slide */
+.carousel__slider {
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
+.OnboardingCarouselBackground {
+  background-image: url('images/slide_gradient_background.png') !important;
+  border-radius: 2em !important;
+}
+
+.OnboardingCarouselTextParagraph {  
+  text-align: left;
+  font-size: 0.9em;
+}
+
+.OnboardingCarouselSlideIndex {
+  font-size: 0.7em;
+  padding: 1.5em;
+  color: #848484;
+
+}
 .margin-vertical {
   margin: 10px 0px
 }

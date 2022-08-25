@@ -4,7 +4,7 @@ import { GET_TOKENS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import TokenGrid from '../../components/TokenGrid';
-import OnboardingCarousel from '../onboarding/OnboardingCarouselModal';
+import OnboardingCarousel from '../onboarding/OnboardingCarousel';
 import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
 import { Header } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
