@@ -36,6 +36,7 @@ export interface TokensQuery_tokens {
   isSharedInstance: boolean;
   isLikeToken: boolean;
   tokenId: any | null;
+  metadataUri: string | null;
   sharedChildTokens: TokensQuery_tokens_sharedChildTokens[];
   likeTokens: TokensQuery_tokens_likeTokens[];
   likedParentToken: TokensQuery_tokens_likedParentToken | null;

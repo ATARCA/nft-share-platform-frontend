@@ -18,16 +18,11 @@ import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from ".
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
+import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
 
 const { useProvider, useAccounts, useIsActive } = hooks
 
-
-const buildMetadataUri = (contractAddress: string, tokenId: string) => {
-    //TODO after updating to new contracts load URI from contract or subgraph - do not build it here
-    return `${process.env.REACT_APP_BACKEND_URI}/metadata/${contractAddress}/${tokenId}`
-}
-
-export const useMetadata = (contractAddress: string, tokenId: string): 
+export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined): 
       [ tokenDisplayName: string , 
         tokenHolderDisplayName: string, 
         metadata: NFTMetadata | undefined , 
@@ -41,8 +36,10 @@ export const useMetadata = (contractAddress: string, tokenId: string):
     useEffect( () => {
         const fetchMetadata = async () => {
 
+            if ( !token || !token.metadataUri ) return
+
             try {
-                const uri = buildMetadataUri(contractAddress, tokenId)
+                const uri = token.metadataUri
                 setErrorMessage('')
                 const response = await fetch(uri)
                 console.log('metadata response',response)
@@ -64,7 +61,7 @@ export const useMetadata = (contractAddress: string, tokenId: string):
         }
     
         fetchMetadata()
-    },[contractAddress, tokenId])
+    },[token])
 
     const tokenName = metadata?.name
     const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
