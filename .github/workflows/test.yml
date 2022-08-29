@@ -4,7 +4,7 @@ env:
   REACT_APP_BACKEND_URI: ${{secrets.BACKEND_URI_TEST}}
   REACT_APP_INFURA_DEV_KEY: ${{secrets.INFURA_TEST_KEY}}
   REACT_APP_DESIRED_CHAIN_ID: ${{secrets.DESIRED_CHAIN_ID_TEST}}
-
+  REACT_APP_SUBGRAPH_URI: ${{secrets.REACT_APP_SUBGRAPH_URI_TEST}}
 on: 
   workflow_dispatch:
 jobs:
