@@ -89,8 +89,9 @@ const MintPage = () => {
     }
    
     if (isActive && !isProjectOwner) return <div>
-        <Message warning> This wallet is not a project owner of this project. </Message>
-        <p>Wallet {projectDetails?.owner} is the owner of this project.</p>
+        <Message warning> This wallet is not an operator of this project. </Message>
+        <p>Following wallets are operators of this project</p> 
+        {projectDetails?.operators.map( address => <div key={address}> {address} </div>)} 
     </div>
 
     return (

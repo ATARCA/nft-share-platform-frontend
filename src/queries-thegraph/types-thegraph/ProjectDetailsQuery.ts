@@ -15,7 +15,7 @@ export interface ProjectDetailsQuery_project_categories {
 export interface ProjectDetailsQuery_project {
   __typename: "Project";
   id: string;
-  owner: any;
+  operators: any[];
   shareableContractAddress: any | null;
   likeContractAddress: any | null;
   categories: ProjectDetailsQuery_project_categories[];

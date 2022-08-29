@@ -74,7 +74,7 @@ export const GET_PROJECT_DETAILS = gql`
 query ProjectDetailsQuery ($projectId: ID!){
   project(id: $projectId) {
     id
-    owner
+    operators
     shareableContractAddress
     likeContractAddress
     categories {
