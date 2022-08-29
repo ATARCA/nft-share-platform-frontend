@@ -7,6 +7,11 @@
 // GraphQL query operation: TokenByIdQuery
 // ====================================================
 
+export interface TokenByIdQuery_token_project {
+  __typename: "Project";
+  id: string;
+}
+
 export interface TokenByIdQuery_token_sharedChildTokens {
   __typename: "Token";
   id: string;
@@ -37,6 +42,9 @@ export interface TokenByIdQuery_token {
   isSharedInstance: boolean;
   isLikeToken: boolean;
   tokenId: any | null;
+  parentTokenId: any | null;
+  metadataUri: string | null;
+  project: TokenByIdQuery_token_project;
   sharedChildTokens: TokenByIdQuery_token_sharedChildTokens[];
   likeTokens: TokenByIdQuery_token_likeTokens[];
   likedParentToken: TokenByIdQuery_token_likedParentToken | null;

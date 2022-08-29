@@ -10,6 +10,7 @@ import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQue
 import { buildTokenDetailRoute } from '../routingUtils';
 import { receiverPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
 import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
+import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenByIdQuery';
 
 export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean}) => {
     if (isLoading) return <div className='TokenGridBackground'>
@@ -33,10 +34,10 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
     );
 };
 
-export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens}) => {
+export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token}) => {
 
     const navigate = useNavigate()
-    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token.contractAddress, token.tokenId)
+    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     

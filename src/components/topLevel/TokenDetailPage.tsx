@@ -55,7 +55,7 @@ const TokenDetailPage = () => {
 
     const likeTokenExists = likeTokenExistsResult.data?.tokens.length !== 0
 
-    const [ tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(contractAddress, tokenId)
+    const [ tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, metadataErrorMessage ] = useMetadata(detailedToken)
 
     const onLikeClicked = async () => {
         if (likeContract) {
@@ -79,7 +79,7 @@ const TokenDetailPage = () => {
     }
 
     const renderMetadataAttributes = (token:TokenByIdQuery_token) => {
-        return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <>metadata not available</>}</div>
+        return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <p>Metadata not available. URI <a target={"_blank"} href={token.metadataUri||''} rel="noreferrer">{token.metadataUri}</a></p>}</div>
     }
 
     const renderShareOrLikeButton = () => {
@@ -132,15 +132,13 @@ const TokenDetailPage = () => {
         </div>
     }
 
-    const renderLeftColumn = (token:TokenByIdQuery_token
-) => {
+    const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token}/>
         </Grid.Column>
     }
 
-    const renderRightColumn = (token:TokenByIdQuery_token
-) => {
+    const renderRightColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column><div>
             { errorMessage ? 
                 <Message error header='Transaction error' content={errorMessage}/>: <></>}

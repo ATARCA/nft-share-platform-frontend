@@ -10,6 +10,7 @@ query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!, $category
     isSharedInstance
     isLikeToken
     tokenId
+    metadataUri
     sharedChildTokens {
       id
     }
@@ -35,6 +36,11 @@ query TokenByIdQuery ($id: ID!){
     isSharedInstance
     isLikeToken
     tokenId
+    parentTokenId
+    metadataUri
+    project {
+      id
+    }
     sharedChildTokens {
       id
     }
@@ -104,6 +110,7 @@ query TokensOfAddressQuery ($projectId: String!, $address: Bytes!, $isOriginal: 
     isLikeToken
     tokenId
     parentTokenId
+    metadataUri
     likedParentToken {
       likeTokens {
         id

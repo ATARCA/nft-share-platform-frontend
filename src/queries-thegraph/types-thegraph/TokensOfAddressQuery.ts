@@ -43,10 +43,10 @@ export interface TokensOfAddressQuery_tokens {
   isLikeToken: boolean;
   tokenId: any | null;
   parentTokenId: any | null;
+  metadataUri: string | null;
   likedParentToken: TokensOfAddressQuery_tokens_likedParentToken | null;
   sharedChildTokens: TokensOfAddressQuery_tokens_sharedChildTokens[];
   likeTokens: TokensOfAddressQuery_tokens_likeTokens[];
-  metadataUri: string | null;
 }
 
 export interface TokensOfAddressQuery {
