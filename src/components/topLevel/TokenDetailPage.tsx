@@ -116,7 +116,8 @@ const TokenDetailPage = () => {
                 <Grid.Column style={{'textAlign': 'left'}} >
                     <Header.Subheader className="Page-subheader">Award details</Header.Subheader>
                     <Header className="No-overflow" as='h1'>{tokenDisplayName}</Header>
-                </Grid.Column> <Grid.Column style={{'justifyContent': 'right', 'display': 'flex', 'alignItems': 'center'}} >
+                </Grid.Column> 
+                <Grid.Column style={{'justifyContent': 'right', 'display': 'flex', 'alignItems': 'center'}} >
                     { renderActionButtonArea() }
                 </Grid.Column>
             </Grid>

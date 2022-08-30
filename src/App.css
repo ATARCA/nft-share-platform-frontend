@@ -141,6 +141,10 @@ with preview of previous and next slide */
   margin: 0px 10px
 }
 
+.padding-vertical {
+  padding-top: 0.75em !important;
+  padding-bottom: 0.75em !important;
+}
 .margin-bottom {
   margin: 0px 10px 0px 0px 
 }
