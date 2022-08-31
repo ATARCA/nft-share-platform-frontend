@@ -1,8 +1,9 @@
 import React from "react";
 
-export const InputLabel = ( {label}: { label: string}) => {
+export const InputLabel = ( {label, subLabel}: { label: string, subLabel?: string}) => {
 
-    return <div className="ui label label">
-        {label}
+    return <div>
+        <div>{label}</div> 
+        {subLabel ? <div className="FormSubLabel">{subLabel}</div> : <></> }
     </div>
 }

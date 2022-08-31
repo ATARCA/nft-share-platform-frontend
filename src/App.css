@@ -129,6 +129,11 @@ with preview of previous and next slide */
   color: #848484;
 
 }
+
+.FormSubLabel {
+ color: #748296;
+}
+
 .margin-vertical {
   margin: 10px 0px
 }
