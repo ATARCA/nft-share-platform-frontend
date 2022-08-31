@@ -3,6 +3,9 @@ import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
 import { receiverPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
+import { InputForm } from "./InputForm/InputForm";
+import { InputLine } from "./InputForm/InputLine";
+import { InputLabel } from "./InputForm/InputLabel";
 
 const CATEGORY_MAX_LENGTH = 32
 
@@ -173,32 +176,34 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
 
     return (
         <div>
-            <div className='margin-vertical' >
-                <Input fluid 
-                    label='Contribution title' 
-                    placeholder='e.g. Tutorial videos or Community help' 
-                    value={tokenName} 
-                    error={!tokenName && tokenNameEverChanged} 
-                    onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
-            </div>
-            <div className='margin-vertical'>
-                <Input fluid
-                    label='Description' 
-                    placeholder='Additional details - for token metadata only'//TODO show this in the token detail page 
-                    value={tokenDescription} 
-                    error={!tokenDescription && tokenDescriptionEverChanged} 
-                    onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
-            </div>
+            <InputForm>
+                <InputLine >
+                    <InputLabel label='Contribution title' subLabel='e.g. Tutorial videos or Community help'/>
 
-            <div className='margin-vertical'>
-                <Input fluid
-                    label='Image URL' 
-                    placeholder='http://..' 
-                    value={imageURL} 
-                    error={!imageURL && imageURLEverChanged} 
-                    onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
-            </div>
+                    <Input fluid  
+                        value={tokenName} 
+                        error={!tokenName && tokenNameEverChanged} 
+                        onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
+                </InputLine>
+                <InputLine >
+                    <InputLabel label='Description' subLabel='Additional details - for token metadata only'/>
 
+                    <Input fluid
+                        //TODO show this in the token detail page 
+                        value={tokenDescription} 
+                        error={!tokenDescription && tokenDescriptionEverChanged} 
+                        onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
+
+                </InputLine>
+                <InputLine>
+                    <InputLabel label='Image URL'/>
+                    <Input fluid
+                        placeholder='http://..' 
+                        value={imageURL} 
+                        error={!imageURL && imageURLEverChanged} 
+                        onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
+                </InputLine>
+            </InputForm>
             <Header as='h2' dividing>
                 Properties
             </Header>
