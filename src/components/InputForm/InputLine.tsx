@@ -1,8 +1,13 @@
 import React from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Table } from "semantic-ui-react";
 
 export const InputLine = ( {children}:{children?:React.ReactNode}) => {
-    return <Grid.Row>
-        {React.Children.map(children, (child, index) =><Grid.Column width={index===0? 7:9}>{child}</Grid.Column>)}
-    </Grid.Row>
+    return <Table.Row>
+        {React.Children.map(children, (child, index) =><Table.Cell 
+            collapsing={index===0? true:false}
+            style={{ 'borderTop':'none'}}>
+                {child}
+            
+            </Table.Cell>)}
+    </Table.Row>
 }

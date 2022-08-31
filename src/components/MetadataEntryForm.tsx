@@ -6,10 +6,11 @@ import { receiverPropertyName, categoryPropertyName, MetadataAttribute, NFTMetad
 import { InputForm } from "./InputForm/InputForm";
 import { InputLine } from "./InputForm/InputLine";
 import { InputLabel } from "./InputForm/InputLabel";
+import { ethers } from "ethers";
 
 const CATEGORY_MAX_LENGTH = 32
 
-const MetadataEntryItem = ({
+const MetadataKeyValueEntryItem = ({
     propertyName, 
     propertyValue, 
     placeholder,
@@ -111,8 +112,13 @@ const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] =
     { id:uuidv4(), name:'Event date', value:'', placeholder:'20/12/2022'}, 
     { id:uuidv4(), name:'Event location', value:'', placeholder:'Helsinki, Finland'}]
 
-export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void, onCategoryChanged: (category:string | undefined) => void}) => {
+export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged, onReceiverAddressChanged}: 
+    {onIsValid: (isValid:boolean) => void, 
+        onMetadataChanged: (metadata:string) => void, 
+        onCategoryChanged: (category:string | undefined) => void,
+        onReceiverAddressChanged: (address: string | undefined) => void}) => {
 
+    const [ receiverAddress, setReceiverAddress ] = useState('')
     const [ tokenName, setTokenName ] = useState('')
     const [ tokenNameEverChanged, setTokenNameEverChanged ] = useState(false)
 
@@ -125,6 +131,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
     const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
 
     const [ isValid, setIsValid ] = useState(false)
+
+    const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
     const updatePropertyValue = (uuid: string, newValue:string) => {
         const arrayCopy = [...metadataAttributesArray]
@@ -178,6 +186,14 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
         <div>
             <InputForm>
                 <InputLine >
+                    <InputLabel label='Contributor’s wallet address'/>
+                    <Input fluid 
+                        value={receiverAddress} 
+                        error={!isValidAddress && !!receiverAddress}
+                        onChange={(e, { value }) => {setReceiverAddress( value ); onReceiverAddressChanged(value)} }/>                
+                </InputLine>
+
+                <InputLine >
                     <InputLabel label='Contribution title' subLabel='e.g. Tutorial videos or Community help'/>
 
                     <Input fluid  
@@ -185,6 +201,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                         error={!tokenName && tokenNameEverChanged} 
                         onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
                 </InputLine>
+
                 <InputLine >
                     <InputLabel label='Description' subLabel='Additional details - for token metadata only'/>
 
@@ -195,6 +212,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                         onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
 
                 </InputLine>
+
                 <InputLine>
                     <InputLabel label='Image URL'/>
                     <Input fluid
@@ -224,7 +242,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                 const placeholder = entry.placeholder
 
                 return (
-                    <MetadataEntryItem
+                    <MetadataKeyValueEntryItem
                         className='margin-vertical'
                         key={uuid} 
                         propertyName={propertyName} 

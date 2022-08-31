@@ -1,8 +1,10 @@
 import React from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Table } from "semantic-ui-react";
 
 export const InputForm = ( {children}:{children?:React.ReactNode}) => {
-    return <Grid verticalAlign='middle' style={{'textAlign':'left'}}>
-        {children}
-    </Grid>
+    return <Table  basic='very' verticalAlign='middle' style={{'textAlign':'left'}}>
+        <Table.Body>
+            {children}
+        </Table.Body>
+    </Table>
 }

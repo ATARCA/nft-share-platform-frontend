@@ -1,5 +1,4 @@
 import { Button, Input, Message } from "semantic-ui-react";
-import { ethers } from "ethers";
 import React, { useState } from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
@@ -35,9 +34,7 @@ const MintPage = () => {
         mintErrorMessage, 
         metadataUploadErrorMessage, 
         resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
-
-    const isValidAddress = ethers.utils.isAddress(receiverAddress)
-
+ 
     const onMintAndUploadMetadataClicked = async () => {
         await mintAndUploadMetadata()
     }
@@ -60,19 +57,12 @@ const MintPage = () => {
                 && metadataUploadErrorMessage === '' ? renderSuccessView() :
                 <div>
                     <div className="margin-vertical">Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
-                    <InputForm>
-                        <InputLine>
-                            <InputLabel label='Contributor’s wallet address'/>
-                            <Input fluid 
-                                value={receiverAddress} 
-                                error={!isValidAddress && !!receiverAddress}
-                                onChange={(e, { value }) => setReceiverAddress( value ) }/>
-                        </InputLine>
-                    </InputForm>
+                   
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
                         onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}
-                        onCategoryChanged={ category => setCategory(category)}/>
+                        onCategoryChanged={ category => setCategory(category)}
+                        onReceiverAddressChanged={ address => setReceiverAddress(address || '')}/>
             
                     { mintErrorMessage ? 
                         <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
