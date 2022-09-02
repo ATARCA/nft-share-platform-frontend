@@ -181,3 +181,7 @@ with preview of previous and next slide */
 .Footer img.eu-flag {
   margin-top: 0;
 }
+
+.CarouselOverlayGradient {
+  background: linear-gradient(90deg, rgba(255,255,255,125) 0%, rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%, rgba(255,255,255,125) 100%);
+}
