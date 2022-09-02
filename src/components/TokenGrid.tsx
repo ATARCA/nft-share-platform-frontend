@@ -34,7 +34,7 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
     );
 };
 
-export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token}) => {
+export const TokenCard = ({token, centered = true}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token, centered?: boolean}) => {
 
     const navigate = useNavigate()
     const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token)
@@ -63,7 +63,7 @@ export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQu
 
     if (consentMissing)
         return (
-            <Card onClick={onCardClicked} centered style={cardStyle}>
+            <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header>Owner consent missing</Card.Header>
@@ -77,7 +77,7 @@ export const TokenCard = ({token}: {token:TokensQuery_tokens | TokensOfAddressQu
         )
     else return (
         <div>
-            <Card onClick={onCardClicked} centered style={cardStyle}>
+            <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
             
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>

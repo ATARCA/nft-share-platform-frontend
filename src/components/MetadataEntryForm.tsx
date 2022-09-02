@@ -3,10 +3,14 @@ import React from "react";
 import { Icon, Input, Header, Button } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
 import { receiverPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
+import { InputForm } from "./InputForm/InputForm";
+import { InputLine } from "./InputForm/InputLine";
+import { InputLabel } from "./InputForm/InputLabel";
+import { ethers } from "ethers";
 
 const CATEGORY_MAX_LENGTH = 32
 
-const MetadataEntryItem = ({
+const MetadataKeyValueEntryItem = ({
     propertyName, 
     propertyValue, 
     placeholder,
@@ -108,8 +112,13 @@ const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] =
     { id:uuidv4(), name:'Event date', value:'', placeholder:'20/12/2022'}, 
     { id:uuidv4(), name:'Event location', value:'', placeholder:'Helsinki, Finland'}]
 
-export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged}: {onIsValid: (isValid:boolean) => void, onMetadataChanged: (metadata:string) => void, onCategoryChanged: (category:string | undefined) => void}) => {
+export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged, onReceiverAddressChanged}: 
+    {onIsValid: (isValid:boolean) => void, 
+        onMetadataChanged: (metadata:string) => void, 
+        onCategoryChanged: (category:string | undefined) => void,
+        onReceiverAddressChanged: (address: string | undefined) => void}) => {
 
+    const [ receiverAddress, setReceiverAddress ] = useState('')
     const [ tokenName, setTokenName ] = useState('')
     const [ tokenNameEverChanged, setTokenNameEverChanged ] = useState(false)
 
@@ -122,6 +131,8 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
     const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
 
     const [ isValid, setIsValid ] = useState(false)
+
+    const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
     const updatePropertyValue = (uuid: string, newValue:string) => {
         const arrayCopy = [...metadataAttributesArray]
@@ -173,32 +184,44 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
 
     return (
         <div>
-            <div className='margin-vertical' >
-                <Input fluid 
-                    label='Contribution title' 
-                    placeholder='e.g. Tutorial videos or Community help' 
-                    value={tokenName} 
-                    error={!tokenName && tokenNameEverChanged} 
-                    onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
-            </div>
-            <div className='margin-vertical'>
-                <Input fluid
-                    label='Description' 
-                    placeholder='Additional details - for token metadata only'//TODO show this in the token detail page 
-                    value={tokenDescription} 
-                    error={!tokenDescription && tokenDescriptionEverChanged} 
-                    onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
-            </div>
+            <InputForm>
+                <InputLine >
+                    <InputLabel label='Contributor’s wallet address'/>
+                    <Input fluid 
+                        value={receiverAddress} 
+                        error={!isValidAddress && !!receiverAddress}
+                        onChange={(e, { value }) => {setReceiverAddress( value ); onReceiverAddressChanged(value)} }/>                
+                </InputLine>
 
-            <div className='margin-vertical'>
-                <Input fluid
-                    label='Image URL' 
-                    placeholder='http://..' 
-                    value={imageURL} 
-                    error={!imageURL && imageURLEverChanged} 
-                    onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
-            </div>
+                <InputLine >
+                    <InputLabel label='Contribution title' subLabel='e.g. Tutorial videos or Community help'/>
 
+                    <Input fluid  
+                        value={tokenName} 
+                        error={!tokenName && tokenNameEverChanged} 
+                        onChange={(e, { value }) => {setTokenName( value ); setTokenNameEverChanged(true)}} />
+                </InputLine>
+
+                <InputLine >
+                    <InputLabel label='Description' subLabel='Additional details - for token metadata only'/>
+
+                    <Input fluid
+                        //TODO show this in the token detail page 
+                        value={tokenDescription} 
+                        error={!tokenDescription && tokenDescriptionEverChanged} 
+                        onChange={(e, { value }) => {setTokenDescription( value ); setTokenDescriptionEverChanged(true)}}/>
+
+                </InputLine>
+
+                <InputLine>
+                    <InputLabel label='Image URL'/>
+                    <Input fluid
+                        placeholder='http://..' 
+                        value={imageURL} 
+                        error={!imageURL && imageURLEverChanged} 
+                        onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
+                </InputLine>
+            </InputForm>
             <Header as='h2' dividing>
                 Properties
             </Header>
@@ -219,7 +242,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                 const placeholder = entry.placeholder
 
                 return (
-                    <MetadataEntryItem
+                    <MetadataKeyValueEntryItem
                         className='margin-vertical'
                         key={uuid} 
                         propertyName={propertyName} 

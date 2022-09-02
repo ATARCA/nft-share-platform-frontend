@@ -1,10 +1,12 @@
 import { Button, Input, Message } from "semantic-ui-react";
-import { ethers } from "ethers";
 import React, { useState } from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
 import { projectId } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
+import { InputForm } from "../InputForm/InputForm";
+import { InputLine } from "../InputForm/InputLine";
+import { InputLabel } from "../InputForm/InputLabel";
 
 const { useAccounts, useIsActive, useProvider } = hooks
 
@@ -32,9 +34,7 @@ const MintPage = () => {
         mintErrorMessage, 
         metadataUploadErrorMessage, 
         resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
-
-    const isValidAddress = ethers.utils.isAddress(receiverAddress)
-
+ 
     const onMintAndUploadMetadataClicked = async () => {
         await mintAndUploadMetadata()
     }
@@ -56,19 +56,13 @@ const MintPage = () => {
                 && mintErrorMessage === '' 
                 && metadataUploadErrorMessage === '' ? renderSuccessView() :
                 <div>
-                    <div>Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
-                    <div className='margin-vertical' >
-                        <Input fluid 
-                            label='Contributor’s wallet address' 
-                            placeholder='Wallet address' 
-                            value={receiverAddress} 
-                            error={!isValidAddress && !!receiverAddress}
-                            onChange={(e, { value }) => setReceiverAddress( value ) }/>
-                    </div>
+                    <div className="margin-vertical">Contract deployed at {shareContract ? shareContract.address : '(loading)'}</div>
+                   
                     <MetadataEntryForm 
                         onIsValid={(isValid) => setIsMetadataValid(isValid)}
                         onMetadataChanged={(metadataNew) => setMetadata(metadataNew)}
-                        onCategoryChanged={ category => setCategory(category)}/>
+                        onCategoryChanged={ category => setCategory(category)}
+                        onReceiverAddressChanged={ address => setReceiverAddress(address || '')}/>
             
                     { mintErrorMessage ? 
                         <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
