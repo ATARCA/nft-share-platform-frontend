@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext, CarouselContext } from 'pure-react-carousel';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { Button, Container, Header, Icon, Image} from "semantic-ui-react";
@@ -6,6 +6,7 @@ import slideIcon1 from '../../images/slide_icon1.png';
 import slideIcon2 from '../../images/slide_icon2.png';
 import slideIcon3 from '../../images/slide_icon3.png';
 import { useTutorialCompletedCookie } from "../../hooks/hooks";
+import { DirectiveDefinitionNode } from "graphql";
 
 interface CarouselEntry {
     image: string;
@@ -21,6 +22,8 @@ const carouselContent : CarouselEntry[] =
 const OnboardingCarouselSlider = ( { onCloseClicked } : {onCloseClicked: () => void}) => {
 
     const carouselContext = useContext(CarouselContext);
+    const sliderRef = useRef<HTMLDivElement>(null)
+
     const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide);
     useEffect(() => {
         function onChange() {
@@ -34,20 +37,22 @@ const OnboardingCarouselSlider = ( { onCloseClicked } : {onCloseClicked: () => v
 
     return (
         <div>
-           
-            <Slider>
-                {carouselContent.map( (item,i) =>     
-                    <Slide   index={i} key={i}>
-                        <div style={{'padding':'4vw', margin:'2vw 4vw 1vw 4vw'}} className="OnboardingCarouselBackground">
-                            <Image size="small" centered src={item.image}/>
-                            <Header textAlign="left">{item.title}</Header>    
-                            <p className="OnboardingCarouselTextParagraph">{item.text}</p>
-                        </div>
-                        <p className="OnboardingCarouselSlideIndex">{i+1} of {carouselContent.length}</p>
-                    </Slide>
-                )}
-            </Slider>
-               
+            <div className="CarouselOverlayGradient" style={{'zIndex':'99999', 'position':'absolute', 'width':'100%', 'height':`${sliderRef.current?.clientHeight || 0}px`, 'pointerEvents':'none'}}> 
+            </div >
+            <div ref={sliderRef}>
+                <Slider >
+                    {carouselContent.map( (item,i) =>     
+                        <Slide   index={i} key={i}>
+                            <div style={{'padding':'4vw', margin:'2vw 4vw 1vw 4vw'}} className="OnboardingCarouselBackground">
+                                <Image size="small" centered src={item.image}/>
+                                <Header textAlign="left">{item.title}</Header>    
+                                <p className="OnboardingCarouselTextParagraph">{item.text}</p>
+                            </div>
+                            <p className="OnboardingCarouselSlideIndex">{i+1} of {carouselContent.length}</p>
+                        </Slide>
+                    )}
+                </Slider>
+            </div>
             <Button as={ButtonBack}><Icon name="arrow left"/></Button>
             
             { isLastSlide ? 
@@ -55,7 +60,7 @@ const OnboardingCarouselSlider = ( { onCloseClicked } : {onCloseClicked: () => v
                 :
                 <Button onClick={onCloseClicked}>Close</Button>
             }
-            
+           
         </div>
     )
 }
