@@ -17,10 +17,10 @@ const Footer = () => {
                                 Talko has been created as part of ATARCA research project. Project website: <Item href="https://atarca.eu">atarca.eu</Item>
                             </Grid.Column>
                             <Grid.Column>
-                                General inquiries: <Item href="mailto: info@atarca.eu">info@atarca.eu</Item> <br/> Privacy related matters: <Item href="mailto: privacy@atarca.eu">privacy@atarca.eu</Item>
+                                General inquiries: <Item href="mailto: info@talkoapp.io">info@talkoapp.io</Item> <br/> Privacy related matters: <Item href="mailto: privacy@atarca.eu">privacy@atarca.eu</Item>
                             </Grid.Column>
                             <Grid.Column>
-                                Please read our <Item href="#">Privacy policy</Item> and <Item href="#">Consent</Item> from platform users.
+                                Please read our <Item href="/talko_privacy.pdf" download>Privacy policy</Item> and <Item href="/talko_consent.pdf" download>Consent</Item> from platform users.
                             </Grid.Column>
                         </Grid.Row>
                         <Divider></Divider>
@@ -29,7 +29,7 @@ const Footer = () => {
                                 <Image className='margin-vertical-main-menu eu-flag' src={eu_flag} size='tiny'/>
                             </Grid.Column>
                             <Grid.Column width={12}>
-                                This project has received funding from the European Union’s Horizon 2020 Research and Innovation Programme under Grant Agreement Nº 964678. Any dissemination of results here presented reflects only the consortium view.
+                                This project has received funding from the European Union’s Horizon 2020 Research and Innovation Programme under Grant Agreement Nº 964678.
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
