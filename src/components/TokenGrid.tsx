@@ -8,7 +8,7 @@ import { Card, Grid, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
-import { receiverPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName } from '../types/NFTMetadata';
+import { receiverPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName, NFTMetadata } from '../types/NFTMetadata';
 import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
 import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenByIdQuery';
 
@@ -34,10 +34,12 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
     );
 };
 
-export const TokenCard = ({token, centered = true}: {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token, centered?: boolean}) => {
-
+export const TokenCard = ({token, centered = true, useDummyMetadata}: 
+    {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token, 
+        centered?: boolean, 
+        useDummyMetadata? : NFTMetadata}) => {
     const navigate = useNavigate()
-    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token)
+    const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token, useDummyMetadata)
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
@@ -56,7 +58,9 @@ export const TokenCard = ({token, centered = true}: {token:TokensQuery_tokens | 
     if (errorMessage) console.error('Token card metadata loading errror', errorMessage)
 
     const onCardClicked = () => {
-        navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
+        if (!useDummyMetadata) {
+            navigate(buildTokenDetailRoute(token.contractAddress,BigNumber.from(token.tokenId)))
+        }
     }
 
     const cardStyle = {'textAlign': 'left', 'textDecoration': 'none'}
@@ -79,7 +83,7 @@ export const TokenCard = ({token, centered = true}: {token:TokensQuery_tokens | 
         <div>
             <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
             
-                <Image rounded size='medium' className='Square' src={imageURL}/>
+                <Image rounded size='medium' className='Square' src={imageURL} style={{'maxWidth': '100%'}}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header className='No-overflow'>{tokenHolderDisplayName}</Card.Header>

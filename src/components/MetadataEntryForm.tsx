@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
 import React from "react";
-import { Icon, Input, Header, Button } from "semantic-ui-react";
+import { Icon, Input, Header, Button, Image } from "semantic-ui-react";
 import { v4 as uuidv4 } from 'uuid';
 import { receiverPropertyName, categoryPropertyName, MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 import { InputForm } from "./InputForm/InputForm";
 import { InputLine } from "./InputForm/InputLine";
 import { InputLabel } from "./InputForm/InputLabel";
 import { ethers } from "ethers";
+import { ImageUrlDropdown } from "./ImageUrlDropdown";
+import { TokenCard } from "./TokenGrid";
+import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
 
 const CATEGORY_MAX_LENGTH = 32
 
@@ -112,6 +115,20 @@ const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] =
     { id:uuidv4(), name:'Event date', value:'', placeholder:'20/12/2022'}, 
     { id:uuidv4(), name:'Event location', value:'', placeholder:'Helsinki, Finland'}]
 
+const dummyToken: TokensQuery_tokens = { __typename: "Token",
+    id: "string",
+    ownerAddress: "any",
+    contractAddress: "any",
+    isOriginal: true,
+    isSharedInstance: false,
+    isLikeToken: false,
+    tokenId: null,
+    metadataUri: null,
+    sharedChildTokens: [],
+    likeTokens: [],
+    likedParentToken: null
+}
+
 export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChanged, onReceiverAddressChanged}: 
     {onIsValid: (isValid:boolean) => void, 
         onMetadataChanged: (metadata:string) => void, 
@@ -126,7 +143,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
     const [ tokenDescriptionEverChanged, setTokenDescriptionEverChanged ] = useState(false)
 
     const [ imageURL, setImageURL ] = useState('')
-    const [ imageURLEverChanged, setImageURLEverChanged ] = useState(false)
+    const [ currentMetadata, setCurrentMetadata ] = useState<NFTMetadata | undefined>(undefined)
 
     const [ metadataAttributesArray, setMetadataAttributesArray ] = useState<MetadataAttributeUIEntry[]>([])
 
@@ -155,6 +172,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
         const postMetadataToCallback = () => {
             const attributes:MetadataAttribute[] = metadataAttributesArray.map( it => {return {trait_type: it.name, value: it.value}});
             const metadata: NFTMetadata = {description: tokenDescription, name: tokenName, image: imageURL, attributes}
+            setCurrentMetadata(metadata)
             const metadataJson = JSON.stringify(metadata, null, '\t')
             onMetadataChanged(metadataJson)
 
@@ -213,14 +231,13 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
 
                 </InputLine>
 
+                <ImageUrlDropdown onUrlChanged={(url) => {setImageURL( url )}}/>
+
                 <InputLine>
-                    <InputLabel label='Image URL'/>
-                    <Input fluid
-                        placeholder='http://..' 
-                        value={imageURL} 
-                        error={!imageURL && imageURLEverChanged} 
-                        onChange={(e, { value }) => {setImageURL( value ); setImageURLEverChanged(true)}}/>
+                    <InputLabel label='Token preview'/>
+                    <TokenCard token={dummyToken} useDummyMetadata={currentMetadata}/>
                 </InputLine>
+
             </InputForm>
             <Header as='h2' dividing>
                 Properties

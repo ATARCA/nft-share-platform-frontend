@@ -19,10 +19,11 @@ import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUplo
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
+import { url } from "inspector";
 
 const { useProvider, useAccounts, useIsActive } = hooks
 
-export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined): 
+export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
       [ tokenDisplayName: string , 
         tokenHolderDisplayName: string, 
         metadata: NFTMetadata | undefined , 
@@ -35,6 +36,11 @@ export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | T
 
     useEffect( () => {
         const fetchMetadata = async () => {
+
+            if (useDummyMetadata) {
+                setMetadata(useDummyMetadata)
+                return
+            }
 
             if ( !token || !token.metadataUri ) return
 
@@ -61,7 +67,7 @@ export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | T
         }
     
         fetchMetadata()
-    },[token])
+    },[token, useDummyMetadata])
 
     const tokenName = metadata?.name
     const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
@@ -87,6 +93,29 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     const tutorialCompleted = tutorialCompletedInternal === 'true';
 
     return [tutorialCompleted, setTutorialCompleted];
+}
+
+export const useLocalImageUrlHistory = (): [parsedUrlList: string[], addUrlToImageHistory: (newUrl: string) => void] => {
+    const [urlList, setUrlList] = useCookie('imageUrlHistory', '');
+    const URL_LIST_SEPARATOR = ' '
+    
+    const parseUrlList = (urlsAsString: string) : string[] => {
+        return urlsAsString.split(URL_LIST_SEPARATOR)
+    }
+
+    const parsedUrlList = parseUrlList(urlList)
+
+    const addUrlToImageHistory = (newUrl: string) => {
+        parsedUrlList.push(newUrl)
+        const urlListAsString = serializeUrls(parsedUrlList)
+        setUrlList(urlListAsString, {days: 9999})
+    };
+
+    const serializeUrls = (urls: string[]) : string => {
+        return urls.join(URL_LIST_SEPARATOR)
+    }
+
+    return [parsedUrlList, addUrlToImageHistory];
 }
 
 export const useShareContract = ( projectId: string) => {
