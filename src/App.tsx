@@ -11,9 +11,11 @@ import MintPage from './components/topLevel/MintPage';
 import MainMenuWalletDropdown from './components/MainMenuWalletDropdown';
 import HomeMenuButtons from './components/menu/HomeMenuButtons';
 import TokenSharePage from './components/topLevel/TokenSharePage';
-import { AboutPage } from './components/topLevel/AboutPage';
-import { aboutRoute } from './routingUtils';
+import { AboutPage} from './components/topLevel/AboutPage';
+import { PrivacyPage } from './components/topLevel/Privacy';
+import { aboutRoute, privacyPolicy } from './routingUtils';
 import { WalletDetailPage } from './components/topLevel/WalletDetailPage';
+import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
 import Footer from './components/Footer';
 
 function App() {
@@ -28,9 +30,10 @@ function App() {
                 </Menu>
                 <Divider fitted />
                 <ConsentPanel/>
-
+                <PrivacyPolicy/>
                 <Routes>
                     <Route path={aboutRoute} element={<AboutPage/>}/> 
+                    <Route path={privacyPolicy} element={<PrivacyPage/>}/>
                     <Route path="/mint" element={<MintPage/>}/> 
                     <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                     <Route path="shareToken/:contractAddress/:tokenId" element={<TokenSharePage/>}/>

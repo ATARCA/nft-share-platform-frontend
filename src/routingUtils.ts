@@ -13,3 +13,4 @@ export const buildWalletPageRoute = (address: string) => {
 }
 
 export const aboutRoute = '/about'
+export const privacyPolicy = '/privacy'
