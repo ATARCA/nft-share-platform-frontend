@@ -88,6 +88,10 @@ a {
   text-decoration: underline;
 }
 
+.attention-color {
+  color: #f96d5d;
+}
+
 .Token-attribute-table-value {
   color: #000000;
   font-size: 0.9em;
