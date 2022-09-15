@@ -34,6 +34,7 @@ export interface TokensQuery_tokens {
   contractAddress: any;
   isOriginal: boolean;
   isSharedInstance: boolean;
+  isOriginalOrShared: boolean;
   isLikeToken: boolean;
   tokenId: any | null;
   metadataUri: string | null;
@@ -47,7 +48,6 @@ export interface TokensQuery {
 }
 
 export interface TokensQueryVariables {
-  isOriginal: boolean;
-  isSharedInstance: boolean;
+  isOriginalOrShared: boolean;
   category: string;
 }
