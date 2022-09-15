@@ -40,7 +40,7 @@ const MainMenuWalletDropdown = () => {
     }
 
     if (active) return (
-        <Menu.Menu position='right'>
+        <Menu.Menu position='right' style={{'zIndex':'99999'}}>
             <Menu.Item>
                 <Dropdown  as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 

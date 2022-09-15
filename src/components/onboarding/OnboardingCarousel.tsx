@@ -52,8 +52,8 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
 
     return (
         <div>
-            <div className="CarouselOverlayGradient" style={{'zIndex':'99998', 'position':'absolute', 'width':'100%', 'height':`${carouselHeight || 0}px`, 'pointerEvents':'none'}}>  </div >
-            {showCloseButton? <Image as='a' onClick={() => onCloseClicked()} src={closeButtonImage} style={{'zIndex':'99999', 'position':'absolute', 'right': '2em', 'paddingTop': '3em', 'width':'4em', 'height':'4em'}} /> : <></>}
+            <div className="CarouselOverlayGradient" style={{'zIndex':'99997', 'position':'absolute', 'width':'100%', 'height':`${carouselHeight || 0}px`, 'pointerEvents':'none'}}>  </div >
+            {showCloseButton? <Image as='a' onClick={() => onCloseClicked()} src={closeButtonImage} style={{'zIndex':'99998', 'position':'absolute', 'right': '2em', 'paddingTop': '3em', 'width':'4em', 'height':'4em'}} /> : <></>}
            
             <div ref={sliderRef}>
                 <Slider >
