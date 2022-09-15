@@ -12,9 +12,24 @@ query GetConsentMessageToSignQuery {
 }
 `
 
+export const GET_REVOKE_CONSENT_MESSAGE_TO_SIGN = gql`
+query GetRevokeConsentMessageToSignQuery {
+  getRevokeConsentMessageToSign 
+}
+`
+
 export const ADD_SIGNED_CONSENT = gql`
 mutation AddSignedConsentMutation  ($signingAddress: String!, $signature: String!, $consentText: String!){
   addSignedConsent( signingAddress: $signingAddress, signature: $signature, consentText: $consentText ) {
+    success, 
+    message
+  }
+}
+`
+
+export const REVOKE_SIGNED_CONSENT = gql`
+mutation RevokeSignedConsentMutation  ($signingAddress: String!, $signature: String!, $consentText: String!){
+  revokeSignedConsent( signingAddress: $signingAddress, signature: $signature, consentText: $consentText ) {
     success, 
     message
   }

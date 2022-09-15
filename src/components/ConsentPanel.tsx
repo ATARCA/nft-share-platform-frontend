@@ -3,20 +3,15 @@ import React from 'react';
 import { Button, Menu, Message } from 'semantic-ui-react';
 import { hooks } from '../connectors/metaMaskConnector';
 import { backendApolloClient } from '../graphql/backendApolloClient';
-import { ADD_SIGNED_CONSENT, CONSENT_NEEDED, GET_CONSENT_MESSAGE_TO_SIGN } from '../queries-backend/queries';
+import { useConsentNeeded } from '../hooks/hooks';
+import { ADD_SIGNED_CONSENT, GET_CONSENT_MESSAGE_TO_SIGN } from '../queries-backend/queries';
 import { AddSignedConsentMutation, AddSignedConsentMutationVariables } from '../queries-backend/types-backend/AddSignedConsentMutation';
-import { ConsentNeededQuery, ConsentNeededQueryVariables } from '../queries-backend/types-backend/ConsentNeededQuery';
 import { GetConsentMessageToSignQuery } from '../queries-backend/types-backend/GetConsentMessageToSignQuery';
+import { ConsentContent } from './ConsentContent';
 
-const { useIsActive, useProvider, useAccount } = hooks
+const { useProvider, useAccount } = hooks
 
 export const ConsentPanel = () => {
-
-    const active = useIsActive()
-    return active ? <ConsentPanelContent/> : <></>;
-}
-
-const ConsentPanelContent = () => {
   
     const getConsentMessageResult = useQuery<GetConsentMessageToSignQuery,undefined>(GET_CONSENT_MESSAGE_TO_SIGN, {client: backendApolloClient});
     
@@ -24,10 +19,8 @@ const ConsentPanelContent = () => {
     const signingAddress = useAccount() || 'address undefined'
 
     const [uploadConsentFunction, uploadConsentResult] = useMutation<AddSignedConsentMutation, AddSignedConsentMutationVariables>(ADD_SIGNED_CONSENT,  {client: backendApolloClient})
-    const consentNeededResult = useQuery<ConsentNeededQuery, ConsentNeededQueryVariables>(CONSENT_NEEDED, {client: backendApolloClient, variables: {address:signingAddress} });
-    
+    const [consentNeeded, refetchConsent] = useConsentNeeded()
     const messageToSign = getConsentMessageResult.data?.getConsentMessageToSign
-    const consentNeeded = consentNeededResult.data?.consentNeeded
 
     const uploadConsentResultError = uploadConsentResult.data?.addSignedConsent.message
 
@@ -45,21 +38,19 @@ const ConsentPanelContent = () => {
     const uploadConsent = async (signedConsentMessage: string) => {
         if (messageToSign && signingAddress) {
             await uploadConsentFunction({variables: {signingAddress, signature:signedConsentMessage, consentText: messageToSign}})
-            await consentNeededResult.refetch()
+            await refetchConsent()
         }
     }
       
     return consentNeeded ? 
-        <Menu fluid vertical style={{marginTop: '1vw'}}>
-            <Menu.Item>
-                <p>Give consent and sign it with your metamask before using the platform. TODO complete text.</p>
-                <Button primary onClick={onGiveConsentClicked}>Sign consent</Button>
-                { uploadConsentResultError ? <Message error>
-                    <Message.Header>Consent upload failed</Message.Header>
-                    <p>{uploadConsentResultError}</p>
-                </Message> : <></>}
-            </Menu.Item>
-        </Menu> 
+        <div  className='top-level-page'>
+            <ConsentContent/>
+            <Button primary onClick={onGiveConsentClicked}>Sign consent</Button>
+            { uploadConsentResultError ? <Message error>
+                <Message.Header>Consent upload failed</Message.Header>
+                <p>{uploadConsentResultError}</p>
+            </Message> : <></>}
+        </div>
         : <></>;
 };
 

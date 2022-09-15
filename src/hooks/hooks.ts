@@ -14,14 +14,14 @@ import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/querie
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { addressesEqual, buildSubgraphTokenEntityId, projectId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
-import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA } from "../queries-backend/queries";
+import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA, CONSENT_NEEDED } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
-import { url } from "inspector";
+import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
 
-const { useProvider, useAccounts, useIsActive } = hooks
+const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
 export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
       [ tokenDisplayName: string , 
@@ -372,4 +372,16 @@ export const useProjectCategories = (projectId: string): [categories: string[] |
     const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
     const categoryNames = projectDetails?.categories.map(value => value.id)
     return [categoryNames, projectDetailsLoading]
+}
+
+export const useConsentNeeded = (): [consentNeeded: boolean, refetchConsent: () => void] => {
+    const active = useIsActive()
+    const signingAddress = useAccount() || 'address undefined'
+
+    const consentNeededResult = useQuery<ConsentNeededQuery, ConsentNeededQueryVariables>(CONSENT_NEEDED, {client: backendApolloClient, variables: {address:signingAddress} });
+    const consentNeeded = consentNeededResult.data?.consentNeeded || false
+
+    const refetchConsent = async () => await consentNeededResult.refetch()
+
+    return [consentNeeded && active, refetchConsent]
 }
