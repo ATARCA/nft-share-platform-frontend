@@ -135,7 +135,7 @@ const TokenDetailPage = () => {
 
     const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
-            <TokenCard token={token}/>
+            <TokenCard token={token} showCardWhenDataMissing={true}/>
         </Grid.Column>
     }
 

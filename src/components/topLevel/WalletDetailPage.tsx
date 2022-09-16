@@ -79,7 +79,7 @@ export const WalletDetailPage = () => {
                 <Label as='a' className={getLabelClassName(!isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(false)}>Supported awards</Label>
             </Label.Group>
         </div>
-        <TokenGrid tokens={getTokensForCurrentTab()} isLoading={originalTokensResult.loading || sharedTokensResult.loading || likeTokensResult.loading}/>
+        <TokenGrid tokens={getTokensForCurrentTab()} showCardWhenDataMissing={true} isLoading={originalTokensResult.loading || sharedTokensResult.loading || likeTokensResult.loading}/>
     </div>
 }
 
