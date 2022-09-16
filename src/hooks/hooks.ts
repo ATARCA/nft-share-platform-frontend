@@ -95,21 +95,6 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     return [tutorialCompleted, setTutorialCompleted];
 }
 
-export const usePrivacyPolicyAccepted = (): [boolean, (accepted: boolean) => void] => {
-    const [privacyPolicyAcceptedInternal, setPrivacyPolicyAcceptedInternal] = useCookie('privacyPolicyAccepted', 'false');
-    
-    const setPrivacyPolicyAccepted = (accepted: boolean) => {
-        if (accepted)
-            setPrivacyPolicyAcceptedInternal('true', {days: 365})
-        else
-            setPrivacyPolicyAcceptedInternal('false', {days: 365})
-    };
-
-    const privacyPolicyAccepted = privacyPolicyAcceptedInternal === 'true';
-
-    return [privacyPolicyAccepted, setPrivacyPolicyAccepted];
-}
-
 export const useLocalImageUrlHistory = (): [parsedUrlList: string[], addUrlToImageHistory: (newUrl: string) => void] => {
     const [urlList, setUrlList] = useCookie('imageUrlHistory', '');
     const URL_LIST_SEPARATOR = ' '
