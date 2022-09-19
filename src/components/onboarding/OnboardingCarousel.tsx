@@ -24,6 +24,8 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
     const carouselContext = useContext(CarouselContext);
     const sliderRef = useRef<HTMLDivElement>(null)
 
+    const [ carouselHeight, setCarouselHeight]= useState(0)
+
     const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide);
     useEffect(() => {
         function onChange() {
@@ -35,16 +37,23 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
 
     const isLastSlide = currentSlide !== carouselContent.length -1
 
+    useEffect(() => {
+        setCarouselHeight(sliderRef.current?.clientHeight || 0)
+    },[sliderRef])
+    
+
     const renderNextOrCloseButton = () => {
         if (isLastSlide) return <Button as={ButtonNext}>Next <Icon name="arrow right"/></Button>
         else if (showCloseButton) return <Button onClick={onCloseClicked}>Close</Button>
         return <></>
     }
 
+    console.log('height',sliderRef.current?.clientHeight)
+
     return (
         <div>
-            <div className="CarouselOverlayGradient" style={{'zIndex':'99998', 'position':'absolute', 'width':'100%', 'height':`${sliderRef.current?.clientHeight || 0}px`, 'pointerEvents':'none'}}>  </div >
-            {showCloseButton? <Image as='a' onClick={() => onCloseClicked()} src={closeButtonImage} style={{'zIndex':'99999', 'position':'absolute', 'right': '2em', 'paddingTop': '3em', 'width':'4em', 'height':'4em'}} /> : <></>}
+            <div className="CarouselOverlayGradient" style={{'zIndex':'99997', 'position':'absolute', 'width':'100%', 'height':`${carouselHeight || 0}px`, 'pointerEvents':'none'}}>  </div >
+            {showCloseButton? <Image as='a' onClick={() => onCloseClicked()} src={closeButtonImage} style={{'zIndex':'99998', 'position':'absolute', 'right': '2em', 'paddingTop': '3em', 'width':'4em', 'height':'4em'}} /> : <></>}
            
             <div ref={sliderRef}>
                 <Slider >

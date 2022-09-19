@@ -13,3 +13,5 @@ export const buildWalletPageRoute = (address: string) => {
 }
 
 export const aboutRoute = '/about'
+export const mintRoute = '/mint'
+export const manageConsentRoute = '/manageConsent'
