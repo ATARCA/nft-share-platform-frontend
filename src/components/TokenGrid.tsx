@@ -8,14 +8,16 @@ import { Card, Grid, Image, Label, Rail, Segment } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
-import { receiverPropertyName, categoryPropertyName, subContributionPropertyName, subContributorPropertyName, NFTMetadata } from '../types/NFTMetadata';
+import { categoryPropertyName, NFTMetadata } from '../types/NFTMetadata';
 import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
 import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenByIdQuery';
 
-export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean}) => {
+const alwaysShowCardEnvFlag = process.env.REACT_APP_ALWAYS_SHOW_TOKEN_CARD === 'true'
+
+export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false }: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean, showCardWhenDataMissing?: boolean}) => {
     if (isLoading) return <div className='TokenGridBackground'>
         <Segment placeholder vertical padded='very' loading/>
-        </div>
+    </div>
     
     return (
         <div className='TokenGridBackground'>
@@ -24,9 +26,7 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
                 :
                 <Grid doubling centered columns={4} style={{ padding: '10vh 10vw 10vh 10vw'}}>
                     {tokens.map(t => 
-                        <Grid.Column key={t.id}>
-                            <TokenCard token={t}/>
-                        </Grid.Column>
+                        <TokenCard key={t.id} token={t} showCardWhenDataMissing={showCardWhenDataMissing} renderAsGridColumn={true}/>
                     )}
                 </Grid>
             } 
@@ -34,10 +34,13 @@ export const TokenGrid = ({tokens, isLoading}: {tokens: TokensQuery_tokens[] | T
     );
 };
 
-export const TokenCard = ({token, centered = true, useDummyMetadata}: 
+export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhenDataMissing = false, renderAsGridColumn = false}: 
     {token:TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token, 
         centered?: boolean, 
-        useDummyMetadata? : NFTMetadata}) => {
+        useDummyMetadata? : NFTMetadata,
+        showCardWhenDataMissing?: boolean,
+        renderAsGridColumn?: boolean}) => {
+
     const navigate = useNavigate()
     const [tokenDisplayName, tokenHolderDisplayName, metadata, consentMissing, errorMessage] = useMetadata(token, useDummyMetadata)
 
@@ -45,7 +48,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata}:
     
     const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
-    let likesCount
+    let likesCount = 0
     if (token.isLikeToken) {
         likesCount = token.likedParentToken?.likeTokens.length ?? 0
     }
@@ -65,24 +68,26 @@ export const TokenCard = ({token, centered = true, useDummyMetadata}:
 
     const cardStyle = {'textAlign': 'left', 'textDecoration': 'none'}
 
-    if (consentMissing)
+    const renderConsentMissingCard = () => {
         return (
             <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
                 <Image rounded size='medium' className='Square' src={imageURL}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header>Owner consent missing</Card.Header>
                     <Card.Description>
-                Owner has to connect a wallet and sign consent before metadata will be available.
+                        Owner has to connect a wallet and sign consent before metadata will be available.
                     </Card.Description>
                 </Card.Content>
                 <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
 
             </Card>
         )
-    else return (
-        <div>
+    }
+
+    const renderCardWithData = () => {
+        return <div>
             <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
-            
+                
                 <Image rounded size='medium' className='Square' src={imageURL} style={{'maxWidth': '100%'}}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
                 <Card.Content className='No-top-border'>
@@ -95,7 +100,37 @@ export const TokenCard = ({token, centered = true, useDummyMetadata}:
                 <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
             </Card>
         </div>
-    )
+    }
+
+    const renderContent = () => {
+
+        if (showCardWhenDataMissing || alwaysShowCardEnvFlag) {
+            if ( consentMissing ) {
+                return renderConsentMissingCard()
+            }
+            else {
+                return renderCardWithData()
+            }
+        }
+    
+        if ( consentMissing || !metadata ) {
+            return <></>
+        }
+    
+        return renderCardWithData()
+    }
+
+    const skipColumnIfCardIncomplete = () => {
+        
+        if (renderAsGridColumn && !consentMissing && !!metadata) {
+            return <Grid.Column>
+                {renderContent()}
+            </Grid.Column>
+        }
+        else return renderContent()
+    }
+
+    return skipColumnIfCardIncomplete()
 }
 
 const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean}) => {
