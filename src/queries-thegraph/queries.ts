@@ -1,13 +1,14 @@
 import { gql } from '@apollo/client'
 
 export const GET_TOKENS = gql`
-query TokensQuery ($isOriginal: Boolean!, $isSharedInstance: Boolean!, $category: String!){
-  tokens ( where: {isOriginal: $isOriginal, isSharedInstance: $isSharedInstance, category_starts_with: $category, category_ends_with: $category}){
+query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!){
+  tokens ( where: {isOriginalOrShared: $isOriginalOrShared, category_starts_with: $category, category_ends_with: $category}){
     id
     ownerAddress
     contractAddress
     isOriginal
     isSharedInstance
+    isOriginalOrShared
     isLikeToken
     tokenId
     metadataUri

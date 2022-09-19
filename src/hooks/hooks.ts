@@ -19,11 +19,13 @@ import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUplo
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
+import { url } from "inspector";
+import { TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
 import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
-export const useMetadata = (token: TokensQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
+export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
       [ tokenDisplayName: string , 
         tokenHolderDisplayName: string, 
         metadata: NFTMetadata | undefined , 

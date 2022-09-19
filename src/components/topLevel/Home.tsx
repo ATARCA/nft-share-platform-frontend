@@ -21,7 +21,7 @@ const Home = () => {
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {isOriginal: true, isSharedInstance: false, category: selectedCategory}});
+            variables: {isOriginalOrShared: true, category: selectedCategory}});
 
     return (
         <div>
