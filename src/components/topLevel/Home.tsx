@@ -10,6 +10,7 @@ import { Header } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { aboutRoute } from '../../routingUtils';
 import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
+import { projectId } from '../../utils';
 
 const Home = () => {
 
@@ -21,7 +22,7 @@ const Home = () => {
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {isOriginalOrShared: true, category: selectedCategory}});
+            variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId}});
 
     return (
         <div>
