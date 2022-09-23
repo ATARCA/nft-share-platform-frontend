@@ -25,7 +25,7 @@ function App() {
     return (
         <div className="App">
             <Router>
-                <Menu secondary>
+                <Menu secondary stackable={true}>
                     <HomeMenuButtons/>
                     <MetamaskConnectSubMenu/>    
                     <MainMenuWalletDropdown/>
