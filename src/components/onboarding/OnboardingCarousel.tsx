@@ -48,8 +48,6 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
         return <></>
     }
 
-    console.log('height',sliderRef.current?.clientHeight)
-
     return (
         <div>
             <div className="CarouselOverlayGradient" style={{'zIndex':'99997', 'position':'absolute', 'width':'100%', 'height':`${carouselHeight || 0}px`, 'pointerEvents':'none'}}>  </div >
