@@ -39,7 +39,7 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
 
     useEffect(() => {
         setCarouselHeight(sliderRef.current?.clientHeight || 0)
-    },[sliderRef])
+    },[sliderRef.current?.clientHeight])
     
 
     const renderNextOrCloseButton = () => {
