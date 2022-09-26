@@ -83,7 +83,7 @@ const MintPage = () => {
     }
    
     if (isActive && !isProjectOwner) return <div>
-        <Message warning> This wallet is not an operator of this project. </Message>
+        <Message warning> Minting of a new token not possible. This wallet is not an operator of this project.</Message>
         <p>Following wallets are operators of this project</p> 
         {projectDetails?.operators.map( address => <div key={address}> {address} </div>)} 
     </div>
