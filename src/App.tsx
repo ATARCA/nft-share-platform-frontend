@@ -14,6 +14,7 @@ import TokenSharePage from './components/topLevel/TokenSharePage';
 import { AboutPage } from './components/topLevel/AboutPage';
 import { aboutRoute, manageConsentRoute, mintRoute } from './routingUtils';
 import { WalletDetailPage } from './components/topLevel/WalletDetailPage';
+import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
 import Footer from './components/Footer';
 import { ManageConsentPage } from './components/topLevel/ManageConsentPage';
 import { useConsentNeeded } from './hooks/hooks';
@@ -32,7 +33,8 @@ function App() {
                 </Menu>
                 <Divider fitted />
                 <ConsentPanel/>
-
+                
+                <PrivacyPolicy/>
                 {consentNeeded ? <></> :
                     <Routes>
                         <Route path={aboutRoute} element={<AboutPage/>}/> 
