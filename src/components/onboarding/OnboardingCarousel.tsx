@@ -39,7 +39,7 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
 
     useEffect(() => {
         setCarouselHeight(sliderRef.current?.clientHeight || 0)
-    },[sliderRef])
+    },[sliderRef.current?.clientHeight])
     
 
     const renderNextOrCloseButton = () => {
@@ -47,8 +47,6 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
         else if (showCloseButton) return <Button onClick={onCloseClicked}>Close</Button>
         return <></>
     }
-
-    console.log('height',sliderRef.current?.clientHeight)
 
     return (
         <div>

@@ -5,7 +5,7 @@ import { hooks, metaMask as metamaskConnector } from "../connectors/metaMaskConn
 import { useIsProjectOwner } from "../hooks/hooks";
 import { buildWalletPageRoute, manageConsentRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
-import { MetaMaskConnectOnlyButton } from "./MetamaskConnectSubmenu";
+import { isDesiredChainID, MetaMaskConnectOnlyButton } from "./MetamaskConnectSubmenu";
 
 const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider } = hooks
 
@@ -16,6 +16,9 @@ const MainMenuWalletDropdown = () => {
     const navigate = useNavigate()
     const active = useIsActive()
     const [isProjectOwner, projectDetailsLoading] = useIsProjectOwner()
+
+    const chainID = useChainId()
+
 
     const getAccountLabel = () => {
         if (accounts) {
@@ -39,7 +42,7 @@ const MainMenuWalletDropdown = () => {
         return <Dropdown.Item onClick={() => {navigate(manageConsentRoute)}}>Manage consent</Dropdown.Item>
     }
 
-    if (active) return (
+    if (active && isDesiredChainID(chainID)) return (
         <Menu.Menu position='right' style={{'zIndex':'99999'}}>
             <Menu.Item>
                 <Dropdown  as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>

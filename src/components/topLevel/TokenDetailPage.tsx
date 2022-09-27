@@ -109,8 +109,7 @@ const TokenDetailPage = () => {
         )
     }
 
-    const renderTokenDetailsPage = (token:TokenByIdQuery_token
-) => {
+    const renderTokenDetailsPage = (token:TokenByIdQuery_token) => {
         return <div style={{'margin': '0 10vw'}}>
             <Grid columns={2} style={{'margin': '3vh 0'}}>
                 <Grid.Column style={{'textAlign': 'left'}} >
@@ -124,7 +123,7 @@ const TokenDetailPage = () => {
             
             <div style={{'margin': '2vh 0 4vh 0'}}>
                 <Card fluid>
-                    <Grid columns={2} style={{'margin': '2vh 2vw'}}>
+                    <Grid columns={2} stackable={true} style={{'margin': '2vh 2vw'}}>
                         {renderLeftColumn(token)}
                         {renderRightColumn(token)}
                     </Grid>
