@@ -50,4 +50,5 @@ export interface TokensQuery {
 export interface TokensQueryVariables {
   isOriginalOrShared: boolean;
   category: string;
+  project: string;
 }
