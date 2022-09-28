@@ -21,6 +21,17 @@ export const buildSubgraphTokenEntityId = (contractAddress: string, tokenId: Big
     return contractAddress.toLowerCase() + '-' + tokenId.toString()
 }
 
+export const isAValidUrl = (url?: string) => {
+    if (url == null) return false
+    
+    try {
+        new URL(url);
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
+
 export const factoryContractAddress = '0xb4CEA12BaF1529DFdE908016B81A2D668b321CDd'
 export const projectId = 'Streamr'
 
