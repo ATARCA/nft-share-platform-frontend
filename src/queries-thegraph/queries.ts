@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const GET_TOKENS = gql`
 query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!){
-  tokens ( where: {isOriginalOrShared: $isOriginalOrShared, category_starts_with: $category, category_ends_with: $category}){
+  tokens ( orderBy: mintBlock, orderDirection: desc, where: {isOriginalOrShared: $isOriginalOrShared, category_starts_with: $category, category_ends_with: $category}){
     id
     ownerAddress
     contractAddress
