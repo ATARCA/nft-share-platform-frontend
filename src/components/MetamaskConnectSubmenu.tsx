@@ -27,7 +27,7 @@ const SwitchNetworkButton = ( {connector}: {connector: MetaMask} ) => {
     )
 }
 
-const isDesiredChainID = (chainId: number | undefined) => {
+export const isDesiredChainID = (chainId: number | undefined) => {
     return chainId === DESIRED_CHAIN_ID
 }
 

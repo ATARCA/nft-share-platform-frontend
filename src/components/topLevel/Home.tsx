@@ -10,6 +10,7 @@ import { Header } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { aboutRoute } from '../../routingUtils';
 import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
+import { projectId } from '../../utils';
 
 const Home = () => {
 
@@ -21,14 +22,14 @@ const Home = () => {
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {isOriginalOrShared: true, category: selectedCategory}});
+            variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId}});
 
     return (
         <div>
             <OnboardingCarousel/>
-            <div style={{'textAlign': 'left', padding: '5vh 10vw 15vh 10vw'}}>
+            <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
                 <Header className="No-overflow" as='h1'>Contribution awards to the Streamr community</Header>
-                <p style={{ padding: '3vh 30vw 0vh 0vw'}}>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
+                <p style={{ padding: '3vh 30vw 3vh 0vw'}}>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
                 <TokenCategoryDropdown onCategoryChanged={(category) => setSelectedCategory(category)}/>
             </div>
             

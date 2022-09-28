@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Grid, Item, Divider } from "semantic-ui-react";
+import { Image, Grid, Item, Divider, Table } from "semantic-ui-react";
 import talco_logo from '../images/talko_logo_white.svg';
 import eu_flag from '../images/flag_of_europe.svg';
 
@@ -11,7 +11,7 @@ const Footer = () => {
                     <Image className='margin-vertical-main-menu talko' src={talco_logo} size='small'/>
                 </div>
                 <div>
-                    <Grid textAlign='left'>
+                    <Grid textAlign='left' stackable>
                         <Grid.Row columns={3}>
                             <Grid.Column>
                                 Talko has been created as part of ATARCA research project. Project website: <Item href="https://atarca.eu">atarca.eu</Item>
@@ -24,14 +24,16 @@ const Footer = () => {
                             </Grid.Column>
                         </Grid.Row>
                         <Divider></Divider>
-                        <Grid.Row columns={2}>
-                            <Grid.Column width={2}>
-                                <Image className='margin-vertical-main-menu eu-flag' src={eu_flag} size='tiny'/>
-                            </Grid.Column>
-                            <Grid.Column width={12}>
-                                This project has received funding from the European Union’s Horizon 2020 Research and Innovation Programme under Grant Agreement Nº 964678.
-                            </Grid.Column>
-                        </Grid.Row>
+                        <Table basic={'very'} className='FooterText'>
+                            <Table.Row>
+                                <Table.Cell>
+                                    <Image className='margin-vertical-main-menu eu-flag' src={eu_flag} size='tiny'/>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    This project has received funding from the European Union&apos;s Horizon 2020 Research and Innovation Programme under Grant Agreement Nº 964678.
+                                </Table.Cell>
+                            </Table.Row>
+                        </Table>
                     </Grid>
                 </div>
             </div>
