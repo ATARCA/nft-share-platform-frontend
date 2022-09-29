@@ -10,6 +10,7 @@ import { ethers } from "ethers";
 import { ImageUrlDropdown } from "./ImageUrlDropdown";
 import { TokenCard } from "./TokenGrid";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
+import { isAValidUrl } from "../utils";
 
 const CATEGORY_MAX_LENGTH = 32
 
@@ -32,6 +33,12 @@ const MetadataKeyValueEntryItem = ({
     const [ currentPropertyName, setCurrentPropertyName ] = useState(propertyName)
     const [ currentPropertyValue, setcurrentPropertyValue ] = useState(propertyValue)
 
+    const isUrlItem = currentPropertyName === linkToContributionPropertyName
+    const isItemValidUrl = isAValidUrl(currentPropertyValue)
+
+    console.log(`propertyName ${propertyName} isUrlItem ${isUrlItem} isItemValidUrl ${isItemValidUrl}`)
+    const isError = () => { if (isUrlItem) return !isItemValidUrl; else return !currentPropertyValue }
+
     const isCategoryItem = propertyName === categoryPropertyName
 
     return (
@@ -44,7 +51,7 @@ const MetadataKeyValueEntryItem = ({
             <Input placeholder={placeholder} className='margin-bottom'
                 disabled={isCategoryItem}
                 value={currentPropertyValue} 
-                error={!currentPropertyValue}
+                error={ isError() }
                 onChange={(e, { value }) => {setcurrentPropertyValue( value ); onPropertyValueChanged(value)}}/>
             <Icon name='delete' size='small' onClick={onRemoveClicked} disabled={isCategoryItem}/>
         </div>
@@ -67,44 +74,44 @@ const socialsContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Socials', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
 
 const educationContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Education', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
 
 const technologyContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Technology', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
     
 const securityContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Security', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
         
 const contentContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Content', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
             
 const competitionContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Competition', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
                 
                         
 const communityHeroContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
     { id:uuidv4(), name:categoryPropertyName, value:'Community Hero', placeholder:''},
     { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
     { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
-    { id:uuidv4(), name:linkToContributionPropertyName, value:'http://', placeholder:''}]
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
                 
 
 const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
@@ -161,10 +168,15 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
     useEffect(() => {
         const validateFields = () => {
             const propertiesNotEmpty = metadataAttributesArray.reduce<boolean>( (previous, current) => {return !!previous && !!current.name && !!current.value}, true)
+            
+            const urlItem = metadataAttributesArray.find( ( value ) => value.name === linkToContributionPropertyName )
+            const isUrlItemValidUrl = isAValidUrl(urlItem?.value)
+            const isUrlItemValid = () => { if (urlItem != null) return isUrlItemValidUrl; else return true }
+
             const categoryEntry = metadataAttributesArray.find( ( value ) => value.name === categoryPropertyName )
             const categoryExists = !! categoryEntry
             const categoryNotTooLong = (categoryEntry?.value.length || 0) <= CATEGORY_MAX_LENGTH
-            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty && categoryExists && categoryNotTooLong
+            const isValidNew = !!tokenName && !!tokenDescription && !!imageURL && propertiesNotEmpty && categoryExists && categoryNotTooLong && isUrlItemValid()
     
             setIsValid(isValidNew)
             onIsValid(isValidNew)
