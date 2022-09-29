@@ -4,7 +4,7 @@ import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
 import { ShareableERC721 } from "../typechain-types";
 import { hooks } from "../connectors/metaMaskConnector";
-import { loadLikeContract, loadShareContract } from "../contracts/demoContract";
+import { loadLikeContract, loadShareContract } from "../contracts/ContractsUtils";
 import { LikeERC721 } from "../typechain-types";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
