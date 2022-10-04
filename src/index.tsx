@@ -4,9 +4,16 @@ import 'semantic-ui-less/semantic.less'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import TagManager from 'react-gtm-module';
 
+const gaTagManagerId : string | undefined  = process.env.REACT_APP_GA_TAG_MANAGER
 
-
+if (gaTagManagerId !== undefined) {
+    const tagManagerArgs = {
+        gtmId: gaTagManagerId
+    }
+    TagManager.initialize(tagManagerArgs)
+}
 
 ReactDOM.render(
     <React.StrictMode>
