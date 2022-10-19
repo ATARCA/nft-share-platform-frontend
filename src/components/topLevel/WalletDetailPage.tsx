@@ -76,7 +76,7 @@ export const WalletDetailPage = () => {
             <Header className="No-overflow" as='h1'>{walletAddress}</Header>
             <Label.Group circular style={{padding: '3vh 0'}}>
                 <Label as='a' className={getLabelClassName(isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(true)}>Received awards</Label>
-                <Label as='a' className={getLabelClassName(!isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(false)}>Supported awards</Label>
+                <Label as='a' className={getLabelClassName(!isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(false)}>Liked awards</Label>
             </Label.Group>
         </div>
         <TokenGrid tokens={getTokensForCurrentTab()} showCardWhenDataMissing={true} isLoading={originalTokensResult.loading || sharedTokensResult.loading || likeTokensResult.loading}/>

@@ -136,7 +136,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
 const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean}) => {
     let labelText = 'N/A'
     if (isOriginal) labelText = 'ORIGINAL AWARD'
-    else if (isSharedInstance) labelText = 'COMMUNITY AWARD'
+    else if (isSharedInstance) labelText = 'SHARED AWARD'
     else if (isLikeToken) labelText = 'LIKED AWARD'
 
     return  <Rail attached internal  position='left' style={{margin: '10px'}}>
