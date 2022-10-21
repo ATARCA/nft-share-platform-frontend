@@ -38,7 +38,7 @@ const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,
 
 const formatAsLinkIfLink = ( text: string ) => {
     if (urlRegex().test(text))
-        return <a href={text}>{text}</a>
+        return <a style={{wordBreak: 'break-all'}} href={text}>{text}</a>
     else return text
 }
 
