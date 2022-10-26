@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import icon_thumbsUp from '../images/icon_ThumbsUp.svg';
 import icon_Share from '../images/icon_ShareNetwork.svg';
 
@@ -14,13 +14,19 @@ import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenBy
 
 const alwaysShowCardEnvFlag = process.env.REACT_APP_ALWAYS_SHOW_TOKEN_CARD === 'true'
 
-export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false }: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean, showCardWhenDataMissing?: boolean}) => {
-    if (isLoading) return <div className='TokenGridBackground'>
+export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false, style, lastElement }: 
+    {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], 
+        isLoading:boolean, 
+        showCardWhenDataMissing?: boolean, 
+        style?: CSSProperties, 
+        lastElement?: React.ReactNode}) => {
+
+    if (isLoading) return <div className='TokenGridBackground' style={style}>
         <Segment placeholder vertical padded='very' loading/>
     </div>
     
     return (
-        <div className='TokenGridBackground'>
+        <div className='TokenGridBackground' style={style}>
             {tokens.length === 0? 
                 <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
@@ -28,6 +34,7 @@ export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false }:
                     {tokens.map(t => 
                         <TokenCard key={t.id} token={t} showCardWhenDataMissing={showCardWhenDataMissing} renderAsGridColumn={true}/>
                     )}
+                    {lastElement ? lastElement : <></>}
                 </Grid>
             } 
         </div>

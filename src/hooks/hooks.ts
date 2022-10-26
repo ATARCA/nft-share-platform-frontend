@@ -12,7 +12,7 @@ import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId, projectId } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId, streamrProjectId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA, CONSENT_NEEDED } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
@@ -216,7 +216,7 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
 ] => {
 
     const isActive = useIsActive()
-    const shareContract = useShareContract(projectId)
+    const shareContract = useShareContract(streamrProjectId)
     const accounts = useAccounts()
     const provider = useProvider();
 
@@ -347,7 +347,7 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
 export const useIsProjectOwner = (): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
     const accounts = useAccounts()
     const active = useIsActive()
-    const [projectDetails, projectDetailsLoading] =  useProjectDetails(projectId)
+    const [projectDetails, projectDetailsLoading] =  useProjectDetails(streamrProjectId)
 
     if (!active) return [false, projectDetailsLoading]
 

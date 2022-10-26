@@ -2,7 +2,7 @@ import { Button, Input, Message } from "semantic-ui-react";
 import React, { useState } from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
-import { projectId } from "../../utils";
+import { streamrProjectId } from "../../utils";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 import { InputForm } from "../InputForm/InputForm";
 import { InputLine } from "../InputForm/InputLine";
@@ -14,10 +14,10 @@ const MintPage = () => {
 
     const isActive = useIsActive()
     const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner()
-    const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
+    const [projectDetails, projectDetailsLoading] = useProjectDetails(streamrProjectId)
     const [category, setCategory] = useState<string | undefined>('')
    
-    const shareContract = useShareContract(projectId)
+    const shareContract = useShareContract(streamrProjectId)
    
     const [ setMetadata, 
         isMetadataValid, 

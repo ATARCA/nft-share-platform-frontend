@@ -6,8 +6,7 @@ export const InputLine = ( {children}:{children?:React.ReactNode}) => {
         {React.Children.map(children, (child, index) =><Table.Cell 
             collapsing={index===0? true:false}
             style={{ 'borderTop':'none'}}>
-                {child}
-            
-            </Table.Cell>)}
+            {child}
+        </Table.Cell>)}
     </Table.Row>
 }

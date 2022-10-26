@@ -18,6 +18,7 @@ import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
 import Footer from './components/Footer';
 import { ManageConsentPage } from './components/topLevel/ManageConsentPage';
 import { useConsentNeeded } from './hooks/hooks';
+import ProjectPage from './components/topLevel/ProjectPage';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
                         <Route path={aboutRoute} element={<AboutPage/>}/> 
                         <Route path={mintRoute} element={<MintPage/>}/> 
                         <Route path={manageConsentRoute} element={<ManageConsentPage/>}/> 
+                        <Route path="project/:projectName" element={<ProjectPage/>}/>
                         <Route path="token/:contractAddress/:tokenId" element={<TokenDetailPage/>}/>
                         <Route path="shareToken/:contractAddress/:tokenId" element={<TokenSharePage/>}/>
                         <Route path="wallet/:walletAddress" element={<WalletDetailPage/>}/>
