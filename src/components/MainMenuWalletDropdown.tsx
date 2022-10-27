@@ -45,7 +45,7 @@ const MainMenuWalletDropdown = () => {
     if (active && isDesiredChainID(chainID)) return (
         <Menu.Menu position='right' style={{'zIndex':'99999'}}>
             <Menu.Item>
-                <Dropdown  as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
+                <Dropdown floating as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 
                         {isProjectOwner ? <Dropdown.Item onClick={() => navigate('mint')}>Mint a token</Dropdown.Item> : <></>}
                         <MyWalletItem/>
