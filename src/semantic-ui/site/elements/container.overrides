@@ -1,3 +1,143 @@
 /*******************************
          Site Overrides
 *******************************/
+
+/* Mobile 1234 */
+@media only screen and (max-width: @largestMobileScreen) {
+  .ui.container {
+    width: 100% !important;
+    margin-left: 0em !important;
+    margin-right: 0em !important;
+  }
+  .ui.grid.container {
+    width: @mobileGridWidth !important;
+  }
+  .ui.relaxed.grid.container {
+    width: @mobileRelaxedGridWidth !important;
+  }
+  .ui.very.relaxed.grid.container {
+    width: @mobileVeryRelaxedGridWidth !important;
+  }
+
+  .projectExplanation {
+    padding: 1vh 10vw 3vh 0vw;
+  }
+
+  .ui.centered.card {
+    margin-left: 0 !important;
+    margin-right: auto;
+  }
+}
+
+/* Tablet */
+@media only screen and (min-width: @tabletBreakpoint) and (max-width: @largestTabletScreen) {
+  .ui.container {
+    width: 100%;
+    margin-left: @tabletGutter !important;
+    margin-right: @tabletGutter !important;
+  }
+  .ui.grid.container {
+    width: @tabletGridWidth !important;
+  }
+  .ui.relaxed.grid.container {
+    width: @tabletRelaxedGridWidth !important;
+  }
+  .ui.very.relaxed.grid.container {
+    width: @tabletVeryRelaxedGridWidth !important;
+  }
+
+  .projectExplanation {
+    padding: 1vh 15vw 3vh 0vw;
+  }
+
+  .ui.centered.card {
+    margin-left: 0 !important;
+    margin-right: auto;
+  }
+}
+
+/* Small Monitor */
+@media only screen and (min-width: @computerBreakpoint) and (max-width: @largestSmallMonitor) {
+  .ui.container {
+    width: 100%;
+    margin-left: @computerGutter !important;
+    margin-right: @computerGutter !important;
+  }
+  .ui.grid.container {
+    width: @computerGridWidth !important;
+  }
+  .ui.relaxed.grid.container {
+    width: @computerRelaxedGridWidth !important;
+  }
+  .ui.very.relaxed.grid.container {
+    width: @computerVeryRelaxedGridWidth !important;
+  }
+
+  .projectExplanation {
+    padding: 1vh 20vw 3vh 0vw;
+  }
+
+  .ui.centered.card {
+    margin-left: 0 !important;
+    margin-right: auto;
+  }
+}
+
+/* Large Monitor */
+@media only screen and (min-width: @largeMonitorBreakpoint) and (max-width: 1440px) {
+  .ui.container {
+    width: 100%;
+    margin-left: @largeMonitorGutter !important;
+    margin-right: @largeMonitorGutter !important;
+  }
+  .ui.grid.container {
+    width: @largeMonitorGridWidth !important;
+  }
+  .ui.relaxed.grid.container {
+    width: @largeMonitorRelaxedGridWidth !important;
+  }
+  .ui.very.relaxed.grid.container {
+    width: @largeMonitorVeryRelaxedGridWidth !important;
+  }
+
+  .projectExplanation {
+    padding: 1vh 25vw 3vh 0vw;
+  }
+
+  .ui.grid > * {
+    padding-left: 0rem !important;
+  }
+
+  .ui.centered.card {
+    margin-left: 0 !important;
+    margin-right: auto;
+  }
+}
+
+/* Very Large Monitor */
+@media only screen and (min-width: 1440px) {
+  .ui.container {
+    width: 1400px;
+    margin-left: @largeMonitorGutter !important;
+    margin-right: @largeMonitorGutter !important;
+  }
+  .ui.grid.container {
+    width: @largeMonitorGridWidth !important;
+  }
+  .ui.relaxed.grid.container {
+    width: @largeMonitorRelaxedGridWidth !important;
+  }
+  .ui.very.relaxed.grid.container {
+    width: @largeMonitorVeryRelaxedGridWidth !important;
+  }
+
+  .projectExplanation {
+    padding: 1vh 15vw 3vh 0vw;
+  }
+
+  .ui.centered.card {
+    margin-left: 0 !important;
+    margin-right: auto;
+  }
+}
+

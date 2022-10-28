@@ -24,7 +24,7 @@ export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false }:
             {tokens.length === 0? 
                 <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
-                <Grid doubling centered columns={3} style={{ padding: '10vh 10vw 10vh 10vw', maxWidth:'90em', margin: 'auto'}}>
+                <Grid doubling centered columns={3} style={{ padding: '10vh 10vw 10vh 10vw', maxWidth:'120em', margin: 'auto'}}>
                     {tokens.map(t => 
                         <TokenCard key={t.id} token={t} showCardWhenDataMissing={showCardWhenDataMissing} renderAsGridColumn={true}/>
                     )}
@@ -66,7 +66,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
         }
     }
 
-    const cardStyle = {'textAlign': 'left', 'textDecoration': 'none'}
+    const cardStyle = renderAsGridColumn ? {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%'} : {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%', 'width':'32em'};
 
     const renderConsentMissingCard = () => {
         return (
@@ -88,7 +88,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
         return <div>
             <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
                 
-                <Image rounded size='medium' className='Square' src={imageURL} style={{'maxWidth': '100%'}}/>
+                <Image rounded size='medium' className='Square' src={imageURL} style={{'width': '100%'}}/>
                 <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header className='No-overflow'>{tokenHolderDisplayName}</Card.Header>

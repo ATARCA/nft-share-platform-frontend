@@ -29,7 +29,7 @@ const Home = () => {
             <OnboardingCarousel/>
             <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
                 <Header className="No-overflow" as='h1'>Contribution awards to the Streamr community</Header>
-                <p style={{ padding: '1vh 30vw 3vh 0vw'}}>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
+                <p className='projectExplanation'>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
                 <TokenCategoryDropdown onCategoryChanged={(category) => setSelectedCategory(category)}/>
             </div>
             
