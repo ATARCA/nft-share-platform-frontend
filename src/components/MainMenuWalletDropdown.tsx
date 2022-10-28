@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Dropdown, Menu } from "semantic-ui-react";
 import { hooks, metaMask as metamaskConnector } from "../connectors/metaMaskConnector";
 import { useIsProjectOwner } from "../hooks/hooks";
-import { buildWalletPageRoute, manageConsentRoute } from "../routingUtils";
+import { buildWalletPageRoute, manageConsentRoute, mintRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
 import { isDesiredChainID, MetaMaskConnectOnlyButton } from "./MetamaskConnectSubmenu";
 
@@ -47,7 +47,7 @@ const MainMenuWalletDropdown = () => {
             <Menu.Item>
                 <Dropdown floating as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 
-                        {isProjectOwner ? <Dropdown.Item onClick={() => navigate('mint')}>Mint a token</Dropdown.Item> : <></>}
+                        {isProjectOwner ? <Dropdown.Item onClick={() => navigate(mintRoute)}>Mint a token</Dropdown.Item> : <></>}
                         <MyWalletItem/>
                         <ManageConsentItem/>
                         <DisconnectItem/>
