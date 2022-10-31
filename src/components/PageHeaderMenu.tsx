@@ -2,7 +2,7 @@ import React from "react";
 import { Divider, Menu } from "semantic-ui-react";
 import ConsentPanel from "./ConsentPanel";
 import MainMenuWalletDropdown from "./MainMenuWalletDropdown";
-import HomeMenuButtons from "./menu/HomeMenuButtons";
+import HomeMenuNavigationButtons from "./menu/HomeMenuButtons";
 import MetamaskConnectSubMenu from "./MetamaskConnectSubmenu";
 
 const PageHeaderMenu = () => {
@@ -10,7 +10,7 @@ const PageHeaderMenu = () => {
     return (
         <>
             <Menu secondary stackable={true}>
-                <HomeMenuButtons/>
+                <HomeMenuNavigationButtons/>
                 <MetamaskConnectSubMenu/>    
                 <MainMenuWalletDropdown/>
             </Menu>
