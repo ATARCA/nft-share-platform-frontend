@@ -19,3 +19,8 @@ export const buildProjectPageRoute = (projectId: string) => {
 export const aboutRoute = '/about'
 export const mintRoute = '/mint'
 export const manageConsentRoute = '/manageConsent'
+export const projectRoute = 'project/:projectName'
+export const tokenDetailRoute = 'token/:contractAddress/:tokenId'
+export const tokenShareRoute = 'shareToken/:contractAddress/:tokenId'
+export const walletDetailRoute = 'wallet/:walletAddress'
+export const homeRoute = '/'

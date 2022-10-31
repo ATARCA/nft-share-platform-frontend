@@ -7,10 +7,10 @@ import TokenGrid from '../TokenGrid';
 import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
 import { Header, Segment } from 'semantic-ui-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { aboutRoute } from '../../routingUtils';
 import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
 import { streamrProjectId } from '../../utils';
 import { useProjectDetails } from '../../hooks/hooks';
+import { aboutRoute } from '../../routingUtils';
 
 const ProjectPage = () => {
 

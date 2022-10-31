@@ -19,9 +19,9 @@ import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUplo
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
-import { url } from "inspector";
 import { TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
 import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
+import { useParams } from "react-router-dom";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
@@ -95,6 +95,16 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     const tutorialCompleted = tutorialCompletedInternal === 'true';
 
     return [tutorialCompleted, setTutorialCompleted];
+}
+
+export const useLastVisitedProjectCookie = (): [string, (projedId: string) => void] => {
+    const [lastVisitedProjectInternal, setLastVisitedProjectInternal] = useCookie('lastVisitedProject', '');
+
+    const setLastVisitedProject = (projectId: string) => {
+        setLastVisitedProjectInternal(projectId, {days: 9999})
+    };
+
+    return [lastVisitedProjectInternal, setLastVisitedProject];
 }
 
 export const useLocalImageUrlHistory = (): [parsedUrlList: string[], addUrlToImageHistory: (newUrl: string) => void] => {
@@ -386,4 +396,21 @@ export const useConsentNeeded = (): [consentNeeded: boolean, refetchConsent: () 
     const refetchConsent = async () => await consentNeededResult.refetch()
 
     return [consentNeeded && active, refetchConsent]
+}
+
+export const useCurrentProjectId = (): string|undefined => {
+    const projectName = useParams().projectName
+    const tokenId = useParams().tokenId
+    const contractAddress = useParams().contractAddress
+
+    const [tokenDetails, tokenDetailsLoading] = useTokenDetails(contractAddress || 'N/A', BigNumber.from( tokenId || '0'))
+    
+    console.log('params',useParams())
+
+    console.log('projectName',projectName)
+    console.log('tokenId',tokenId)
+    console.log('contractAddress',contractAddress)
+
+    if (projectName) return projectName
+    else return tokenDetails?.project.id
 }
