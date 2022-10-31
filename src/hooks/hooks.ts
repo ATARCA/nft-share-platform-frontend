@@ -12,7 +12,7 @@ import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId, streamrProjectId } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA, CONSENT_NEEDED } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
@@ -207,7 +207,7 @@ export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
     return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
 }
 
-export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
+export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
 [   setMetadata: (metadata: string) => void, 
     isMetadataValid: boolean,
     setIsMetadataValid: (isMetadataValid: boolean) => void ,
@@ -226,7 +226,7 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
 ] => {
 
     const isActive = useIsActive()
-    const shareContract = useShareContract(streamrProjectId)
+    const shareContract = useShareContract(projectId)
     const accounts = useAccounts()
     const provider = useProvider();
 
@@ -354,10 +354,10 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
         resetState]
 }
 
-export const useIsProjectOwner = (): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
+export const useIsProjectOwner = (projectId: string): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
     const accounts = useAccounts()
     const active = useIsActive()
-    const [projectDetails, projectDetailsLoading] =  useProjectDetails(streamrProjectId)
+    const [projectDetails, projectDetailsLoading] =  useProjectDetails(projectId)
 
     if (!active) return [false, projectDetailsLoading]
 
@@ -404,12 +404,6 @@ export const useCurrentProjectId = (): string|undefined => {
     const contractAddress = useParams().contractAddress
 
     const [tokenDetails, tokenDetailsLoading] = useTokenDetails(contractAddress || 'N/A', BigNumber.from( tokenId || '0'))
-    
-    console.log('params',useParams())
-
-    console.log('projectName',projectName)
-    console.log('tokenId',tokenId)
-    console.log('contractAddress',contractAddress)
 
     if (projectName) return projectName
     else return tokenDetails?.project.id

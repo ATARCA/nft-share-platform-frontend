@@ -127,10 +127,9 @@ query AllProjectsQuery {
 `
 
 export const GET_TOKENS_OF_ADDRESS = gql`
-query TokensOfAddressQuery ($projectId: String!, $address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!){
+query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!){
   tokens(
     where: {
-      project: $projectId, 
     	ownerAddress: $address, 
     	isOriginal: $isOriginal, 
     	isSharedInstance: $isSharedInstance, 

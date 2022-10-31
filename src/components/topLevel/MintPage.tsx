@@ -1,8 +1,7 @@
 import { Button, Input, Message } from "semantic-ui-react";
 import React, { useState } from "react";
 import { hooks } from "../../connectors/metaMaskConnector";
-import { useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
-import { streamrProjectId } from "../../utils";
+import { useCurrentProjectId, useIsProjectOwner, useMintTokenAndUploadMetadata, useProjectDetails, useShareContract } from "../../hooks/hooks";
 import { MetadataEntryForm } from "../MetadataEntryForm";
 import { InputForm } from "../InputForm/InputForm";
 import { InputLine } from "../InputForm/InputLine";
@@ -13,11 +12,13 @@ const { useAccounts, useIsActive, useProvider } = hooks
 const MintPage = () => {
 
     const isActive = useIsActive()
-    const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner()
-    const [projectDetails, projectDetailsLoading] = useProjectDetails(streamrProjectId)
+    const projectId = useCurrentProjectId() || 'N/A'
+
+    const [isProjectOwner, isProjectOwnerLoading] = useIsProjectOwner(projectId)
+    const [projectDetails, projectDetailsLoading] = useProjectDetails(projectId)
     const [category, setCategory] = useState<string | undefined>('')
    
-    const shareContract = useShareContract(streamrProjectId)
+    const shareContract = useShareContract(projectId)
    
     const [ setMetadata, 
         isMetadataValid, 
@@ -33,7 +34,7 @@ const MintPage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
+        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
  
     const onMintAndUploadMetadataClicked = async () => {
         await mintAndUploadMetadata()

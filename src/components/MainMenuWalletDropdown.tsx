@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Dropdown, Menu } from "semantic-ui-react";
 import { hooks, metaMask as metamaskConnector } from "../connectors/metaMaskConnector";
-import { useIsProjectOwner } from "../hooks/hooks";
-import { buildWalletPageRoute, manageConsentRoute, mintRoute } from "../routingUtils";
+import { useCurrentProjectId, useIsProjectOwner } from "../hooks/hooks";
+import { buildMintPageRoute, buildWalletPageRoute, manageConsentRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
 import { isDesiredChainID, MetaMaskConnectOnlyButton } from "./MetamaskConnectSubmenu";
 
@@ -15,7 +15,8 @@ const MainMenuWalletDropdown = () => {
     const accounts = useAccounts()
     const navigate = useNavigate()
     const active = useIsActive()
-    const [isProjectOwner, projectDetailsLoading] = useIsProjectOwner()
+    const projectId = useCurrentProjectId() || 'N/A'
+    const [isProjectOwner, projectDetailsLoading] = useIsProjectOwner(projectId)
 
     const chainID = useChainId()
 
@@ -47,7 +48,7 @@ const MainMenuWalletDropdown = () => {
             <Menu.Item>
                 <Dropdown floating as={Button} className="Menu-dropdown-button" text={getAccountLabel()}>
                     <Dropdown.Menu> 
-                        {isProjectOwner ? <Dropdown.Item onClick={() => navigate(mintRoute)}>Mint a token</Dropdown.Item> : <></>}
+                        {isProjectOwner ? <Dropdown.Item onClick={() => navigate(buildMintPageRoute(projectId))}>Mint a token</Dropdown.Item> : <></>}
                         <MyWalletItem/>
                         <ManageConsentItem/>
                         <DisconnectItem/>
@@ -60,3 +61,4 @@ const MainMenuWalletDropdown = () => {
 }
 
 export default MainMenuWalletDropdown
+

@@ -16,8 +16,13 @@ export const buildProjectPageRoute = (projectId: string) => {
     return `/project/${projectId}`
 }
 
+
+export const buildMintPageRoute = (projectId: string) => {
+    return `/project/${projectId}/mint`
+}
+
 export const aboutRoute = '/about'
-export const mintRoute = '/mint'
+export const mintRoute = 'project/:projectName/mint'
 export const manageConsentRoute = '/manageConsent'
 export const projectRoute = 'project/:projectName'
 export const tokenDetailRoute = 'token/:contractAddress/:tokenId'

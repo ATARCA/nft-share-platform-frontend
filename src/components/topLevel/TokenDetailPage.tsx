@@ -5,9 +5,8 @@ import { Button, Card, Grid, Header, Message, Popup, Segment } from "semantic-ui
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
-import { useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
+import { useCurrentProjectId, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from '../../connectors/metaMaskConnector'
-import { buildSubgraphTokenEntityId, streamrProjectId } from "../../utils";
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
@@ -26,8 +25,10 @@ const TokenDetailPage = () => {
     const active = useIsActive()
     const navigate = useNavigate()
 
-    const likeContract = useLikeContract(streamrProjectId)
-    const shareContract = useShareContract(streamrProjectId)
+    const projectId = useCurrentProjectId() || 'N/A'
+
+    const likeContract = useLikeContract(projectId)
+    const shareContract = useShareContract(projectId)
 
     const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')

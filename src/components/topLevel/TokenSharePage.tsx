@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 import { Button, Card, Grid, Header, Input, Message, Segment } from "semantic-ui-react";
-import { useIsCurrentAccountTokenOwner, useMetadata, useMintTokenAndUploadMetadata, useTokenDetails } from "../../hooks/hooks";
+import { useCurrentProjectId, useIsCurrentAccountTokenOwner, useMetadata, useMintTokenAndUploadMetadata, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from "../../connectors/metaMaskConnector";
 import { BigNumber } from "@ethersproject/bignumber";
 import { subContributionPropertyName, subContributorPropertyName, MetadataAttribute, NFTMetadata } from "../../types/NFTMetadata";
@@ -20,6 +20,8 @@ const TokenSharePage = () => {
 
     const tokenId = useParams().tokenId || 'undefined'
     const contractAddress = useParams().contractAddress || 'undefined'
+
+    const projectId = useCurrentProjectId() || 'N/A'
 
     const [ receiverName, setReceiverName ] = useState('')
     
@@ -46,7 +48,7 @@ const TokenSharePage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( (receiverAddress, shareContract) => shareContract.share(receiverAddress,tokenId))
+        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract) => shareContract.share(receiverAddress,tokenId))
     
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
@@ -105,7 +107,7 @@ const TokenSharePage = () => {
             { errorMessage ? <Message error header='Transaction error' content={errorMessage}/>: <></>}
             {metadataErrorMessage ? <Message error header='Error when loading metadata' content={metadataErrorMessage}/> : <></>}
 
-            { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! Mint transaction was sent and your co-contributor details metadata were uploaded'/>: <></>}
+            { mintAndMetadaUploadCompleted ? <Message header='Thanks for sharing your award! Mint transaction was sent and your co-contributor details metadata was uploaded.'/>: <></>}
     
             { (!isCurrentAccountTokenOwner && isActive) ? <Message warning header='Cannot share token' content='Current account is not owner of this token and cannot share it.'/>: <></>}
 

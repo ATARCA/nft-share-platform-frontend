@@ -2,12 +2,11 @@ import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { GET_TOKENS_OF_ADDRESS } from '../../queries-thegraph/queries';
 import { useParams } from 'react-router-dom';
-import { Message, Label, Button, Header } from 'semantic-ui-react';
+import { Message, Label, Header } from 'semantic-ui-react';
 import { useQuery } from '@apollo/client'
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { TokensOfAddressQuery, TokensOfAddressQueryVariables } from '../../queries-thegraph/types-thegraph/TokensOfAddressQuery';
-import { streamrProjectId } from '../../utils';
 import TokenGrid from '../TokenGrid';
 
 export const WalletDetailPage = () => {
@@ -19,19 +18,19 @@ export const WalletDetailPage = () => {
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {projectId: streamrProjectId, address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false}});
 
     const sharedTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {projectId: streamrProjectId, address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false}});
 
     const likeTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {projectId: streamrProjectId, address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true}});
 
     const originalTokensLength = originalTokensResult?.data?.tokens.length || 0
     const sharedTokensLength = sharedTokensResult?.data?.tokens.length || 0
