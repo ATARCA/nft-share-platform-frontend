@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Dropdown, Menu } from "semantic-ui-react";
 import talco_logo from '../../images/talco_logo.svg';
 import { Image } from "semantic-ui-react";
-import { aboutRoute, buildProjectPageRoute } from "../../routingUtils";
+import { aboutRoute, buildProjectPageRoute, homeRoute } from "../../routingUtils";
 import { useQuery } from "@apollo/client";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
@@ -32,13 +32,10 @@ const HomeMenuButtons = () => {
 
     const options = allProjectsResult.data?.projects.map( project => ({key: project.id, text:project.id, value:project.id}) ) 
 
-    return (
-        <Menu.Menu position="left">
-            <Menu.Item onClick={() => navigate('/')}>
-                <Image className='margin-vertical-main-menu' src={talco_logo} size='tiny'/>
-            </Menu.Item>
-            
-            <Menu.Item name={projectName} onClick={() => navigate(buildProjectPageRoute(projectName))} active={ location.pathname === aboutRoute }/>          
+    const renderProjectSelectionItems = () => {
+        if (location.pathname === homeRoute || location.pathname === aboutRoute) return <></>
+        else return <>
+            <Menu.Item name={projectName} onClick={() => navigate(buildProjectPageRoute(projectName))}/>          
             <Menu.Item style={{paddingLeft: '0', marginLeft: '0'}}>
                 <Dropdown
                     onChange={ (event, data) => onProjectSelected(data.value?.toString() || projectName)}
@@ -51,6 +48,16 @@ const HomeMenuButtons = () => {
                     trigger={<></>}
                 />
             </Menu.Item>
+        </>
+    }
+
+    return (
+        <Menu.Menu position="left">
+            <Menu.Item onClick={() => navigate('/')}>
+                <Image className='margin-vertical-main-menu' src={talco_logo} size='tiny'/>
+            </Menu.Item>
+            
+            {renderProjectSelectionItems()}
           
             <Menu.Item name='About' onClick={() => navigate(aboutRoute)} active={ location.pathname === aboutRoute }/>          
         </Menu.Menu>
