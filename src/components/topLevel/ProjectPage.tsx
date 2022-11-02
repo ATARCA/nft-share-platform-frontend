@@ -30,9 +30,6 @@ const ProjectPage = () => {
             onError: defaultErrorHandler, 
             variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId}});
 
-
-    console.log('THIS IS PROJECT PAGE',projectDetails?.id)
-
     const getProjectTitle = () => {
         if (projectId === streamrProjectId) return (
             <div>Contribution awards to the Streamr community</div>
