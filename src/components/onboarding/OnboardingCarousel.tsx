@@ -57,7 +57,7 @@ const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onClos
                 <Slider >
                     {carouselContent.map( (item,i) =>     
                         <Slide   index={i} key={i}>
-                            <div style={{'padding':'4vw', margin:'2vw 4vw 1vw 4vw'}} className="OnboardingCarouselBackground">
+                            <div className="OnboardingCarouselBackground OnboardingCarouselBackgroundDiv">
                                 <Image size="small" centered src={item.image}/>
                                 <Header textAlign="left">{item.title}</Header>    
                                 <p className="OnboardingCarouselTextParagraph">{item.text}</p>
