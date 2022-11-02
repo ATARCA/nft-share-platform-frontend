@@ -234,7 +234,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
                 </InputLine>
 
                 <InputLine >
-                    <InputLabel label='Description' subLabel='Additional details - for token metadata only'/>
+                    <InputLabel label='Description' subLabel='Visible on token detail page'/>
 
                     <Input fluid
                         //TODO show this in the token detail page 

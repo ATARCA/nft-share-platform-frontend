@@ -26,6 +26,7 @@ const TokenSharePage = () => {
     const [ receiverName, setReceiverName ] = useState('')
     
     const [ subcontributionName, setSubcontributionName ] = useState('')
+    const [ tokenDescription, setTokenDescription ] = useState('')
 
     const [ errorMessage, setErrorMessage ] = useState('')
 
@@ -71,16 +72,18 @@ const TokenSharePage = () => {
                 const contributorAttribute:MetadataAttribute = {trait_type:subContributorPropertyName, value:receiverName}
                 const contributionTitleAttribute:MetadataAttribute = {trait_type:subContributionPropertyName, value:subcontributionName}
                
+                extendedMetadata.description = tokenDescription
+
                 extendedMetadata.attributes.push(contributorAttribute)
                 extendedMetadata.attributes.push(contributionTitleAttribute)
                 const extendedMetadataJson = JSON.stringify(extendedMetadata, null, '\t')
                 setNewMetadata(extendedMetadataJson)
-                setIsMetadataValid( !!subcontributionName && !!receiverName && subcontributionName.length<MAX_SUBCONTRIBUTION_TITLE_LENGTH) 
+                setIsMetadataValid( !!subcontributionName && !!tokenDescription && !!receiverName && subcontributionName.length<MAX_SUBCONTRIBUTION_TITLE_LENGTH) 
             }
         }
 
         updateNewTokenMetadata()
-    },[currentTokenmetadata, receiverName, setIsMetadataValid, setNewMetadata, subcontributionName])
+    },[currentTokenmetadata, receiverName, setIsMetadataValid, setNewMetadata, subcontributionName, tokenDescription])
 
     const shareDisabled = () => {
         return !canMint() || 
@@ -92,11 +95,12 @@ const TokenSharePage = () => {
         setReceiverAddress('')
         setReceiverName('')
         setSubcontributionName('')
+        setTokenDescription('')
         resetState()
     }
 
     const renderSuccessView = () => {
-        return <div>
+        return <div style={{ 'paddingBottom': '2em' }}>
             <p>Token minting transaction sent. Metadata upload successful.</p>
             <Button onClick={() => onMintAnotherTokenClicked()}>Mint another token</Button>
         </div>
@@ -142,24 +146,32 @@ const TokenSharePage = () => {
                         value={subcontributionName} 
                         onChange={(e, { value }) => setSubcontributionName( value ) }/>
                 </InputLine>
+
+                <InputLine>
+                    <InputLabel label='Token description' subLabel={<p style={{maxWidth: '20em', whiteSpace: 'normal'}}>Visible on token detail page, e.g.{currentTokenmetadata?.description}</p>}/>
+                    <Input fluid
+                        disabled={mintInProgress || metadataSignAndUploadInProgress || mintAndMetadaUploadCompleted}
+                        value={tokenDescription} 
+                        onChange={(e, { value }) => setTokenDescription( value ) }/>
+                </InputLine>
             </InputForm>
 
             <div style={{'paddingTop': '6.25em', 'paddingBottom': '8.75em'}}>
+
+                { mintAndMetadaUploadCompleted 
+                && mintErrorMessage === '' 
+                && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
+
+                {metadaSignOrUploadFailed ?
+                    <div>
+                        <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
+                        <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
+                    </div>:<></>}
                 <Button primary 
                     disabled={ shareDisabled() } 
                     onClick={ onShareClicked } 
                     loading={ mintInProgress || metadataSignAndUploadInProgress }>Share award</Button>
             </div>
-
-            { mintAndMetadaUploadCompleted 
-                && mintErrorMessage === '' 
-                && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
-
-            {metadaSignOrUploadFailed ?
-                <div>
-                    <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
-                    <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
-                </div>:<></>}
         </div>
         </Grid.Column>
     }

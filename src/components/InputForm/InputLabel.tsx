@@ -1,6 +1,6 @@
 import React from "react";
 
-export const InputLabel = ( {label, subLabel}: { label: string, subLabel?: string}) => {
+export const InputLabel = ( {label, subLabel}: { label: string, subLabel?: React.ReactNode}) => {
 
     return <div>
         <div>{label}</div> 

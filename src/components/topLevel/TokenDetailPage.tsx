@@ -80,7 +80,7 @@ const TokenDetailPage = () => {
     }
 
     const renderMetadataAttributes = (token:TokenByIdQuery_token) => {
-        return <div>{metadata?.attributes ? <TokenAttributesView token={token} attributes={metadata.attributes}/> : <p>Metadata not available. URI <a target={"_blank"} href={token.metadataUri||''} rel="noreferrer">{token.metadataUri}</a></p>}</div>
+        return <div>{metadata?.attributes ? <TokenAttributesView token={token} metadata={metadata}/> : <p>Metadata not available. URI <a target={"_blank"} href={token.metadataUri||''} rel="noreferrer">{token.metadataUri}</a></p>}</div>
     }
 
     const renderShareOrLikeButton = () => {

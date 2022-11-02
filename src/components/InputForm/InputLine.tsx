@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 
 export const InputLine = ( {children}:{children?:React.ReactNode}) => {
     return <Table.Row>
