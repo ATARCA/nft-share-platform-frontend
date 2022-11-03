@@ -14,10 +14,13 @@ import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
 import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { TokenCard } from "../TokenGrid";
+import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
+import { useLocation } from "react-router-dom";
 
 const { useAccounts, useError, useIsActive } = hooks
 
-const TokenDetailPage = () => {
+const TokenDetailPage = () => { 
+    const location = useLocation();
 
     const tokenId = useParams().tokenId || 'undefined'
     const contractAddress = useParams().contractAddress || 'undefined'
@@ -135,6 +138,18 @@ const TokenDetailPage = () => {
     const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token} showCardWhenDataMissing={true}/>
+            <Grid columns='equal' style={{'margin-top':'0px'}}>
+                <Grid.Column key={"facebook"}>
+                    <FacebookShareButton quote="Check out this cool award" url={'https://talkoapp.io'+location.pathname}><FacebookIcon size={40} round /></FacebookShareButton>
+                    <FacebookShareCount url={'https://talkoapp.io'+location.pathname}>{count => count}</FacebookShareCount>
+                </Grid.Column>
+                <Grid.Column key={"twitter"}>
+                    <TwitterShareButton url={'https://talkoapp.io'+location.pathname}><TwitterIcon size={40} round /></TwitterShareButton>
+                </Grid.Column>
+                <Grid.Column key={"linkedin"}>
+                    <LinkedinShareButton url={'https://talkoapp.io'+location.pathname}><LinkedinIcon size={40} round/></LinkedinShareButton>
+                </Grid.Column>
+            </Grid>
         </Grid.Column>
     }
 

@@ -1,11 +1,12 @@
 import React from "react";
-import { Card, Table } from "semantic-ui-react";
+import { Card, Table, Image, Grid } from "semantic-ui-react";
 import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { MetadataAttribute } from "../types/NFTMetadata";
 import { Link } from "react-router-dom"
 import urlRegex from "url-regex";
 import { buildWalletPageRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
+import polygon_logo from '../images/polygon-matic-logo.svg';
 
 const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,attributes: MetadataAttribute[]}) => {
     return (
@@ -23,11 +24,21 @@ const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,
                         <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress)}</Link></ValueTableCell> 
                     </Table.Row>
                     <Table.Row>
-                        <TitleTableCell>Likes</TitleTableCell>
+                        <TitleTableCell>
+                            <>
+                                <Image className='margin-vertical-main-menu eu-flag' src={polygon_logo} size='mini' style={{'width':'18px', 'height':'18px', 'margin-right':'4px', 'display':'inline-block'}}/>
+                                <div style={{'display':'inline-block'}}>Likes</div>
+                            </>  
+                        </TitleTableCell>
                         <ValueTableCell>{token.likeTokens.length}</ValueTableCell> 
                     </Table.Row>
                     <Table.Row>
-                        <TitleTableCell>Shares</TitleTableCell>
+                        <TitleTableCell>
+                            <>
+                                <Image className='margin-vertical-main-menu eu-flag' src={polygon_logo} size='mini' style={{'width':'18px', 'height':'18px', 'margin-right':'4px', 'display':'inline-block'}}/>
+                                <div style={{'display':'inline-block'}}>Shares</div>
+                            </>
+                        </TitleTableCell>
                         <ValueTableCell>{token.sharedChildTokens.length}</ValueTableCell> 
                     </Table.Row>
                 </Table.Body>

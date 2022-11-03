@@ -11,6 +11,7 @@ import { buildTokenDetailRoute } from '../routingUtils';
 import { categoryPropertyName, NFTMetadata } from '../types/NFTMetadata';
 import { TokensOfAddressQuery_tokens } from '../queries-thegraph/types-thegraph/TokensOfAddressQuery';
 import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenByIdQuery';
+import polygon_logo from '../images/polygon-matic-logo.svg';
 
 const alwaysShowCardEnvFlag = process.env.REACT_APP_ALWAYS_SHOW_TOKEN_CARD === 'true'
 
@@ -148,10 +149,12 @@ const TokenCardBottomIcons = ({likesCount, sharesCount}:{likesCount: number, sha
     return <Card.Content className='Card-footer'>
         <Grid columns={2} relaxed='very' centered stackable>
             <Grid.Column textAlign='center' >
+                <Image className='margin-vertical-main-menu eu-flag' src={polygon_logo} size='mini' style={{'width':'18px', 'height':'18px', 'margin-right':'2px'}}/>
                 <Image src={icon_thumbsUp} ></Image>
                 <span> {likesCount}</span>
             </Grid.Column>
             <Grid.Column textAlign='center'>
+                <Image className='margin-vertical-main-menu eu-flag' src={polygon_logo} size='mini' style={{'width':'18px', 'height':'18px', 'margin-right':'2px'}}/>
                 <Image src={icon_Share} ></Image>
                 <span> {sharesCount}</span>
             </Grid.Column>
