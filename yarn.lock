@@ -8472,6 +8472,13 @@ react-share@^4.4.1:
     classnames "^2.3.2"
     jsonp "^0.2.1"
 
+react-social-icons@^5.15.0:
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/react-social-icons/-/react-social-icons-5.15.0.tgz#6b815aab9eff210e1f6e8a4ca420684aa72c154a"
+  integrity sha512-khfDgUiUwEBe34T6br2+mkXQg3hLVDdviVjexxZoVCsogMgxTy/m8+KlX/j6Wa7P2BPxgZ7yZ2jXw3X06pUUFQ==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-use-cookie@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/react-use-cookie/-/react-use-cookie-1.4.0.tgz#8f9fffeea9ad48d97dfbb6818aa0c63771946e3a"
