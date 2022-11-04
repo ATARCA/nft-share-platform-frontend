@@ -138,10 +138,9 @@ const TokenDetailPage = () => {
     const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token} showCardWhenDataMissing={true}/>
-            <Grid columns='equal' style={{'margin-top':'0px'}}>
+            <Grid columns='equal' style={{'margin-top':'0px', 'marginLeft':'0px', 'marginRight':'0px'}}>
                 <Grid.Column key={"facebook"}>
                     <FacebookShareButton quote="Check out this cool award" url={'https://talkoapp.io'+location.pathname}><FacebookIcon size={40} round /></FacebookShareButton>
-                    <FacebookShareCount url={'https://talkoapp.io'+location.pathname}>{count => count}</FacebookShareCount>
                 </Grid.Column>
                 <Grid.Column key={"twitter"}>
                     <TwitterShareButton url={'https://talkoapp.io'+location.pathname}><TwitterIcon size={40} round /></TwitterShareButton>

@@ -31,12 +31,12 @@ const Home = () => {
             <OnboardingCarousel/>
             <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
                 <Header className="No-overflow" as='h1'>Contribution awards to the Streamr community</Header>
-                <div>
+                <p className='projectExplanation'>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
+                <div style={{'marginBottom': '2em'}}>
                     <Image src={streamr_logo} size='mini' style={{"display":"inline-block"}} as='a' href='https://streamr.network/'/>
                     <SocialIcon url="https://discord.gg/gZAm8P7hK8" label="Streamr Discord" style={{"height":"35px","width":"35px",'marginLeft':'15px'}} />
                     <SocialIcon url="https://twitter.com/streamr" label="Streamr Twitter" style={{"height":"35px","width":"35px",'marginLeft':'15px'}}/>
                 </div>
-                <p className='projectExplanation'>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
                 <TokenCategoryDropdown onCategoryChanged={(category) => setSelectedCategory(category)}/>
             </div>
             

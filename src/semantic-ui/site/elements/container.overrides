@@ -20,11 +20,10 @@
   }
 
   .projectExplanation {
-    padding: 1vh 10vw 3vh 0vw;
+    padding: 1vh 10vw 1vh 0vw;
   }
 
   .ui.centered.card {
-    margin-left: 0 !important;
     margin-right: auto;
   }
 }
@@ -47,11 +46,10 @@
   }
 
   .projectExplanation {
-    padding: 1vh 15vw 3vh 0vw;
+    padding: 1vh 15vw 1vh 0vw;
   }
 
   .ui.centered.card {
-    margin-left: 0 !important;
     margin-right: auto;
   }
 }
@@ -74,11 +72,10 @@
   }
 
   .projectExplanation {
-    padding: 1vh 20vw 3vh 0vw;
+    padding: 1vh 20vw 1vh 0vw;
   }
 
   .ui.centered.card {
-    margin-left: 0 !important;
     margin-right: auto;
   }
 }
@@ -101,7 +98,7 @@
   }
 
   .projectExplanation {
-    padding: 1vh 25vw 3vh 0vw;
+    padding: 1vh 25vw 1vh 0vw;
   }
 
   .ui.grid > * {
@@ -109,7 +106,6 @@
   }
 
   .ui.centered.card {
-    margin-left: 0 !important;
     margin-right: auto;
   }
 }
@@ -132,11 +128,10 @@
   }
 
   .projectExplanation {
-    padding: 1vh 15vw 3vh 0vw;
+    padding: 1vh 15vw 1vh 0vw;
   }
 
   .ui.centered.card {
-    margin-left: 0 !important;
     margin-right: auto;
   }
 }
