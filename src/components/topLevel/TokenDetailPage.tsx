@@ -1,7 +1,7 @@
 import { useLazyQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Card, Grid, Header, Message, Popup, Segment } from "semantic-ui-react";
+import { Button, Card, Grid, Header, Icon, Message, Popup, Segment } from "semantic-ui-react";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
@@ -82,23 +82,41 @@ const TokenDetailPage = () => {
         return <div>{metadata?.attributes ? <TokenAttributesView token={token} metadata={metadata}/> : <p>Metadata not available. URI <a target={"_blank"} href={token.metadataUri||''} rel="noreferrer">{token.metadataUri}</a></p>}</div>
     }
 
+    const getShareButtonExplainerText = () => {
+        if (active) return 'On-chain transaction needed. Share this token with another person that helped you achieve this award.'
+        else return 'Connect your wallet to share this token.'
+    }
+
+    const getLikeButtonExplainerText = () => {
+        if (active) return 'On-chain transaction needed. You will share an instance of this token to your wallet.'
+        else return 'Connect your wallet to like this token.'
+    }
+
     const renderShareOrLikeButton = () => {
 
         if (isCurrentAccountTokenOwner)
-            return <Button primary 
-                disabled={!active || !shareContract} 
-                onClick={onShareClicked} 
-                loading={likeInProgress}>Share award</Button>
+            return <>
+                <Button primary 
+                    disabled={!active || !shareContract} 
+                    onClick={onShareClicked} 
+                    loading={likeInProgress}>Share award</Button>
+                <Popup content={getShareButtonExplainerText()} position='bottom left' trigger={<Icon color="grey" style={{margin : '0.5em'}}
+                    className="Icon-explainer" name="question circle"/>}/>
+            </>
         else
-            return <Popup 
-                content='You have already liked this token'
-                disabled={!likeTokenExists}
-                trigger={<span><Button primary 
-                    disabled={!active || !likeContract || likeTokenExists || likeInProgress} 
-                    onClick={onLikeClicked} 
-                    loading={likeInProgress}>Like</Button></span>
-                }
-            />
+            return <>
+                <Popup
+                    content='You have already liked this token'
+                    disabled={!likeTokenExists}
+                    trigger={<span><Button primary 
+                        disabled={!active || !likeContract || likeTokenExists || likeInProgress} 
+                        onClick={onLikeClicked} 
+                        loading={likeInProgress}>Like</Button></span>
+                    }
+                />
+                <Popup content={getLikeButtonExplainerText()} position='bottom left' trigger={<Icon color="grey" style={{margin : '0.5em'}}
+                    name="question circle"/>}/>
+            </>
     }
 
     const renderActionButtonArea = () => {
