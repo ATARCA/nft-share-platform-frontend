@@ -24,7 +24,7 @@ function App() {
         <div className="App">
             <Router>                
                 <PrivacyPolicy/>
-                {consentNeeded ? <></> :
+                {consentNeeded ? <PageHeaderMenu/> :
                     <Routes>
                         <Route path={aboutRoute} element={
                             <>
