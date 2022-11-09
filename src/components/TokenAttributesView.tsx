@@ -20,7 +20,7 @@ const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,
                     })}
                     <Table.Row>
                         <TitleTableCell>Owner</TitleTableCell>
-                        <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress,5)}</Link></ValueTableCell> 
+                        <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress)}</Link></ValueTableCell> 
                     </Table.Row>
                     <Table.Row>
                         <TitleTableCell>On-chain likes</TitleTableCell>
@@ -38,7 +38,7 @@ const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,
 
 const formatAsLinkIfLink = ( text: string ) => {
     if (urlRegex().test(text))
-        return <a href={text}>{shortenAccountAddress(text,10)}</a>
+        return <a href={text}>{text}</a>
     else return text
 }
 
