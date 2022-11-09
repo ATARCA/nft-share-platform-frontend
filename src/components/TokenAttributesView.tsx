@@ -1,18 +1,22 @@
 import React from "react";
 import { Card, Table } from "semantic-ui-react";
 import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { MetadataAttribute } from "../types/NFTMetadata";
+import { MetadataAttribute, NFTMetadata } from "../types/NFTMetadata";
 import { Link } from "react-router-dom"
 import urlRegex from "url-regex";
 import { buildWalletPageRoute } from "../routingUtils";
 import { shortenAccountAddress } from "../utils";
 
-const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,attributes: MetadataAttribute[]}) => {
+const TokenAttributesView = ({token, metadata}: { token:TokenByIdQuery_token, metadata: NFTMetadata}) => {
     return (
         <div>
             <Table basic='very' >
                 <Table.Body>
-                    {attributes.map( attribute => {
+                    <Table.Row>
+                        <TitleTableCell>Description</TitleTableCell>
+                        <ValueTableCell>{metadata.description}</ValueTableCell> 
+                    </Table.Row>
+                    {metadata.attributes.map( attribute => {
                         return <Table.Row key={attribute.trait_type}>
                             <TitleTableCell>{attribute.trait_type}</TitleTableCell>
                             <ValueTableCell>{formatAsLinkIfLink(attribute.value)}</ValueTableCell> 
@@ -38,7 +42,7 @@ const TokenAttributesView = ({token, attributes}: { token:TokenByIdQuery_token ,
 
 const formatAsLinkIfLink = ( text: string ) => {
     if (urlRegex().test(text))
-        return <a href={text}>{text}</a>
+        return <a style={{wordBreak: 'break-all'}} href={text}>{text}</a>
     else return text
 }
 
