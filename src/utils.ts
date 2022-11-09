@@ -6,8 +6,8 @@ export function sleep(ms: number) {
     });
 }
 
-export const shortenAccountAddress = (address: string) : string => {
-    return address.substring(0,5) + '...' + address.substring(address.length - 4)
+export const shortenAccountAddress = (address: string, amount: number) : string => {
+    return address.substring(0,amount) + '...' + address.substring(address.length - (amount-1))
 }
 
 export const addressesEqual = (address1: string, address2: string): boolean => {

@@ -22,7 +22,7 @@ const MainMenuWalletDropdown = () => {
 
     const getAccountLabel = () => {
         if (accounts) {
-            return shortenAccountAddress(accounts[0])
+            return shortenAccountAddress(accounts[0],5)
         }
         else return 'No address'
     }
