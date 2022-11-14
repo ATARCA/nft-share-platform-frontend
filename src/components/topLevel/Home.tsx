@@ -30,8 +30,8 @@ const Home = () => {
             <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
                 <Header className="No-overflow" as='h1'>Streamr community contribution awards!</Header>
                 <div className='projectExplanation'>
-                    <p >Welcome! Streamr Awards are a new type of token (sNFTs) minted to acknowledge the valuable contributions made by Streamr community members to the project and community.</p> 
-                    <p> Browse, like, and share the awards below! </p> 
+                    <p>Streamr Awards are a new type of token (sNFTs) minted to acknowledge the valuable contributions made by Streamr community members.</p> 
+                    <p>Browse, Like, and Share the awards!</p>
                 </div>
                 <div style={{'marginBottom': '2em'}}>
                     <Image src={streamr_logo} size='mini' style={{"display":"inline-block"}} as='a' href='https://streamr.network/'/>
