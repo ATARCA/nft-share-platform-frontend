@@ -28,8 +28,11 @@ const Home = () => {
     return (
         <div>
             <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
-                <Header className="No-overflow" as='h1'>Contribution awards to the Streamr community</Header>
-                <p className='projectExplanation'>Streamr community award tokens (sNFT’s) are minted to community members to acknowledge their valuable contributions to the project and community. Read more <Link to={aboutRoute} onClick={() => navigate(aboutRoute)}>about this service.</Link></p>
+                <Header className="No-overflow" as='h1'>Streamr community contribution awards!</Header>
+                <div className='projectExplanation'>
+                    <p >Welcome! Streamr Awards are a new type of token (sNFTs) minted to acknowledge the valuable contributions made by Streamr community members to the project and community.</p> 
+                    <p> Browse, like, and share the awards below! </p> 
+                </div>
                 <div style={{'marginBottom': '2em'}}>
                     <Image src={streamr_logo} size='mini' style={{"display":"inline-block"}} as='a' href='https://streamr.network/'/>
                     <SocialIcon url="https://discord.gg/gZAm8P7hK8" label="Streamr Discord" style={{"height":"35px","width":"35px",'marginLeft':'15px'}} />

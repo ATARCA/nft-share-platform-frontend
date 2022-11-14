@@ -15,9 +15,9 @@ interface CarouselEntry {
 }
 
 const carouselContent : CarouselEntry[] = 
-    [{image: slideIcon1, title: 'Build for online communities', text: 'Talko is a service for online communities (starting with Streamr) to award  the valuable work done by their members in the form ‘shareable NFTs’, or community awards.'},
-        {image: slideIcon2, title: 'Shareable awards',text: 'Community awards highlight the talent, activities and knowledge sharing taking place in the community. They are kept in everyone’s own wallet and can be  publicly browsed on the Talko site. '},
-        {image: slideIcon3, title: 'All about the good vibes!', text: 'If you get an award you can show your appreciation to those who helped you by sharing a copy with them. You can also ‘like’ other people’s awards. Share the good vibes!'}]
+    [{image: slideIcon1, title: 'Build for Web3 communities', text: 'Community is everything in Web3. Talko rewards and acknowledges the valuable work done by online community members (starting with Streamr) in the form of shareable NFTs’, or Streamr Awards.'},
+        {image: slideIcon2, title: 'Reward and discover contributions',text: 'Streamr Awards are browsable publicly on the site to give visibility to the talent and effort that takes place in the community—and hopefully inspire others!'},
+        {image: slideIcon3, title: 'Share the good vibes!', text: 'Unlike traditional awards, sNFT holders can show their appreciation to those who helped by sharing a copy with them. The community can also ‘Like’ other people’s awards on chain—much more personal!'}]
 
 const OnboardingCarouselSlider = ( { onCloseClicked, showCloseButton } : {onCloseClicked: () => void, showCloseButton: boolean}) => {
 
