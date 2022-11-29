@@ -27,7 +27,7 @@ export const ProjectPreview = ( { projectId }: { projectId: string } ) => {
         </Link>
     )}
 
-    return (<div className='TokenGridBackground'>
+    return (<div>
         <div style={{'textAlign': 'left', padding: '5vh 10vw 0vh 10vw'}}>
             <Header className="No-overflow" as='h1' >
                 <Link className="LinkWithoutLinkFormatting"
@@ -36,6 +36,10 @@ export const ProjectPreview = ( { projectId }: { projectId: string } ) => {
             </Header>
 
         </div>
-        <TokenGrid tokens={first3TokensResult.data?.tokens || []} isLoading={first3TokensResult.loading} lastElement={getShowAllGridElement()}/>
+        <TokenGrid 
+            tokens={first3TokensResult.data?.tokens || []} 
+            isLoading={first3TokensResult.loading} 
+            lastElement={getShowAllGridElement()}
+            transparentBackground={true}/>
     </div>);
 }

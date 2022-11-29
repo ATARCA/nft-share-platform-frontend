@@ -14,19 +14,25 @@ import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenBy
 
 const alwaysShowCardEnvFlag = process.env.REACT_APP_ALWAYS_SHOW_TOKEN_CARD === 'true'
 
-export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false, style, lastElement }: 
+export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false, transparentBackground = false, style, lastElement }: 
     {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], 
         isLoading:boolean, 
         showCardWhenDataMissing?: boolean, 
+        transparentBackground?: boolean, 
         style?: CSSProperties, 
         lastElement?: React.ReactNode}) => {
 
-    if (isLoading) return <div className='TokenGridBackground' style={style}>
+    const getBackgroundClassName = () => {
+        if (transparentBackground) return ''
+        else return 'TokenGridBackground'
+    }
+
+    if (isLoading) return <div className={getBackgroundClassName()} style={style}>
         <Segment placeholder vertical padded='very' loading/>
     </div>
     
     return (
-        <div className='TokenGridBackground' style={style}>
+        <div className={getBackgroundClassName()} style={style}>
             {tokens.length === 0? 
                 <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
