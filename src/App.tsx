@@ -15,70 +15,73 @@ import { useConsentNeeded } from './hooks/hooks';
 import ProjectPage from './components/topLevel/ProjectPage';
 import PageHeaderMenu from './components/PageHeaderMenu';
 import { aboutRoute, mintRoute, manageConsentRoute, projectRoute, tokenDetailRoute, tokenShareRoute, walletDetailRoute, homeRoute } from './routingUtils';
+import { Container } from 'semantic-ui-react';
 
 function App() {
 
     const [consentNeeded, refetchConsent] = useConsentNeeded()
 
     return (
-        <div className="App">
-            <Router>                
-                <PrivacyPolicy/>
-                {consentNeeded ? <PageHeaderMenu/> :
-                    <Routes>
-                        <Route path={aboutRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <AboutPage/>
-                            </>}
-                        /> 
-                        <Route path={mintRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <MintPage/>
-                            </>}
-                        /> 
-                        <Route path={manageConsentRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <ManageConsentPage/>
-                            </>}
-                        /> 
-                        <Route path={projectRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <ProjectPage/>
-                            </>}
-                        />
-                        <Route path={tokenDetailRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <TokenDetailPage/>
-                            </>}
-                        />
-                        <Route path={tokenShareRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <TokenSharePage/>
-                            </>}
-                        />
-                        <Route path={walletDetailRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <WalletDetailPage/>
-                            </>}
-                        />
+        <Container>
+            <div className="App">
+                <Router>                
+                    <PrivacyPolicy/>
+                    {consentNeeded ? <PageHeaderMenu/> :
+                        <Routes>
+                            <Route path={aboutRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <AboutPage/>
+                                </>}
+                            /> 
+                            <Route path={mintRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <MintPage/>
+                                </>}
+                            /> 
+                            <Route path={manageConsentRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <ManageConsentPage/>
+                                </>}
+                            /> 
+                            <Route path={projectRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <ProjectPage/>
+                                </>}
+                            />
+                            <Route path={tokenDetailRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <TokenDetailPage/>
+                                </>}
+                            />
+                            <Route path={tokenShareRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <TokenSharePage/>
+                                </>}
+                            />
+                            <Route path={walletDetailRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <WalletDetailPage/>
+                                </>}
+                            />
                         
-                        <Route path={homeRoute} element={
-                            <>
-                                <PageHeaderMenu/>
-                                <Home/>
-                            </>}
-                        />
-                    </Routes>}
-            </Router>
-            <Footer/>
-        </div>
+                            <Route path={homeRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <Home/>
+                                </>}
+                            />
+                        </Routes>}
+                </Router>
+                <Footer/>
+            </div>
+        </Container>
     );
 }
 

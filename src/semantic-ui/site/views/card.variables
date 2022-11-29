@@ -2,6 +2,7 @@
     User Variable Overrides
 *******************************/
 
+@width: 22em;
 @borderRadius: 2em;
 @headerFontSize: @relativeMedium;
 @headerColor: rgba(19, 1, 61, 1.0);

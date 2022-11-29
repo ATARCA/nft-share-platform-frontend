@@ -27,11 +27,11 @@ const TokenAttributesView = ({token, metadata}: { token:TokenByIdQuery_token, me
                         <ValueTableCell><Link to={buildWalletPageRoute(token.ownerAddress)}>{shortenAccountAddress(token.ownerAddress)}</Link></ValueTableCell> 
                     </Table.Row>
                     <Table.Row>
-                        <TitleTableCell>Likes</TitleTableCell>
+                        <TitleTableCell>On-chain likes</TitleTableCell>
                         <ValueTableCell>{token.likeTokens.length}</ValueTableCell> 
                     </Table.Row>
                     <Table.Row>
-                        <TitleTableCell>Shares</TitleTableCell>
+                        <TitleTableCell>On-chain shares</TitleTableCell>
                         <ValueTableCell>{token.sharedChildTokens.length}</ValueTableCell> 
                     </Table.Row>
                 </Table.Body>

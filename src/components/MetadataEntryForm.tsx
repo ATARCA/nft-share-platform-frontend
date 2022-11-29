@@ -122,6 +122,12 @@ const eventOrganiserContributionPropertiesTemplate: MetadataAttributeUIEntry[] =
     { id:uuidv4(), name:'Event date', value:'', placeholder:'20/12/2022'}, 
     { id:uuidv4(), name:'Event location', value:'', placeholder:'Helsinki, Finland'}]
 
+const streamTeamContributionPropertiesTemplate: MetadataAttributeUIEntry[] = [
+    { id:uuidv4(), name:categoryPropertyName, value:'Stream Team', placeholder:''},
+    { id:uuidv4(), name:receiverPropertyName, value:'', placeholder:authoeNamePlaceholder}, 
+    { id:uuidv4(), name:'Discord handle', value:'', placeholder:discordHandlePlaceholder}, 
+    { id:uuidv4(), name:linkToContributionPropertyName, value:'', placeholder:'http://'}]
+
 const dummyToken: TokensQuery_tokens = { __typename: "Token",
     id: "string",
     ownerAddress: "any",
@@ -265,6 +271,7 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
             <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(competitionContributionPropertiesTemplate)}}>Competition</Button>
             <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(communityHeroContributionPropertiesTemplate)}}>Community Hero</Button>
             <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Events</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(streamTeamContributionPropertiesTemplate)}}>Stream Team</Button>
             {Array.from( metadataAttributesArray ).map( entry => { 
                 const uuid = entry.id
                 const propertyName = entry.name
