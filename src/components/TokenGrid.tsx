@@ -36,7 +36,7 @@ export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false, t
             {tokens.length === 0? 
                 <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
-                <Grid doubling centered columns={3} style={{ padding: '10vh 10vw 10vh 10vw', maxWidth:'120em', margin: 'auto'}}>
+                <Grid doubling centered columns={3} style={{ padding: '5vh 10vw 5vh 10vw', maxWidth:'120em', margin: 'auto'}}>
                     {tokens.map(t => 
                         <TokenCard key={t.id} token={t} showCardWhenDataMissing={showCardWhenDataMissing} renderAsGridColumn={true}/>
                     )}
