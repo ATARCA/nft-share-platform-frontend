@@ -14,8 +14,9 @@ import { ManageConsentPage } from './components/topLevel/ManageConsentPage';
 import { useConsentNeeded } from './hooks/hooks';
 import ProjectPage from './components/topLevel/ProjectPage';
 import PageHeaderMenu from './components/PageHeaderMenu';
-import { aboutRoute, mintRoute, manageConsentRoute, projectRoute, tokenDetailRoute, tokenShareRoute, walletDetailRoute, homeRoute } from './routingUtils';
+import { aboutRoute, mintRoute, manageConsentRoute, projectRoute, tokenDetailRoute, tokenShareRoute, walletDetailRoute, homeRoute, faqRoute } from './routingUtils';
 import { Container } from 'semantic-ui-react';
+import { FaqPage } from './components/topLevel/FaqPage';
 
 function App() {
 
@@ -28,6 +29,12 @@ function App() {
                     <PrivacyPolicy/>
                     {consentNeeded ? <PageHeaderMenu/> :
                         <Routes>
+                            <Route path={faqRoute} element={
+                                <>
+                                    <PageHeaderMenu/>
+                                    <FaqPage/>
+                                </>}
+                            /> 
                             <Route path={aboutRoute} element={
                                 <>
                                     <PageHeaderMenu/>

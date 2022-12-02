@@ -216,3 +216,9 @@ with preview of previous and next slide */
   color: inherit;
   text-decoration: inherit;
 }
+
+.ExpandableTitleIconSpan {
+  text-align:right;
+  white-space: nowrap;
+  float: right;
+}
