@@ -59,7 +59,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
-    const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
+    const tokenCategory = metadata?.attributes?.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
     let likesCount = 0
     if (token.isLikeToken) {
