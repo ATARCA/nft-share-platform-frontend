@@ -72,11 +72,11 @@ export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tok
     },[token, useDummyMetadata])
 
     const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
+    const tokenSubcontributionName = metadata?.attributes?.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
     const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === receiverPropertyName)?.value 
-    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
+    const tokenHolderNameOriginal = metadata?.attributes?.find((attribute) => attribute.trait_type === receiverPropertyName)?.value 
+    const tokenHolderNameSubcontributor = metadata?.attributes?.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
 
     return [tokenDisplayName || '', tokenHolderDisplayName || '', metadata, consentMissing, errorMessage]
