@@ -79,7 +79,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
         }
     }
 
-    const cardStyle = renderAsGridColumn ? {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%'} : {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%', 'width':'32em'};
+    const cardStyle = renderAsGridColumn ? {'textAlign': 'left', 'textDecoration': 'none', 'maxWidth':'100%'} : {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%', 'width':'32em'};
 
     const renderConsentMissingCard = () => {
         return (

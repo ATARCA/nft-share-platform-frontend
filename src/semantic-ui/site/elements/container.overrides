@@ -29,7 +29,7 @@
 }
 
 /* Tablet */
-@media only screen and (min-width: @tabletBreakpoint) and (max-width: @largestTabletScreen) {
+@media only screen and (minWidth: @tabletBreakpoint) and (maxWidth: @largestTabletScreen) {
   .ui.container {
     width: 100%;
     margin-left: @tabletGutter !important;
@@ -55,7 +55,7 @@
 }
 
 /* Small Monitor */
-@media only screen and (min-width: @computerBreakpoint) and (max-width: @largestSmallMonitor) {
+@media only screen and (min-width: @computerBreakpoint) and (maxWidth: @largestSmallMonitor) {
   .ui.container {
     width: 100%;
     margin-left: @computerGutter !important;
@@ -81,7 +81,7 @@
 }
 
 /* Large Monitor */
-@media only screen and (min-width: @largeMonitorBreakpoint) and (max-width: 1440px) {
+@media only screen and (min-width: @largeMonitorBreakpoint) and (maxWidth: 1440px) {
   .ui.container {
     width: 100%;
     margin-left: @largeMonitorGutter !important;
