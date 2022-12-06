@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import icon_thumbsUp from '../images/icon_ThumbsUp.svg';
 import icon_Share from '../images/icon_ShareNetwork.svg';
 
 import { useNavigate } from 'react-router-dom';
-import { Card, Grid, Image, Label, Rail, Segment } from 'semantic-ui-react';
+import { Card, Grid, Image, Label, Rail, Segment, SemanticWIDTHS } from 'semantic-ui-react';
 import { useMetadata } from '../hooks/hooks';
 import { TokensQuery_tokens } from '../queries-thegraph/types-thegraph/TokensQuery';
 import { buildTokenDetailRoute } from '../routingUtils';
@@ -14,20 +14,34 @@ import { TokenByIdQuery_token } from '../queries-thegraph/types-thegraph/TokenBy
 
 const alwaysShowCardEnvFlag = process.env.REACT_APP_ALWAYS_SHOW_TOKEN_CARD === 'true'
 
-export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false }: {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], isLoading:boolean, showCardWhenDataMissing?: boolean}) => {
-    if (isLoading) return <div className='TokenGridBackground'>
+export const TokenGrid = ({tokens, isLoading, showCardWhenDataMissing = false, transparentBackground = false, style, lastElement, columns = 3 }: 
+    {tokens: TokensQuery_tokens[] | TokensOfAddressQuery_tokens[], 
+        isLoading:boolean, 
+        showCardWhenDataMissing?: boolean, 
+        transparentBackground?: boolean, 
+        style?: CSSProperties, 
+        lastElement?: React.ReactNode,
+        columns?: SemanticWIDTHS}) => {
+
+    const getBackgroundClassName = () => {
+        if (transparentBackground) return ''
+        else return 'TokenGridBackground'
+    }
+
+    if (isLoading) return <div className={getBackgroundClassName()} style={style}>
         <Segment placeholder vertical padded='very' loading/>
     </div>
     
     return (
-        <div className='TokenGridBackground'>
+        <div className={getBackgroundClassName()} style={style}>
             {tokens.length === 0? 
                 <p style={{ padding: '10vh 10vw 30vh 10vw'}}>No tokens to show.</p>
                 :
-                <Grid doubling centered columns={3} style={{ padding: '10vh 10vw 10vh 10vw', maxWidth:'120em', margin: 'auto'}}>
+                <Grid doubling centered columns={columns} style={{ padding: '5vh 10vw 5vh 10vw', maxWidth:'120em', margin: 'auto'}}>
                     {tokens.map(t => 
                         <TokenCard key={t.id} token={t} showCardWhenDataMissing={showCardWhenDataMissing} renderAsGridColumn={true}/>
                     )}
+                    {lastElement ? lastElement : <></>}
                 </Grid>
             } 
         </div>
@@ -46,7 +60,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
 
     const imageURL = metadata?.image ? metadata.image : 'https://react.semantic-ui.com/images/wireframe/paragraph.png'
     
-    const tokenCategory = metadata?.attributes.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
+    const tokenCategory = metadata?.attributes?.find((attribute) => attribute.trait_type === categoryPropertyName)?.value 
 
     let likesCount = 0
     if (token.isLikeToken) {
@@ -66,7 +80,7 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
         }
     }
 
-    const cardStyle = renderAsGridColumn ? {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%'} : {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%', 'width':'32em'};
+    const cardStyle = renderAsGridColumn ? {'textAlign': 'left', 'textDecoration': 'none', 'maxWidth':'100%'} : {'textAlign': 'left', 'textDecoration': 'none', 'max-width':'100%', 'width':'32em'};
 
     const renderConsentMissingCard = () => {
         return (

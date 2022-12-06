@@ -7,7 +7,6 @@ export const InputLine = ( {children}:{children?:React.ReactNode}) => {
             collapsing={index===0? true:false}
             style={{ 'borderTop':'none'}}>
             {child}
-            
         </Table.Cell>)}
     </Table.Row>
 }

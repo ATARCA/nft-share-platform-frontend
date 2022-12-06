@@ -12,16 +12,16 @@ import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
 import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { addressesEqual, buildSubgraphTokenEntityId, projectId } from "../utils";
+import { addressesEqual, buildSubgraphTokenEntityId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
 import { GET_MESSAGE_TO_SIGN_FOR_METADATA_UPLOAD, ADD_PENDING_METADATA, CONSENT_NEEDED } from "../queries-backend/queries";
 import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUploadQueryVariables } from "../queries-backend/types-backend/GetMessageToSignForMetadataUploadQuery";
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
-import { url } from "inspector";
 import { TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
 import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
+import { useParams } from "react-router-dom";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
@@ -72,11 +72,11 @@ export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tok
     },[token, useDummyMetadata])
 
     const tokenName = metadata?.name
-    const tokenSubcontributionName = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
+    const tokenSubcontributionName = metadata?.attributes?.find((attribute) => attribute.trait_type.toLowerCase() === subContributionPropertyName.toLowerCase())?.value 
     const tokenDisplayName = tokenSubcontributionName ? tokenSubcontributionName : tokenName
 
-    const tokenHolderNameOriginal = metadata?.attributes.find((attribute) => attribute.trait_type === receiverPropertyName)?.value 
-    const tokenHolderNameSubcontributor = metadata?.attributes.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
+    const tokenHolderNameOriginal = metadata?.attributes?.find((attribute) => attribute.trait_type === receiverPropertyName)?.value 
+    const tokenHolderNameSubcontributor = metadata?.attributes?.find((attribute) => attribute.trait_type.toLowerCase() === subContributorPropertyName.toLowerCase())?.value 
     const tokenHolderDisplayName = tokenHolderNameSubcontributor ? tokenHolderNameSubcontributor : tokenHolderNameOriginal
 
     return [tokenDisplayName || '', tokenHolderDisplayName || '', metadata, consentMissing, errorMessage]
@@ -95,6 +95,16 @@ export const useTutorialCompletedCookie = (): [boolean, (completed: boolean) => 
     const tutorialCompleted = tutorialCompletedInternal === 'true';
 
     return [tutorialCompleted, setTutorialCompleted];
+}
+
+export const useLastVisitedProjectCookie = (): [string, (projedId: string) => void] => {
+    const [lastVisitedProjectInternal, setLastVisitedProjectInternal] = useCookie('lastVisitedProject', '');
+
+    const setLastVisitedProject = (projectId: string) => {
+        setLastVisitedProjectInternal(projectId, {days: 9999})
+    };
+
+    return [lastVisitedProjectInternal, setLastVisitedProject];
 }
 
 export const useLocalImageUrlHistory = (): [parsedUrlList: string[], addUrlToImageHistory: (newUrl: string) => void] => {
@@ -197,7 +207,7 @@ export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
     return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
 }
 
-export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
+export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
 [   setMetadata: (metadata: string) => void, 
     isMetadataValid: boolean,
     setIsMetadataValid: (isMetadataValid: boolean) => void ,
@@ -344,7 +354,7 @@ export const useMintTokenAndUploadMetadata = (contractMintCaller: (receiverAddre
         resetState]
 }
 
-export const useIsProjectOwner = (): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
+export const useIsProjectOwner = (projectId: string): [isProjectOwner: boolean, projectDetailsLoading: boolean] => {
     const accounts = useAccounts()
     const active = useIsActive()
     const [projectDetails, projectDetailsLoading] =  useProjectDetails(projectId)
@@ -386,4 +396,15 @@ export const useConsentNeeded = (): [consentNeeded: boolean, refetchConsent: () 
     const refetchConsent = async () => await consentNeededResult.refetch()
 
     return [consentNeeded && active, refetchConsent]
+}
+
+export const useCurrentProjectId = (): string|undefined => {
+    const projectName = useParams().projectName
+    const tokenId = useParams().tokenId
+    const contractAddress = useParams().contractAddress
+
+    const [tokenDetails, tokenDetailsLoading] = useTokenDetails(contractAddress || 'N/A', BigNumber.from( tokenId || '0'))
+
+    if (projectName) return projectName
+    else return tokenDetails?.project.id
 }

@@ -54,7 +54,6 @@ export interface TokensOfAddressQuery {
 }
 
 export interface TokensOfAddressQueryVariables {
-  projectId: string;
   address: any;
   isOriginal: boolean;
   isSharedInstance: boolean;

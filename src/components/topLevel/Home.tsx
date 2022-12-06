@@ -1,47 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client'
-import { GET_TOKENS } from '../../queries-thegraph/queries';
+import { GET_ALL_PROJECTS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
-import TokenGrid from '../../components/TokenGrid';
-import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
-import { Header, Image } from 'semantic-ui-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { aboutRoute } from '../../routingUtils';
-import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
-import { projectId } from '../../utils';
-import streamr_logo from '../../images/streamr_simple.svg'
-import { SocialIcon } from 'react-social-icons';
+import { AllProjectsQuery, AllProjectsQuery_projects } from '../../queries-thegraph/types-thegraph/AllProjectsQuery';
+import { ProjectPreview } from '../ProjectPreview';
+import { streamrProjectId } from '../../utils';
+import { Segment } from 'semantic-ui-react';
 
 const Home = () => {
+    const allProjectsResult = useQuery<AllProjectsQuery,undefined>(GET_ALL_PROJECTS, 
+        {client: theGraphApolloClient, onError: defaultErrorHandler});
 
-    const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES_VALUE);
+    const getProjectListWithStreamrProjectFirst = (projects: AllProjectsQuery_projects[] | undefined) => {
+        const streamrProject = projects?.find( (project) => project.id === streamrProjectId)
+        const sortedProjects = projects?.filter((project) => project.id !== streamrProjectId)
+        
+        if (streamrProject) sortedProjects?.unshift(streamrProject)
 
-    const navigate = useNavigate()
+        return sortedProjects
+    }
 
-    const allgraphShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, 
-        {client: theGraphApolloClient, 
-            pollInterval: 5000, 
-            onError: defaultErrorHandler, 
-            variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId}});
+    const projectsToDisplay = getProjectListWithStreamrProjectFirst(allProjectsResult.data?.projects)
 
     return (
-        <div>
-            <div style={{'textAlign': 'left', padding: '5vh 10vw 7vh 10vw'}}>
-                <Header className="No-overflow" as='h1'>Streamr community contribution awards!</Header>
-                <div className='projectExplanation'>
-                    <p>Streamr Awards are a new type of token (sNFTs) minted to acknowledge the valuable contributions made by Streamr community members.</p> 
-                    <p>Browse, Like, and Share the awards!</p>
-                </div>
-                <div style={{'marginBottom': '2em'}}>
-                    <Image src={streamr_logo} size='mini' style={{"display":"inline-block"}} as='a' href='https://streamr.network/'/>
-                    <SocialIcon url="https://discord.gg/gZAm8P7hK8" label="Streamr Discord" style={{"height":"35px","width":"35px",'marginLeft':'15px'}} />
-                    <SocialIcon url="https://twitter.com/streamr" label="Streamr Twitter" style={{"height":"35px","width":"35px",'marginLeft':'15px'}}/>
-                </div>
-                <TokenCategoryDropdown onCategoryChanged={(category) => setSelectedCategory(category)}/>
-            </div>
+        <div className='TokenGridBackground'>
+            {allProjectsResult.loading ? <Segment placeholder vertical padded='very' loading/> : <></>}
             
-            <TokenGrid tokens={allgraphShareTokensResult.data?.tokens || []} isLoading={allgraphShareTokensResult.loading}/>
+            {projectsToDisplay?.map( project => <ProjectPreview key={project.id} projectId={project.id}/>)}
         </div>
     )
 }

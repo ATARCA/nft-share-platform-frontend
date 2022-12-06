@@ -1,11 +1,10 @@
 import React from "react"
-import { Dropdown, Icon } from "semantic-ui-react"
+import { Dropdown } from "semantic-ui-react"
 import { useProjectCategories } from "../hooks/hooks"
-import { projectId } from "../utils"
 
 export const ALL_CATEGORIES_VALUE = ''
 
-export const TokenCategoryDropdown = ( {onCategoryChanged}: {onCategoryChanged: (category:string) => void}) => {
+export const TokenCategoryDropdown = ( { projectId, onCategoryChanged}: { projectId: string, onCategoryChanged: (category:string) => void}) => {
 
     const [projectCategories, loading] = useProjectCategories(projectId)
 

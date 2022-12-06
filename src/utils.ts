@@ -32,6 +32,5 @@ export const isAValidUrl = (url?: string) => {
     }
 };
 
-export const factoryContractAddress = '0xb4CEA12BaF1529DFdE908016B81A2D668b321CDd'
-export const projectId = 'Streamr'
+export const streamrProjectId = 'Streamr'
 
