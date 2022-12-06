@@ -24,7 +24,7 @@ const Home = () => {
     const projectsToDisplay = getProjectListWithStreamrProjectFirst(allProjectsResult.data?.projects)
 
     return (
-        <div>
+        <div className='TokenGridBackground'>
             {allProjectsResult.loading ? <Segment placeholder vertical padded='very' loading/> : <></>}
             
             {projectsToDisplay?.map( project => <ProjectPreview key={project.id} projectId={project.id}/>)}
