@@ -6,6 +6,7 @@ import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import { AllProjectsQuery, AllProjectsQuery_projects } from '../../queries-thegraph/types-thegraph/AllProjectsQuery';
 import { ProjectPreview } from '../ProjectPreview';
 import { streamrProjectId } from '../../utils';
+import { Segment } from 'semantic-ui-react';
 
 const Home = () => {
     const allProjectsResult = useQuery<AllProjectsQuery,undefined>(GET_ALL_PROJECTS, 
@@ -23,7 +24,9 @@ const Home = () => {
     const projectsToDisplay = getProjectListWithStreamrProjectFirst(allProjectsResult.data?.projects)
 
     return (
-        <div>
+        <div className='TokenGridBackground'>
+            {allProjectsResult.loading ? <Segment placeholder vertical padded='very' loading/> : <></>}
+            
             {projectsToDisplay?.map( project => <ProjectPreview key={project.id} projectId={project.id}/>)}
         </div>
     )
