@@ -1,7 +1,5 @@
 # nft-share-platform-frontend
 
-TODO: specify license before publishing this repo
-
 # How to
 
 ## Start developing
