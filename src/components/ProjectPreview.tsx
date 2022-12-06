@@ -40,6 +40,7 @@ export const ProjectPreview = ( { projectId }: { projectId: string } ) => {
             tokens={first3TokensResult.data?.tokens || []} 
             isLoading={first3TokensResult.loading} 
             lastElement={getShowAllGridElement()}
-            transparentBackground={true}/>
+            transparentBackground={true}
+            columns={4}/>
     </div>);
 }
