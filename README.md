@@ -19,17 +19,21 @@ Clone this repository using git. If you will be using also other repositories fr
 ...
 ```
 
-Some workspace scripts rely on this structure and may not work properly with all projects are not placed in the same directory.
+Some workspace scripts rely on this structure and may not work properly when all projects are not placed in the same directory.
 
 ### Initial installation
 
 Run `npm install` in the project directory.
 
+### Create `.env` file
+
+Create new file `.env` and fill it with the contents of `.env.template`. Replace placeholder variables as needed.
+
 ### Run frontend server locally
 
 Run `npm start` in the root of the folder.
 
-Runs the app in the development mode.\
+This runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
@@ -37,11 +41,11 @@ You will also see any lint errors in the console.
 
 ## Update backend GraphQL schema
 
-GraphQL is used for API between backend and frontend. Update schema file in backend repository first and then and start the backend. On frontend run `npm run backend:schema:download` and then `npm run backend:schema:codegen`.
+GraphQL is used for API between `nft-share-platform-backend` and `nft-share-platform-frontend`. Update schema file in backend repository first and then and start the backend. In frontend directory run `npm run backend:schema:download` and then `npm run backend:schema:codegen`.
 
 ## Update subgraph GraphQL schema
 
-GraphQL is used for API between subgraph blockchain indexing service and frontend. Update schema in subgraph repository and deploy it to a subgraph. On frontend run `npm run thegraph:schema:download` and then `npm run thegraph:schema:codegen`. Make sure that the download command points to the same instance of subgraph where the new schema was deployed (see `package.json` file).
+GraphQL is used for API between `nft-share-platform-subgraph` blockchain indexing service and frontend. Update schema in subgraph repository and deploy it to a subgraph. In frontend directory run `npm run thegraph:schema:download` and then `npm run thegraph:schema:codegen`. Make sure that the download command points to the same instance of subgraph where the new schema was deployed (see `package.json` file).
 
 ## Create new GraphQL queries / modify existing queries
 
@@ -50,23 +54,15 @@ For subgraph queries see `src\queries-thegraph\queries.ts` file.
 
 Add or modify queries as needed. After that run `npm run backend:schema:codegen` for backend queries or `npm run thegraph:schema:codegen` for subgraph queries. This command will generate query types needed for typed queries.
 
-### Update smart contracts from the nft-share-platform-contract repo
+### Update smart contract ABIs from the nft-share-platform-contract repo
 
 Required setup: the `nft-share-platform-frontend` and `nft-share-platform-contrats` repos has to be in the same directory next to each other.
 
-Then run `npm run contracts:update` to generate new Typescript files from the solidity contracts and copy them over to the `nft-share-platform-frontend` folder.
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Then run `npm run contracts:update`. This will generate new  ABI and Typescript files from the solidity contracts and copy them over to the `nft-share-platform-frontend` folder.
 
 ## Other available Scripts
 
 In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.
 
 ### `npm test`
 
@@ -98,5 +94,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Disclaimer
 
 This project has received funding from the European Union's Horizon 2020 Research and Innovation Programme under Grant Agreement Nº 964678.
