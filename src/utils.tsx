@@ -1,4 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
+import React from "react";
+
 
 export function sleep(ms: number) {
     return new Promise((resolve) => {
@@ -31,6 +33,10 @@ export const isAValidUrl = (url?: string) => {
         return false;
     }
 };
+
+export const getUrlLinkElement = (url: string): React.ReactNode => {
+    return <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>;
+}
 
 export const streamrProjectId = 'Streamr'
 

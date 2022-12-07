@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Accordion, AccordionTitleProps, Container, Divider, Header, Icon } from "semantic-ui-react";
+import { getUrlLinkElement } from "../../utils";
 
 export const FaqPage = () => {
 
@@ -17,7 +18,7 @@ export const FaqPage = () => {
 
     interface FaqUIEntry {
         question: string;
-        answer: string;
+        answer: React.ReactNode;
     }
 
     const faqItems: FaqUIEntry[] = [
@@ -36,9 +37,9 @@ export const FaqPage = () => {
         {question: "What value do sNFTs have?", answer: "sNFTs are not transferable and they don't have monetary value for this reason. They are valuable to their holders as a recognition for their contributions, and as a proof of skills and achievements both to other community members and people outside (eg. clients, employers, the whole professional community)."},
         {question: "Are Talko platform and the community awards GDPR compliant?", answer: "Yes. We've taken great care to minimise the personal information that's collected from the site users, used for research purposes, and published on the tokens. We collect personal information only with your informed consent which can be withdrawn at any moment. To read more and see what rights you have as a Talko user please check our privacy policy and Talko platform use and research policy."},
         {question: "Are these award tokens implemented 100% on-chain?", answer: "While the sNFTs are genuine crypto tokens in Polygon network, their metadata is stored on a centralised backend. This is to make it possible to change or erase them, and in legal terms, make them compliant with the European data protection regulation (GDPR)."},
-        {question: "Why did you decide to do this project?", answer: "Talko is one of the pilot projects that have been carried out within ATARCA research project in years 2021-2023, and with funding from the European Union's Horizon2020 research and innovation program. The project aims to create cryptographically protected 'anti-rival' tokens and test their applicability to fostering knowledge sharing in communities. The long-term goal in ATARCA is to remove market failures in digital goods which unlike traditional products don't follow the classical laws of supply and demand. More on the project website at https://atarca.eu."},
+        {question: "Why did you decide to do this project?", answer: <>{"Talko is one of the pilot projects that have been carried out within ATARCA research project in years 2021-2023, and with funding from the European Union's Horizon2020 research and innovation program. The project aims to create cryptographically protected 'anti-rival' tokens and test their applicability to fostering knowledge sharing in communities. The long-term goal in ATARCA is to remove market failures in digital goods which unlike traditional products don't follow the classical laws of supply and demand. More on the project website"} {getUrlLinkElement("https://atarca.eu")}.</>},
         {question: "Our community wants to join the platform and start minting these awards. How can we do it?", answer: "Please get in touch with us at info@talkoapp.io. We're planning to expand Talko by making it available for new communities in the near future"},
-        {question: "What does that name 'Talko' stand for?", answer: "As many of our team members have their roots in Finland, the name refers to the traditional Finnish concept of 'talkoot' which is voluntary and unpaid communal work session together with other community members. This kind of inputs are after all what keep the communities ticking. More about communal work: https://en.wikipedia.org/wiki/Communal_work."},
+        {question: "What does that name 'Talko' stand for?", answer: <>{"As many of our team members have their roots in Finland, the name refers to the traditional Finnish concept of 'talkoot' which is voluntary and unpaid communal work session together with other community members. This kind of inputs are after all what keep the communities ticking. More about communal work: "} {getUrlLinkElement("https://en.wikipedia.org/wiki/Communal_work")}.</>},
     ]
 
     return <div>
