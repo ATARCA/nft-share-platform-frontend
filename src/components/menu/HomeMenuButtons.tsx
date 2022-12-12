@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useMatch } from "react-router-dom";
 import { Dropdown, Menu } from "semantic-ui-react";
 import talco_logo from '../../images/talco_logo.svg';
 import { Image } from "semantic-ui-react";
-import { aboutRoute, buildProjectPageRoute, homeRoute, walletDetailRoute } from "../../routingUtils";
+import { aboutRoute, buildProjectPageRoute, faqRoute, homeRoute, walletDetailRoute } from "../../routingUtils";
 import { useQuery } from "@apollo/client";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
@@ -37,6 +37,7 @@ const HomeMenuNavigationButtons = () => {
     const renderProjectSelectionItems = () => {
         if (location.pathname === homeRoute || 
             location.pathname === aboutRoute ||
+            location.pathname === faqRoute ||
             walletDetailRouteMatch !== null) return <></>
         else return <>
             <Menu.Item name={projectName} onClick={() => navigate(buildProjectPageRoute(projectName))}/>          
@@ -64,6 +65,7 @@ const HomeMenuNavigationButtons = () => {
             {renderProjectSelectionItems()}
           
             <Menu.Item name='About' onClick={() => navigate(aboutRoute)} active={ location.pathname === aboutRoute }/>          
+            <Menu.Item name='FAQ' onClick={() => navigate(faqRoute)} active={ location.pathname === faqRoute }/>          
         </Menu.Menu>
     )
 }

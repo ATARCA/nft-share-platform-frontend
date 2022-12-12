@@ -21,6 +21,7 @@ export const buildMintPageRoute = (projectId: string) => {
     return `/project/${projectId}/mint`
 }
 
+export const faqRoute = '/faq'
 export const aboutRoute = '/about'
 export const mintRoute = 'project/:projectName/mint'
 export const manageConsentRoute = '/manageConsent'
