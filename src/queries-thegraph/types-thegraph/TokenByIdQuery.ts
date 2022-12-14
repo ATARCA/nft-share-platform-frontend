@@ -41,6 +41,7 @@ export interface TokenByIdQuery_token {
   isOriginal: boolean;
   isSharedInstance: boolean;
   isLikeToken: boolean;
+  isEndorseToken: boolean;
   tokenId: any | null;
   parentTokenId: any | null;
   metadataUri: string | null;

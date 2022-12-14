@@ -34,7 +34,7 @@ const MintPage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract) => shareContract.mint(receiverAddress, category || 'N/A'))
+        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract, endorseContract) => shareContract.mint(receiverAddress, category || 'N/A'))
  
     const onMintAndUploadMetadataClicked = async () => {
         await mintAndUploadMetadata()

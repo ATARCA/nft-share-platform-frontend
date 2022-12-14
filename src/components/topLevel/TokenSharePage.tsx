@@ -49,7 +49,7 @@ const TokenSharePage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract) => shareContract.share(receiverAddress,tokenId))
+        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract, endorseContract) => shareContract.share(receiverAddress,tokenId))
     
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 

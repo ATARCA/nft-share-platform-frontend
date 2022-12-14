@@ -63,6 +63,7 @@ query TokenByIdQuery ($id: ID!){
     isOriginal
     isSharedInstance
     isLikeToken
+    isEndorseToken
     tokenId
     parentTokenId
     metadataUri
@@ -143,6 +144,7 @@ query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedIn
     isOriginal
     isSharedInstance
     isLikeToken
+    isEndorseToken
     tokenId
     parentTokenId
     metadataUri

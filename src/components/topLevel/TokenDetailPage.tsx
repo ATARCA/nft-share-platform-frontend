@@ -5,7 +5,7 @@ import { Button, Card, Grid, Header, Icon, Message, Popup, Segment } from "seman
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
-import { useCurrentProjectId, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
+import { useCanCurrentAccountEndorse, useCurrentProjectId, useEndorseContract, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from '../../connectors/metaMaskConnector'
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
@@ -15,6 +15,7 @@ import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/Toke
 import { TokenCard } from "../TokenGrid";
 import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
 import { useLocation } from "react-router-dom";
+import EndorseTokenModal from "../EndorseTokenModal";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -33,13 +34,17 @@ const TokenDetailPage = () => {
     const likeContract = useLikeContract(projectId)
     const shareContract = useShareContract(projectId)
 
+    const [ showEndorse, setShowEndorse ] = useState(false)
+
+
     const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
 
     const metamaskError = useError()
-
+    
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
+    const canEndorse = useCanCurrentAccountEndorse(detailedToken)
 
     const isLikeToken = detailedToken?.isLikeToken
     const originalTokenEntityId =  isLikeToken ? detailedToken?.likedParentToken?.id : detailedToken?.id
@@ -78,6 +83,8 @@ const TokenDetailPage = () => {
         }
     }
 
+   
+
     const onShareClicked = async () => {
         navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
@@ -96,7 +103,9 @@ const TokenDetailPage = () => {
         else return 'Connect your wallet to like this token.'
     }
 
-    const renderShareOrLikeButton = () => {
+    const renderShareOrLikeOrEndorseButton = () => {
+
+        
 
         if (isCurrentAccountTokenOwner)
             return <>
@@ -120,13 +129,18 @@ const TokenDetailPage = () => {
                 />
                 <Popup content={getLikeButtonExplainerText()} position='bottom left' trigger={<Icon color="grey" style={{margin : '0.5em'}}
                     name="question circle"/>}/>
+                {canEndorse ? <Button primary 
+                    onClick={ () => setShowEndorse(true)} 
+                    loading={likeInProgress}>Endorse</Button> : <></>}
+
+                {showEndorse && detailedToken? <EndorseTokenModal originalToken={detailedToken}/> : <></>}
             </>
     }
 
     const renderActionButtonArea = () => {
         return (
             <div>
-                { isLikeToken ? <></> : renderShareOrLikeButton() }
+                { isLikeToken ? <></> : renderShareOrLikeOrEndorseButton() }
             </div>
         )
     }
