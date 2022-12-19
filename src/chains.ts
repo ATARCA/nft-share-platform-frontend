@@ -57,22 +57,32 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
             'https://cloudflare-eth.com',
         ],
         name: 'Mainnet',
+        nativeCurrency: ETH,
+        blockExplorerUrls: ['https://etherscan.io'],
     },
     3: {
         urls: [process.env.REACT_APP_INFURA_DEV_KEY ? `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_DEV_KEY}` : undefined],
         name: 'Ropsten',
+        nativeCurrency: ETH,
+        blockExplorerUrls: ['https://ropsten.etherscan.io'],
     },
     4: {
         urls: [process.env.REACT_APP_INFURA_DEV_KEY ? `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_DEV_KEY}` : undefined],
         name: 'Rinkeby',
+        nativeCurrency: ETH,
+        blockExplorerUrls: ['https://rinkeby.etherscan.io'],
     },
     5: {
         urls: [process.env.REACT_APP_INFURA_DEV_KEY ? `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_DEV_KEY}` : undefined],
         name: 'Görli',
+        nativeCurrency: ETH,
+        blockExplorerUrls: ['https://goerli.etherscan.io'],
     },
     42: {
         urls: [process.env.REACT_APP_INFURA_DEV_KEY ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_DEV_KEY}` : undefined],
         name: 'Kovan',
+        nativeCurrency: ETH,
+        blockExplorerUrls: ['https://kovan.etherscan.io'],
     },
     // Optimism
     10: {
