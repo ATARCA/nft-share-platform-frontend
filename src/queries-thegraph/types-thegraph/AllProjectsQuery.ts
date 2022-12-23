@@ -15,3 +15,7 @@ export interface AllProjectsQuery_projects {
 export interface AllProjectsQuery {
   projects: AllProjectsQuery_projects[];
 }
+
+export interface AllProjectsQueryVariables {
+  filterId: string;
+}
