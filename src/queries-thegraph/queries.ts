@@ -112,6 +112,7 @@ query ProjectDetailsQuery ($projectId: ID!){
     operators
     shareableContractAddress
     likeContractAddress
+    endorseContractAddress
     categories {
       id
     }
@@ -128,13 +129,14 @@ query AllProjectsQuery {
 `
 
 export const GET_TOKENS_OF_ADDRESS = gql`
-query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!){
+query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!, $isEndorseToken: Boolean!){
   tokens(
     where: {
     	ownerAddress: $address, 
     	isOriginal: $isOriginal, 
     	isSharedInstance: $isSharedInstance, 
-    	isLikeToken: $isLikeToken}) {
+    	isLikeToken: $isLikeToken,
+      isEndorseToken: $isEndorseToken}) {
     id
     project {
       id
@@ -152,6 +154,9 @@ query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedIn
       likeTokens {
         id
       }
+    }
+    endorsedParentToken {
+      id
     }
     sharedChildTokens {
       id

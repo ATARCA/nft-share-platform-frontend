@@ -191,7 +191,7 @@ export const useEndorseContract = ( projectId: string) => {
     const [ projectDetails, loading ] = useProjectDetails(projectId)
     const provider = useProvider();
     
-    const endorseContractAddress = projectDetails?.likeContractAddress
+    const endorseContractAddress = projectDetails?.endorseContractAddress
 
     useEffect( () => {
         const loadContract = async () => {
@@ -447,14 +447,27 @@ export const useCanCurrentAccountEndorse = ( tokenDetails: TokenByIdQuery_token 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: address, isOriginal: true, isSharedInstance: false, isLikeToken: false}});
+            variables: {address: address, isOriginal: true, isSharedInstance: false, isLikeToken: false, isEndorseToken:false}});
 
-    if (active && accounts && tokenDetails && !originalTokensResult.loading) {
-        const isEndorseToken = tokenDetails.isEndorseToken
+    const endorseTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
+        {client: theGraphApolloClient, 
+            pollInterval: 5000, 
+            onError: defaultErrorHandler, 
+            variables: {address: address, isOriginal: false, isSharedInstance: false, isLikeToken: false, isEndorseToken:true}});    
+
+    if (active && accounts && tokenDetails && !originalTokensResult.loading && !endorseTokensResult.loading) {
+        const isOriginalOrSharedToken = tokenDetails.isOriginal || tokenDetails.isSharedInstance
         const originalTokensInThisProject = originalTokensResult.data?.tokens.filter( (token) => token.project.id === tokenDetails.project.id) || []
+
+        const endorseTokensForCurrentTokenByCurrentAccount = endorseTokensResult.data?.tokens.filter( (token) => token.endorsedParentToken?.id === tokenDetails.id) || []
         const hasAtLeastOneOriginalTokenInThisProject = originalTokensInThisProject.length !== 0
+        const hasAlreadyEndorseTokenByCurrentAccount = endorseTokensForCurrentTokenByCurrentAccount.length !== 0
+
         const doesNotOwnCurrentToken = !addressesEqual(address, tokenDetails.ownerAddress)
-        return  hasAtLeastOneOriginalTokenInThisProject && doesNotOwnCurrentToken && !isEndorseToken
+        return  hasAtLeastOneOriginalTokenInThisProject && 
+            doesNotOwnCurrentToken && 
+            isOriginalOrSharedToken &&
+            !hasAlreadyEndorseTokenByCurrentAccount
     }
     else return false
 }

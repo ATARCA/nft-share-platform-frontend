@@ -16,6 +16,7 @@ import { TokenCard } from "../TokenGrid";
 import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
 import { useLocation } from "react-router-dom";
 import EndorseTokenModal from "../EndorseTokenModal";
+import EndorseOrLikeChooserModal from "../EndorseOrLikeChooserModal";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -34,8 +35,7 @@ const TokenDetailPage = () => {
     const likeContract = useLikeContract(projectId)
     const shareContract = useShareContract(projectId)
 
-    const [ showEndorse, setShowEndorse ] = useState(false)
-
+    const [ showEndorseChooser, setShowEndorseChooser ] = useState(false)
 
     const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
@@ -103,9 +103,9 @@ const TokenDetailPage = () => {
         else return 'Connect your wallet to like this token.'
     }
 
-    const renderShareOrLikeOrEndorseButton = () => {
+    const likeBtnDisabled = !active || !likeContract || likeTokenExists || likeInProgress;
 
-        
+    const renderShareOrLikeOrEndorseButton = () => {
 
         if (isCurrentAccountTokenOwner)
             return <>
@@ -118,22 +118,23 @@ const TokenDetailPage = () => {
             </>
         else
             return <>
-                <Popup
+                {canEndorse ? <></> : <> <Popup
                     content='You have already liked this token'
                     disabled={!likeTokenExists}
                     trigger={<span><Button primary 
-                        disabled={!active || !likeContract || likeTokenExists || likeInProgress} 
+                        disabled={likeBtnDisabled} 
                         onClick={onLikeClicked} 
-                        loading={likeInProgress}>Like</Button></span>
-                    }
+                        loading={likeInProgress}>Like</Button></span>}                    
                 />
+
                 <Popup content={getLikeButtonExplainerText()} position='bottom left' trigger={<Icon color="grey" style={{margin : '0.5em'}}
                     name="question circle"/>}/>
-                {canEndorse ? <Button primary 
-                    onClick={ () => setShowEndorse(true)} 
-                    loading={likeInProgress}>Endorse</Button> : <></>}
+                </>}
 
-                {showEndorse && detailedToken? <EndorseTokenModal originalToken={detailedToken}/> : <></>}
+                {canEndorse ? <Button primary loading={likeInProgress}
+                    onClick={ () => setShowEndorseChooser(true)}>Support award</Button> : <></>}
+
+                { detailedToken ? <EndorseOrLikeChooserModal open={showEndorseChooser} setOpen={setShowEndorseChooser} onLikeClicked={onLikeClicked} likeBtnDisabled={likeBtnDisabled} originalToken={detailedToken}/> : <></>}
             </>
     }
 

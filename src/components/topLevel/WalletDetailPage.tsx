@@ -18,19 +18,19 @@ export const WalletDetailPage = () => {
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false, isEndorseToken:false}});
 
     const sharedTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false, isEndorseToken:false}});
 
     const likeTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true, isEndorseToken:false}});
 
     const originalTokensLength = originalTokensResult?.data?.tokens.length || 0
     const sharedTokensLength = sharedTokensResult?.data?.tokens.length || 0

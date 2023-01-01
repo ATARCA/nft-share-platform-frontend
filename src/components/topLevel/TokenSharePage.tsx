@@ -162,6 +162,11 @@ const TokenSharePage = () => {
                 && mintErrorMessage === '' 
                 && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
 
+                { mintErrorMessage ? 
+                    <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
+                { metadataUploadErrorMessage ? 
+                    <Message error header='Error while signing and uploading metadata' content={metadataUploadErrorMessage}/>: <></>}
+
                 {metadaSignOrUploadFailed ?
                     <div>
                         <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>

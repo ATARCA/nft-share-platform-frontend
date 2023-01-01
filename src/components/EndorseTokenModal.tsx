@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Modal, Checkbox, Item, Input, Message} from "semantic-ui-react";
+import {Button, Modal, Checkbox, Item, Input, Message, Header, TextArea, Form} from "semantic-ui-react";
 import { hooks } from "../connectors/metaMaskConnector";
 import useCookie from 'react-use-cookie';
 import { useCanCurrentAccountEndorse, useCurrentProjectId, useEndorseContract, useMetadata, useMintTokenAndUploadMetadata } from "../hooks/hooks";
@@ -11,12 +11,10 @@ const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 const MAX_ENDORSMENT_LENGTH = 200
 const MIN_ENDORSEMENT_LENGTH = 5
 
-const EndorseTokenModal = ( {originalToken} : {originalToken: TokenByIdQuery_token }) => {
+const EndorseTokenModal = ( {open, setOpen, originalToken} : { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, originalToken: TokenByIdQuery_token }) => {
     const [endorsementText, setEndorsementText] = useState('')
     const [endorsementTextEverChanged, setEndorsementTextEverChanged] = useState(false)
-    const [ open, setOpen ] = useState(true)
 
-    const [ endorseInProgress, setEndorseInProgress ] = useState(false)
     const accounts = useAccounts()
 
 
@@ -25,7 +23,6 @@ const EndorseTokenModal = ( {originalToken} : {originalToken: TokenByIdQuery_tok
     const endorseContract = useEndorseContract(projectId)
     const canEndorse = useCanCurrentAccountEndorse(originalToken)
     //next extend existing metadata with endorsement the same way it is done on share page - or use completely new metadata? Check figma
-    const [ errorMessage, setErrorMessage ] = useState('')
 
     const [ setNewMetadata, 
         isMetadataValid, 
@@ -46,7 +43,6 @@ const EndorseTokenModal = ( {originalToken} : {originalToken: TokenByIdQuery_tok
         if (endorseContract) { 
             return endorseContract.mint(originalToken.tokenId) } 
         else { throw new Error('endorseContract undefined')}})
-
 
     useEffect(() => {
         const updateReceiverAddress = () => {
@@ -84,23 +80,41 @@ const EndorseTokenModal = ( {originalToken} : {originalToken: TokenByIdQuery_tok
     }
 
     return (
-        <Modal open={!mintAndMetadaUploadCompleted && open} 
+        <Modal open={(!(mintAndMetadaUploadCompleted && mintErrorMessage === ''  && metadataUploadErrorMessage === '')  )&& open} 
             closeIcon
+            size="tiny"
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}>
             <Modal.Content>
-                <Input fluid 
-                    value={endorsementText} 
-                    error={!isMetadataValid && endorsementTextEverChanged}
-                    onChange={(e, { value }) => {setEndorsementText( value ); setEndorsementTextEverChanged(true)} }/>             
+                <Header as='h1'>Endorse community award</Header>
+                <p>Endorsement text (max 200 characters)</p>
+                
+                <Form>                         
+                    <TextArea 
+                        value={endorsementText} 
+                        onChange={(e, { value }) => {setEndorsementText( value?.toString() || '' ); setEndorsementTextEverChanged(true)} }/>             
+                </Form>
+                
+                <div style={{ display: 'flex',justifyContent: 'center'}}>
+                    <Button style={{margin: '1em'}} primary 
+                        disabled={!canEndorse || !isMetadataValid} 
+                        onClick={onEndorseClicked}
+                        loading={ mintInProgress || metadataSignAndUploadInProgress }>Endorse and mint</Button>
+                </div>
+                
+                { mintErrorMessage ? 
+                    <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
+                { metadataUploadErrorMessage ? 
+                    <Message error header='Error while signing and uploading metadata' content={metadataUploadErrorMessage}/>: <></>}
 
-                <Button primary 
-                    disabled={!canEndorse || endorseInProgress || !isMetadataValid} 
-                    onClick={onEndorseClicked} 
-                    loading={endorseInProgress}>Endorse</Button>
 
-                { errorMessage ? 
-                    <Message error header='Transaction error' content={errorMessage}/>: <></>}
+                {metadaSignOrUploadFailed ?
+                    <div>
+                        <p>Metadata signing and uploading failed. Please try again to avoid having a minted token without metadata.</p>
+                        <div style={{ display: 'flex',justifyContent: 'center'}}>
+                            <Button color='orange' onClick={() => retrySignAndUploadMetadata()} disabled={metadataSignAndUploadInProgress || !isMetadataValid} loading={metadataSignAndUploadInProgress}>Retry metadata sign and upload</Button>
+                        </div>
+                    </div>:<></>}
               
             </Modal.Content>
         </Modal>

@@ -22,6 +22,11 @@ export interface TokensOfAddressQuery_tokens_likedParentToken {
   likeTokens: TokensOfAddressQuery_tokens_likedParentToken_likeTokens[];
 }
 
+export interface TokensOfAddressQuery_tokens_endorsedParentToken {
+  __typename: "Token";
+  id: string;
+}
+
 export interface TokensOfAddressQuery_tokens_sharedChildTokens {
   __typename: "Token";
   id: string;
@@ -46,6 +51,7 @@ export interface TokensOfAddressQuery_tokens {
   parentTokenId: any | null;
   metadataUri: string | null;
   likedParentToken: TokensOfAddressQuery_tokens_likedParentToken | null;
+  endorsedParentToken: TokensOfAddressQuery_tokens_endorsedParentToken | null;
   sharedChildTokens: TokensOfAddressQuery_tokens_sharedChildTokens[];
   likeTokens: TokensOfAddressQuery_tokens_likeTokens[];
 }
@@ -59,4 +65,5 @@ export interface TokensOfAddressQueryVariables {
   isOriginal: boolean;
   isSharedInstance: boolean;
   isLikeToken: boolean;
+  isEndorseToken: boolean;
 }
