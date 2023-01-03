@@ -5,7 +5,7 @@ import { Button, Card, Grid, Header, Icon, Message, Popup, Segment } from "seman
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
-import { useCanCurrentAccountEndorse, useCurrentProjectId, useEndorseContract, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
+import { useCanCurrentAccountEndorse, useCurrentProjectId, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from '../../connectors/metaMaskConnector'
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
@@ -13,9 +13,8 @@ import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
 import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { TokenCard } from "../TokenGrid";
-import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
 import { useLocation } from "react-router-dom";
-import EndorseTokenModal from "../EndorseTokenModal";
 import EndorseOrLikeChooserModal from "../EndorseOrLikeChooserModal";
 import { EndorsementCarousel } from "../EndorsementCarousel";
 

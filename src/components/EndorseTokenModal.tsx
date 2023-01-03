@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal, Message, Header, TextArea, Form} from "semantic-ui-react";
 import { hooks } from "../connectors/metaMaskConnector";
-import useCookie from 'react-use-cookie';
 import { useCanCurrentAccountEndorse, useCurrentProjectId, useEndorseContract, useMetadata, useMintTokenAndUploadMetadata } from "../hooks/hooks";
 import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { endorsementTokenName, MetadataAttribute, originalTokenId } from "../types/NFTMetadata";
 
-const { useProvider, useAccounts, useIsActive, useAccount } = hooks
+const { useAccounts } = hooks
 
 const MAX_ENDORSMENT_LENGTH = 200
 const MIN_ENDORSEMENT_LENGTH = 5
@@ -22,7 +21,6 @@ const EndorseTokenModal = ( {open, setOpen, originalToken} : { open: boolean, se
     const [ tokenDisplayName, tokenHolderDisplayName, currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(originalToken)
     const endorseContract = useEndorseContract(projectId)
     const canEndorse = useCanCurrentAccountEndorse(originalToken)
-    //next extend existing metadata with endorsement the same way it is done on share page - or use completely new metadata? Check figma
 
     const [ setNewMetadata, 
         isMetadataValid, 

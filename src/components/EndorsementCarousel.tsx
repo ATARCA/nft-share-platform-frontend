@@ -4,20 +4,15 @@ import React from "react"
 import carousel_arrow_right from '../images/carousel_arrow_right.png';
 import carousel_arrow_left from '../images/carousel_arrow_left.png';
 
-import { Link, useNavigate } from "react-router-dom"
-import { Button, Grid, Header, Icon, Image } from "semantic-ui-react"
+import { Image } from "semantic-ui-react"
 import { defaultErrorHandler } from "../graphql/errorHandlers"
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient"
 import { GET_ENDORSE_TOKENS_OF_TOKEN } from "../queries-thegraph/queries"
 import { EndorseTokensOfTokenQuery, EndorseTokensOfTokenQueryVariables } from "../queries-thegraph/types-thegraph/EndorseTokensOfTokenQuery"
 import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery"
-import { buildProjectPageRoute } from "../routingUtils"
 import { EndorsementCarouselCard } from "./EndorsementCarouselCard"
-import TokenGrid from "./TokenGrid"
 
 export const EndorsementCarousel = ( { parentToken }: { parentToken: TokenByIdQuery_token } ) => {
-
-    const navigate = useNavigate()
 
     const endorseTokensResult = useQuery<EndorseTokensOfTokenQuery, EndorseTokensOfTokenQueryVariables>(GET_ENDORSE_TOKENS_OF_TOKEN, 
         {client: theGraphApolloClient, 
