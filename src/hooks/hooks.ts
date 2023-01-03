@@ -22,10 +22,11 @@ import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQue
 import { TokensOfAddressQuery, TokensOfAddressQueryVariables, TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
 import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
 import { useParams } from "react-router-dom";
+import { EndorseTokensOfTokenQuery_tokens } from "../queries-thegraph/types-thegraph/EndorseTokensOfTokenQuery";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
-export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
+export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | EndorseTokensOfTokenQuery_tokens | null | undefined, useDummyMetadata?: NFTMetadata): 
       [ tokenDisplayName: string , 
         tokenHolderDisplayName: string, 
         metadata: NFTMetadata | undefined , 

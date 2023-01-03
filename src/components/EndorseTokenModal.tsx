@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Button, Modal, Checkbox, Item, Input, Message, Header, TextArea, Form} from "semantic-ui-react";
+import {Button, Modal, Message, Header, TextArea, Form} from "semantic-ui-react";
 import { hooks } from "../connectors/metaMaskConnector";
 import useCookie from 'react-use-cookie';
 import { useCanCurrentAccountEndorse, useCurrentProjectId, useEndorseContract, useMetadata, useMintTokenAndUploadMetadata } from "../hooks/hooks";
 import { TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
-import { MetadataAttribute, originalTokenId } from "../types/NFTMetadata";
+import { endorsementTokenName, MetadataAttribute, originalTokenId } from "../types/NFTMetadata";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
@@ -59,9 +59,9 @@ const EndorseTokenModal = ( {open, setOpen, originalToken} : { open: boolean, se
                 endorseTokenMetadata.attributes = []
                    
                 const contributorAttribute:MetadataAttribute = {trait_type:originalTokenId, value:originalToken.tokenId}
-                   
-                endorseTokenMetadata.description = 'Endorsement'
-                endorseTokenMetadata.name = endorsementText
+
+                endorseTokenMetadata.name = endorsementTokenName
+                endorseTokenMetadata.description = endorsementText 
 
                 endorseTokenMetadata.attributes.push(contributorAttribute)
 

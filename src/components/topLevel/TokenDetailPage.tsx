@@ -17,6 +17,7 @@ import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButt
 import { useLocation } from "react-router-dom";
 import EndorseTokenModal from "../EndorseTokenModal";
 import EndorseOrLikeChooserModal from "../EndorseOrLikeChooserModal";
+import { EndorsementCarousel } from "../EndorsementCarousel";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -165,6 +166,7 @@ const TokenDetailPage = () => {
                         {renderRightColumn(token)}
                     </Grid>
                 </Card>
+                {detailedToken ? <EndorsementCarousel parentToken={detailedToken}/> : <></>}
             </div>
         </div>
     }
@@ -172,7 +174,7 @@ const TokenDetailPage = () => {
     const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token} showCardWhenDataMissing={true}/>
-            <Grid columns='equal' style={{'margin-top':'0px', 'marginLeft':'0px', 'marginRight':'0px'}}>
+            <Grid columns='equal' style={{'marginTop':'0px', 'marginLeft':'0px', 'marginRight':'0px'}}>
                 <Grid.Column key={"facebook"}>
                     <FacebookShareButton quote="Check out this cool award" url={'https://talkoapp.io'+location.pathname}><FacebookIcon size={40} round /></FacebookShareButton>
                 </Grid.Column>

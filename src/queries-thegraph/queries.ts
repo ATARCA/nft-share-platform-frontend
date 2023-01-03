@@ -169,6 +169,32 @@ query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedIn
 }
 `
 
+export const GET_ENDORSE_TOKENS_OF_TOKEN = gql`
+query EndorseTokensOfTokenQuery ($parentTokenEntityId: String!){
+  tokens(
+    where: {
+    	endorsedParentToken: $parentTokenEntityId, 
+      isEndorseToken: true}) {
+    id
+    project {
+      id
+    }
+    ownerAddress
+    contractAddress
+    isOriginal
+    isSharedInstance
+    isLikeToken
+    isEndorseToken
+    tokenId
+    metadataUri
+    endorsedParentToken {
+      id
+    }
+    metadataUri
+  }
+}
+`
+
 
 
 
