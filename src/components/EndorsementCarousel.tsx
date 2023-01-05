@@ -20,14 +20,15 @@ export const EndorsementCarousel = ( { parentToken }: { parentToken: TokenByIdQu
             onError: defaultErrorHandler, 
             variables: { parentTokenEntityId: parentToken.id,}});
 
-    const totalSlides = endorseTokensResult.data?.tokens.length || 0
+    const totalSlides = (endorseTokensResult.data?.tokens.length || 0)
+    const visibleSlidesCount = getComputedStyle(document.documentElement).getPropertyValue('--endorsement-carousel-visible-cards')
 
     return (<div className="EndorsementCarouselBackground">
         <CarouselProvider
             naturalSlideWidth={2}
             naturalSlideHeight={1}
-            totalSlides={totalSlides *1}//TODO REMOVE 4!!!!!!!!!!!!!!!
-            visibleSlides={Math.min(totalSlides,2)}
+            totalSlides={totalSlides }
+            visibleSlides={Math.min(totalSlides,Number.parseInt(visibleSlidesCount))}
             isIntrinsicHeight={true}
             infinite={true}>
                 
