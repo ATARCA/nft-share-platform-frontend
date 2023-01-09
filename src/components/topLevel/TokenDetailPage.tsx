@@ -47,6 +47,7 @@ const TokenDetailPage = () => {
     const canEndorse = useCanCurrentAccountEndorse(detailedToken)
 
     const isLikeToken = detailedToken?.isLikeToken
+    const isEndorseToken = detailedToken?.isEndorseToken
     const originalTokenEntityId =  isLikeToken ? detailedToken?.likedParentToken?.id : detailedToken?.id
 
     //TODO extract this to custom hook after switching to subgraph web sockets 
@@ -141,7 +142,7 @@ const TokenDetailPage = () => {
     const renderActionButtonArea = () => {
         return (
             <div>
-                { isLikeToken ? <></> : renderShareOrLikeOrEndorseButton() }
+                { isLikeToken || isEndorseToken ? <></> : renderShareOrLikeOrEndorseButton() }
             </div>
         )
     }

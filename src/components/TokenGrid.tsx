@@ -103,13 +103,18 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
             <Card onClick={onCardClicked} centered={centered} style={cardStyle}>
                 
                 <Image rounded size='medium' className='Square' src={imageURL} style={{'width': '100%'}}/>
-                <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken}/>
+                <TokenTypeFloatingLabel isOriginal={token.isOriginal} isSharedInstance={token.isSharedInstance} isLikeToken={token.isLikeToken} isEndorseToken={token.isEndorseToken}/>
                 <Card.Content className='No-top-border'>
                     <Card.Header className='No-overflow'>{tokenHolderDisplayName}</Card.Header>
                     <Card.Description className='No-overflow'>
                         {tokenDisplayName}
                     </Card.Description>
-                    <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>
+
+                    {token.isEndorseToken ? 
+                        <Card.Meta style={{margin: '1em 0 0 0'}}>“{metadata?.description}”</Card.Meta>
+                        :
+                        <Card.Meta style={{margin: '1em 0 0 0'}}>Category: {tokenCategory}</Card.Meta>
+                    }
                 </Card.Content>
                 <TokenCardBottomIcons likesCount={likesCount} sharesCount={sharesCount}/>
             </Card>
@@ -147,11 +152,12 @@ export const TokenCard = ({token, centered = true, useDummyMetadata, showCardWhe
     return skipColumnIfCardIncomplete()
 }
 
-const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean}) => {
+const TokenTypeFloatingLabel = ({isOriginal, isSharedInstance, isLikeToken, isEndorseToken}:{isOriginal: boolean, isSharedInstance: boolean, isLikeToken: boolean, isEndorseToken: boolean}) => {
     let labelText = 'N/A'
     if (isOriginal) labelText = 'ORIGINAL AWARD'
     else if (isSharedInstance) labelText = 'SHARED AWARD'
     else if (isLikeToken) labelText = 'LIKED AWARD'
+    else if (isEndorseToken) labelText = 'ENDORSEMENT'
 
     return  <Rail attached internal  position='left' style={{margin: '10px'}}>
         <Label circular size='mini'>{labelText}</Label>

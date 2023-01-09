@@ -13,8 +13,17 @@ const TokenAttributesView = ({token, metadata}: { token:TokenByIdQuery_token, me
             <Table basic='very' >
                 <Table.Body>
                     <Table.Row>
-                        <TitleTableCell>Description</TitleTableCell>
-                        <ValueTableCell>{metadata.description}</ValueTableCell> 
+                        {!token.isEndorseToken ?
+                            <>
+                                <TitleTableCell>Description</TitleTableCell>
+                                <ValueTableCell>{metadata.description}</ValueTableCell> 
+                            </>
+                            :
+                            <>
+                                <TitleTableCell>Endorsement</TitleTableCell>
+                                <ValueTableCell>{'“'+metadata.description+'”'}</ValueTableCell> 
+                            </>
+                        }
                     </Table.Row>
                     {metadata.attributes.map( attribute => {
                         return <Table.Row key={attribute.trait_type}>

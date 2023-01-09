@@ -10,6 +10,7 @@ query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!, $project: 
     isSharedInstance
     isOriginalOrShared
     isLikeToken
+    isEndorseToken
     tokenId
     metadataUri
     sharedChildTokens {
@@ -37,6 +38,7 @@ query FirstTokensQuery ($project: String!, $first: Int!){
     isSharedInstance
     isOriginalOrShared
     isLikeToken
+    isEndorseToken
     tokenId
     metadataUri
     sharedChildTokens {

@@ -35,9 +35,8 @@ export const EndorsementCarousel = ( { parentToken }: { parentToken: TokenByIdQu
             <div style={{ position: 'relative'}}>
                 <Slider style={{ padding: '0 9vh 0 9vh'}}>
                     {endorseTokensResult.data?.tokens.map((token, i) => 
-                        <Slide  index={i} key={i}>
-                            <EndorsementCarouselCard key={token.id} token={token} />
-                        </Slide>)}
+                        <EndorsementCarouselCard key={i} token={token} index={i} />
+                    )}
                 </Slider>
              
                 <Image as={ButtonBack} size={"tiny"} style={{position: 'absolute', top: '40%', left: '0', borderStyle: 'none'}} 
