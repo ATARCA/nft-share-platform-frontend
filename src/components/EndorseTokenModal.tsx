@@ -16,11 +16,12 @@ const EndorseTokenModal = ( {open, setOpen, originalToken} : { open: boolean, se
 
     const accounts = useAccounts()
 
-
     const projectId = useCurrentProjectId() || 'N/A'
     const [ tokenDisplayName, tokenHolderDisplayName, currentTokenmetadata, consentMissing, metadataErrorMessage ] = useMetadata(originalToken)
     const endorseContract = useEndorseContract(projectId)
     const canEndorse = useCanCurrentAccountEndorse(originalToken)
+
+    const [showSuccessText, setShowSuccessText] = useState(false)
 
     const [ setNewMetadata, 
         isMetadataValid, 
@@ -73,33 +74,61 @@ const EndorseTokenModal = ( {open, setOpen, originalToken} : { open: boolean, se
         updateNewTokenMetadata()
     },[currentTokenmetadata, originalToken.tokenId, endorsementText.length, setIsMetadataValid, setNewMetadata, endorsementText])
 
+    useEffect(() => {
+        
+        const isSucessfullyCompleted = () => {
+            return mintAndMetadaUploadCompleted && mintErrorMessage === ''  && metadataUploadErrorMessage === ''
+        }
+
+        const showSuccessViewAndClose = () => {
+            if (isSucessfullyCompleted()) {
+                setShowSuccessText(true)
+                setTimeout(() => {
+                    setShowSuccessText(false)
+                    setOpen(false)
+                }, 8000);                
+            }
+        }
+    
+        showSuccessViewAndClose()
+    },[ metadataUploadErrorMessage, mintAndMetadaUploadCompleted, mintErrorMessage, setOpen])
+
     const onEndorseClicked = async () => {
         await mintAndUploadMetadata()
     }
 
+    const isInProgress = () => {
+        return mintInProgress || metadataSignAndUploadInProgress
+    }
+
     return (
-        <Modal open={(!(mintAndMetadaUploadCompleted && mintErrorMessage === ''  && metadataUploadErrorMessage === '')  )&& open} 
+        <Modal open={open} 
             closeIcon
             size="tiny"
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}>
             <Modal.Content>
                 <Header as='h1'>Endorse community award</Header>
+
+                { showSuccessText ? 
+                    <Message info header='Metadata successfuly uploaded.' content='It may take up to 5min for the token to appear on Talko.'/>: <></>}
+
                 <p>Endorsement text (max 200 characters)</p>
                 
                 <Form>                         
                     <TextArea 
                         value={endorsementText} 
-                        onChange={(e, { value }) => {setEndorsementText( value?.toString() || '' ); setEndorsementTextEverChanged(true)} }/>             
+                        onChange={(e, { value }) => {if (!isInProgress()){setEndorsementText( value?.toString() || '' ); setEndorsementTextEverChanged(true)} }}/>             
                 </Form>
                 
                 <div style={{ display: 'flex',justifyContent: 'center'}}>
                     <Button style={{margin: '1em'}} primary 
                         disabled={!canEndorse || !isMetadataValid} 
                         onClick={onEndorseClicked}
-                        loading={ mintInProgress || metadataSignAndUploadInProgress }>Endorse and mint</Button>
+                        loading={ isInProgress() }>Endorse and mint</Button>
                 </div>
-                
+
+        
                 { mintErrorMessage ? 
                     <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
                 { metadataUploadErrorMessage ? 
