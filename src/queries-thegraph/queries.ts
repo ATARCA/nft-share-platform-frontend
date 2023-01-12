@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_TOKENS = gql`
-query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!, $project: String!){
-  tokens ( orderBy: mintBlock, orderDirection: desc, where: {isOriginalOrShared: $isOriginalOrShared, category_starts_with: $category, category_ends_with: $category, project: $project}){
+query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!, $project: String!, $first: Int!){
+  tokens ( orderBy: mintBlock, orderDirection: desc, first: $first, where: {isOriginalOrShared: $isOriginalOrShared, category_starts_with: $category, category_ends_with: $category, project: $project}){
     id
     ownerAddress
     contractAddress
