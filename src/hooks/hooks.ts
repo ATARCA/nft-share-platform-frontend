@@ -444,6 +444,8 @@ export const useCanCurrentAccountEndorse = ( tokenDetails: TokenByIdQuery_token 
     const active = useIsActive()
     const address = accounts ? accounts[0]:''
 
+    const endorseContract = useEndorseContract(tokenDetails?.project.id || '')
+
     const originalTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
@@ -468,7 +470,8 @@ export const useCanCurrentAccountEndorse = ( tokenDetails: TokenByIdQuery_token 
         return  hasAtLeastOneOriginalTokenInThisProject && 
             doesNotOwnCurrentToken && 
             isOriginalOrSharedToken &&
-            !hasAlreadyEndorseTokenByCurrentAccount
+            !hasAlreadyEndorseTokenByCurrentAccount &&
+            endorseContract
     }
     else return false
 }
