@@ -16,3 +16,6 @@ export const subContributionPropertyName = 'Subcontribution title'
 
 export const receiverPropertyName = 'Receiver'
 export const categoryPropertyName = 'Category'
+export const originalTokenId = 'Original token ID'
+
+export const endorsementTokenName = 'Endorsement'

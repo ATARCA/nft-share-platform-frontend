@@ -49,7 +49,7 @@ const TokenSharePage = () => {
         mintAndMetadaUploadCompleted, 
         mintErrorMessage, 
         metadataUploadErrorMessage, 
-        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract) => shareContract.share(receiverAddress,tokenId))
+        resetState ] = useMintTokenAndUploadMetadata( projectId, (receiverAddress, shareContract, endorseContract) => shareContract.share(receiverAddress,tokenId))
     
     const isValidAddress = ethers.utils.isAddress(receiverAddress)
 
@@ -161,6 +161,11 @@ const TokenSharePage = () => {
                 { mintAndMetadaUploadCompleted 
                 && mintErrorMessage === '' 
                 && metadataUploadErrorMessage === '' ? renderSuccessView() : <></>}
+
+                { mintErrorMessage ? 
+                    <Message error header='Error while minting' content={mintErrorMessage}/>: <></>}
+                { metadataUploadErrorMessage ? 
+                    <Message error header='Error while signing and uploading metadata' content={metadataUploadErrorMessage}/>: <></>}
 
                 {metadaSignOrUploadFailed ?
                     <div>

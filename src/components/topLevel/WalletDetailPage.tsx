@@ -10,27 +10,36 @@ import { TokensOfAddressQuery, TokensOfAddressQueryVariables } from '../../queri
 import TokenGrid from '../TokenGrid';
 
 export const WalletDetailPage = () => {
+
+    enum SelectedTab { ReceivedAwards, LikedTokens, EndorseTokens }
+
     const walletAddress = useParams().walletAddress || 'undefined'
     const isValidAddress = ethers.utils.isAddress(walletAddress)
-    const [isReceivedAwardsSelected, setIsReceivedAwardsSelected] = useState(true)
+    const [selectedTab, setSelectedTab] = useState(SelectedTab.ReceivedAwards)
 
     const originalTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: true, isSharedInstance: false, isLikeToken: false, isEndorseToken:false}});
 
     const sharedTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: true, isLikeToken: false, isEndorseToken:false}});
 
     const likeTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true}});
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: true, isEndorseToken:false}});
+
+    const endorseTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
+        {client: theGraphApolloClient, 
+            pollInterval: 5000, 
+            onError: defaultErrorHandler, 
+            variables: {address: walletAddress, isOriginal: false, isSharedInstance: false, isLikeToken: false, isEndorseToken:true}});
 
     const originalTokensLength = originalTokensResult?.data?.tokens.length || 0
     const sharedTokensLength = sharedTokensResult?.data?.tokens.length || 0
@@ -41,11 +50,11 @@ export const WalletDetailPage = () => {
             if (originalTokensLength === 0 &&
                 sharedTokensLength === 0 &&
                 likeTokensLength !== 0 ) {
-                setIsReceivedAwardsSelected(false)
+                setSelectedTab(SelectedTab.LikedTokens)
             }
         }
         jumpToSupportedTabIfUserHasNoReceivedTokens()
-    }, [originalTokensLength, sharedTokensLength, likeTokensLength])
+    }, [originalTokensLength, sharedTokensLength, likeTokensLength, SelectedTab.LikedTokens])
 
     if (!isValidAddress) {
         return <div>
@@ -53,19 +62,22 @@ export const WalletDetailPage = () => {
         </div>
     }
 
-    const getLabelClassName = (isSelected: boolean) => {
-        if (isSelected) return 'Category-switch-active'
+    const getLabelClassName = (tab: SelectedTab) => {
+        if (selectedTab === tab) return 'Category-switch-active'
         else return 'Category-switch-inactive'
     }
 
     const getTokensForCurrentTab = () => {
-        if (isReceivedAwardsSelected) {
+        if (selectedTab === SelectedTab.ReceivedAwards) {
             const originalTokens = originalTokensResult.data?.tokens || []
             const sharedTokens = sharedTokensResult.data?.tokens || []
             return originalTokens.concat(sharedTokens)
         }
-        else {
+        else if (selectedTab === SelectedTab.LikedTokens){
             return likeTokensResult.data?.tokens || []
+        }
+        else {
+            return endorseTokensResult.data?.tokens || []
         }
     }
 
@@ -74,8 +86,9 @@ export const WalletDetailPage = () => {
             <Header.Subheader className="Page-subheader">Wallet</Header.Subheader>
             <Header className="No-overflow" as='h1'>{walletAddress}</Header>
             <Label.Group circular style={{padding: '3vh 0'}}>
-                <Label as='a' className={getLabelClassName(isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(true)}>Received awards</Label>
-                <Label as='a' className={getLabelClassName(!isReceivedAwardsSelected)} onClick={() => setIsReceivedAwardsSelected(false)}>Liked awards</Label>
+                <Label as='a' className={getLabelClassName(SelectedTab.ReceivedAwards)} onClick={() => setSelectedTab(SelectedTab.ReceivedAwards)}>Received awards</Label>
+                <Label as='a' className={getLabelClassName(SelectedTab.LikedTokens)} onClick={() => setSelectedTab(SelectedTab.LikedTokens)}>Liked awards</Label>
+                <Label as='a' className={getLabelClassName(SelectedTab.EndorseTokens)} onClick={() => setSelectedTab(SelectedTab.EndorseTokens)}>Given endorsements</Label>
             </Label.Group>
         </div>
         <TokenGrid tokens={getTokensForCurrentTab()} showCardWhenDataMissing={true} isLoading={originalTokensResult.loading || sharedTokensResult.loading || likeTokensResult.loading}/>

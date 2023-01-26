@@ -5,7 +5,7 @@ import { Button, Card, Grid, Header, Icon, Message, Popup, Segment } from "seman
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_LIKE_TOKEN_EXISTS } from "../../queries-thegraph/queries";
 import TokenAttributesView from "../TokenAttributesView";
-import { useCurrentProjectId, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
+import { useCanCurrentAccountEndorse, useCurrentProjectId, useIsCurrentAccountTokenOwner, useLikeContract, useMetadata, useShareContract, useTokenDetails } from "../../hooks/hooks";
 import { hooks } from '../../connectors/metaMaskConnector'
 import { BigNumber } from "@ethersproject/bignumber";
 import { LikeTokenExistsQuery, LikeTokenExistsQueryVariables } from "../../queries-thegraph/types-thegraph/LikeTokenExistsQuery";
@@ -13,8 +13,10 @@ import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { buildTokenShareRoute } from "../../routingUtils";
 import { TokenByIdQuery_token } from "../../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { TokenCard } from "../TokenGrid";
-import { FacebookShareButton, FacebookIcon, FacebookShareCount, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from "react-share";
 import { useLocation } from "react-router-dom";
+import EndorseOrLikeChooserModal from "../EndorseOrLikeChooserModal";
+import { EndorsementCarousel } from "../EndorsementCarousel";
 
 const { useAccounts, useError, useIsActive } = hooks
 
@@ -33,15 +35,19 @@ const TokenDetailPage = () => {
     const likeContract = useLikeContract(projectId)
     const shareContract = useShareContract(projectId)
 
+    const [ showEndorseChooser, setShowEndorseChooser ] = useState(false)
+
     const [ likeInProgress, setLikeInProgress ] = useState(false)
     const [ errorMessage, setErrorMessage ] = useState('')
 
     const metamaskError = useError()
-
+    
     const [ detailedToken, detailedTokenLoading ] = useTokenDetails(contractAddress, BigNumber.from(tokenId))
     const isCurrentAccountTokenOwner = useIsCurrentAccountTokenOwner(detailedToken?.ownerAddress)
+    const canEndorse = useCanCurrentAccountEndorse(detailedToken)
 
     const isLikeToken = detailedToken?.isLikeToken
+    const isEndorseToken = detailedToken?.isEndorseToken
     const originalTokenEntityId =  isLikeToken ? detailedToken?.likedParentToken?.id : detailedToken?.id
 
     //TODO extract this to custom hook after switching to subgraph web sockets 
@@ -78,6 +84,8 @@ const TokenDetailPage = () => {
         }
     }
 
+   
+
     const onShareClicked = async () => {
         navigate(buildTokenShareRoute(contractAddress,BigNumber.from(tokenId)))
     }
@@ -96,7 +104,9 @@ const TokenDetailPage = () => {
         else return 'Connect your wallet to like this token.'
     }
 
-    const renderShareOrLikeButton = () => {
+    const likeBtnDisabled = !active || !likeContract || likeTokenExists || likeInProgress;
+
+    const renderShareOrLikeOrEndorseButton = () => {
 
         if (isCurrentAccountTokenOwner)
             return <>
@@ -109,24 +119,30 @@ const TokenDetailPage = () => {
             </>
         else
             return <>
-                <Popup
+                {canEndorse ? <></> : <> <Popup
                     content='You have already liked this token'
                     disabled={!likeTokenExists}
                     trigger={<span><Button primary 
-                        disabled={!active || !likeContract || likeTokenExists || likeInProgress} 
+                        disabled={likeBtnDisabled} 
                         onClick={onLikeClicked} 
-                        loading={likeInProgress}>Like</Button></span>
-                    }
+                        loading={likeInProgress}>Like</Button></span>}                    
                 />
+
                 <Popup content={getLikeButtonExplainerText()} position='bottom left' trigger={<Icon color="grey" style={{margin : '0.5em'}}
                     name="question circle"/>}/>
+                </>}
+
+                {canEndorse ? <Button primary loading={likeInProgress}
+                    onClick={ () => setShowEndorseChooser(true)}>Support award</Button> : <></>}
+
+                { detailedToken ? <EndorseOrLikeChooserModal open={showEndorseChooser} setOpen={setShowEndorseChooser} onLikeClicked={onLikeClicked} likeBtnDisabled={likeBtnDisabled} originalToken={detailedToken}/> : <></>}
             </>
     }
 
     const renderActionButtonArea = () => {
         return (
             <div>
-                { isLikeToken ? <></> : renderShareOrLikeButton() }
+                { isLikeToken || isEndorseToken ? <></> : renderShareOrLikeOrEndorseButton() }
             </div>
         )
     }
@@ -150,6 +166,7 @@ const TokenDetailPage = () => {
                         {renderRightColumn(token)}
                     </Grid>
                 </Card>
+                {detailedToken ? <EndorsementCarousel parentToken={detailedToken}/> : <></>}
             </div>
         </div>
     }
@@ -157,7 +174,7 @@ const TokenDetailPage = () => {
     const renderLeftColumn = (token:TokenByIdQuery_token) => {
         return <Grid.Column style={{'textAlign': 'center'}} >
             <TokenCard token={token} showCardWhenDataMissing={true}/>
-            <Grid columns='equal' style={{'margin-top':'0px', 'marginLeft':'0px', 'marginRight':'0px'}}>
+            <Grid columns='equal' style={{'marginTop':'0px', 'marginLeft':'0px', 'marginRight':'0px'}}>
                 <Grid.Column key={"facebook"}>
                     <FacebookShareButton quote="Check out this cool award" url={'https://talkoapp.io'+location.pathname}><FacebookIcon size={40} round /></FacebookShareButton>
                 </Grid.Column>

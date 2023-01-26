@@ -10,6 +10,7 @@ query TokensQuery ($isOriginalOrShared: Boolean!, $category: String!, $project: 
     isSharedInstance
     isOriginalOrShared
     isLikeToken
+    isEndorseToken
     tokenId
     metadataUri
     sharedChildTokens {
@@ -37,6 +38,7 @@ query FirstTokensQuery ($project: String!, $first: Int!){
     isSharedInstance
     isOriginalOrShared
     isLikeToken
+    isEndorseToken
     tokenId
     metadataUri
     sharedChildTokens {
@@ -63,6 +65,7 @@ query TokenByIdQuery ($id: ID!){
     isOriginal
     isSharedInstance
     isLikeToken
+    isEndorseToken
     tokenId
     parentTokenId
     metadataUri
@@ -111,6 +114,7 @@ query ProjectDetailsQuery ($projectId: ID!){
     operators
     shareableContractAddress
     likeContractAddress
+    endorseContractAddress
     categories {
       id
     }
@@ -127,13 +131,14 @@ query AllProjectsQuery ( $filterId: ID!) {
 `
 
 export const GET_TOKENS_OF_ADDRESS = gql`
-query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!){
+query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedInstance: Boolean!, $isLikeToken: Boolean!, $isEndorseToken: Boolean!){
   tokens(
     where: {
     	ownerAddress: $address, 
     	isOriginal: $isOriginal, 
     	isSharedInstance: $isSharedInstance, 
-    	isLikeToken: $isLikeToken}) {
+    	isLikeToken: $isLikeToken,
+      isEndorseToken: $isEndorseToken}) {
     id
     project {
       id
@@ -143,6 +148,7 @@ query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedIn
     isOriginal
     isSharedInstance
     isLikeToken
+    isEndorseToken
     tokenId
     parentTokenId
     metadataUri
@@ -151,10 +157,39 @@ query TokensOfAddressQuery ($address: Bytes!, $isOriginal: Boolean!, $isSharedIn
         id
       }
     }
+    endorsedParentToken {
+      id
+    }
     sharedChildTokens {
       id
     }
     likeTokens {
+      id
+    }
+    metadataUri
+  }
+}
+`
+
+export const GET_ENDORSE_TOKENS_OF_TOKEN = gql`
+query EndorseTokensOfTokenQuery ($parentTokenEntityId: String!){
+  tokens(
+    where: {
+    	endorsedParentToken: $parentTokenEntityId, 
+      isEndorseToken: true}) {
+    id
+    project {
+      id
+    }
+    ownerAddress
+    contractAddress
+    isOriginal
+    isSharedInstance
+    isLikeToken
+    isEndorseToken
+    tokenId
+    metadataUri
+    endorsedParentToken {
       id
     }
     metadataUri

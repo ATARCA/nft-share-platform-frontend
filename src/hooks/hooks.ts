@@ -2,15 +2,15 @@ import { useEffect, useState } from "react"
 import { receiverPropertyName, NFTMetadata, subContributionPropertyName, subContributorPropertyName } from "../types/NFTMetadata"
 import useCookie from 'react-use-cookie';
 import { ethers } from "ethers";
-import { ShareableERC721 } from "../typechain-types";
+import { EndorseERC721, ShareableERC721 } from "../typechain-types";
 import { hooks } from "../connectors/metaMaskConnector";
-import { loadLikeContract, loadShareContract } from "../contracts/ContractsUtils";
+import { loadEndorseContract, loadLikeContract, loadShareContract } from "../contracts/ContractsUtils";
 import { LikeERC721 } from "../typechain-types";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { defaultErrorHandler } from "../graphql/errorHandlers";
 import { theGraphApolloClient } from "../graphql/theGraphApolloClient";
-import { GET_PROJECT_DETAILS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
+import { GET_PROJECT_DETAILS, GET_TOKENS_OF_ADDRESS, GET_TOKEN_BY_ID } from "../queries-thegraph/queries";
 import { TokenByIdQuery, TokenByIdQueryVariables, TokenByIdQuery_token } from "../queries-thegraph/types-thegraph/TokenByIdQuery";
 import { addressesEqual, buildSubgraphTokenEntityId } from "../utils";
 import { backendApolloClient } from "../graphql/backendApolloClient";
@@ -19,13 +19,14 @@ import { GetMessageToSignForMetadataUploadQuery, GetMessageToSignForMetadataUplo
 import { AddPendingMetadataMutation, AddPendingMetadataMutationVariables } from "../queries-backend/types-backend/AddPendingMetadataMutation";
 import { ProjectDetailsQuery, ProjectDetailsQueryVariables, ProjectDetailsQuery_project } from "../queries-thegraph/types-thegraph/ProjectDetailsQuery";
 import { TokensQuery_tokens } from "../queries-thegraph/types-thegraph/TokensQuery";
-import { TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
+import { TokensOfAddressQuery, TokensOfAddressQueryVariables, TokensOfAddressQuery_tokens } from "../queries-thegraph/types-thegraph/TokensOfAddressQuery";
 import { ConsentNeededQuery, ConsentNeededQueryVariables } from "../queries-backend/types-backend/ConsentNeededQuery";
 import { useParams } from "react-router-dom";
+import { EndorseTokensOfTokenQuery_tokens } from "../queries-thegraph/types-thegraph/EndorseTokensOfTokenQuery";
 
 const { useProvider, useAccounts, useIsActive, useAccount } = hooks
 
-export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | null | undefined, useDummyMetadata?: NFTMetadata): 
+export const useMetadata = (token: TokensQuery_tokens | TokensOfAddressQuery_tokens | TokenByIdQuery_token | TokenByIdQuery_token | EndorseTokensOfTokenQuery_tokens | null | undefined, useDummyMetadata?: NFTMetadata): 
       [ tokenDisplayName: string , 
         tokenHolderDisplayName: string, 
         metadata: NFTMetadata | undefined , 
@@ -186,6 +187,34 @@ export const useLikeContract = ( projectId: string) => {
     return likeContract
 }
 
+export const useEndorseContract = ( projectId: string) => {
+    const [endorseContract, setEndorseContract] = useState<EndorseERC721 | undefined>(undefined);
+    const [ projectDetails, loading ] = useProjectDetails(projectId)
+    const provider = useProvider();
+    
+    const endorseContractAddress = projectDetails?.endorseContractAddress
+
+    useEffect( () => {
+        const loadContract = async () => {
+            if (provider && endorseContractAddress) {
+                try {
+                    const contract = loadEndorseContract(endorseContractAddress, provider)
+                    setEndorseContract(contract)
+                } catch (error) {
+                    console.log('useEndorseContract',error)
+                }
+            }
+            else {
+                setEndorseContract(undefined)
+            }
+        }
+    
+        loadContract()
+    },[endorseContractAddress, provider])
+
+    return endorseContract
+}
+
 export const useTokenDetails = (contractAddress: string, tokenId: BigNumber): [TokenByIdQuery_token | null | undefined, boolean] => {
     const detailedTokenEntityId = buildSubgraphTokenEntityId(contractAddress, BigNumber.from(tokenId)) 
 
@@ -207,7 +236,7 @@ export const useIsCurrentAccountTokenOwner = ( tokenOwnerAddress: string) => {
     return (active && accounts) ? addressesEqual(accounts[0], tokenOwnerAddress) : false 
 }
 
-export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCaller: (receiverAddress: string, contract:ShareableERC721 ) => Promise<ethers.ContractTransaction>): 
+export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCaller: (receiverAddress: string, shareContract:ShareableERC721, endorseContract:EndorseERC721 | undefined ) => Promise<ethers.ContractTransaction>): 
 [   setMetadata: (metadata: string) => void, 
     isMetadataValid: boolean,
     setIsMetadataValid: (isMetadataValid: boolean) => void ,
@@ -227,6 +256,7 @@ export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCal
 
     const isActive = useIsActive()
     const shareContract = useShareContract(projectId)
+    const endorseContract = useEndorseContract(projectId)
     const accounts = useAccounts()
     const provider = useProvider();
 
@@ -259,7 +289,7 @@ export const useMintTokenAndUploadMetadata = (projectId: string, contractMintCal
             setMintErrorMessage('')
             setMintInProgress(true)
             try {
-                const resultTransaction = await contractMintCaller(receiverAddress, shareContract)
+                const resultTransaction = await contractMintCaller(receiverAddress, shareContract, endorseContract)
                 resultTransaction.wait().then( () => setMintInProgress(false))
                 return resultTransaction
             } catch (error) {
@@ -407,4 +437,41 @@ export const useCurrentProjectId = (): string|undefined => {
 
     if (projectName) return projectName
     else return tokenDetails?.project.id
+}
+
+export const useCanCurrentAccountEndorse = ( tokenDetails: TokenByIdQuery_token | null | undefined) => {
+    const accounts = useAccounts()
+    const active = useIsActive()
+    const address = accounts ? accounts[0]:''
+
+    const endorseContract = useEndorseContract(tokenDetails?.project.id || '')
+
+    const originalTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
+        {client: theGraphApolloClient, 
+            pollInterval: 5000, 
+            onError: defaultErrorHandler, 
+            variables: {address: address, isOriginal: true, isSharedInstance: false, isLikeToken: false, isEndorseToken:false}});
+
+    const endorseTokensResult = useQuery<TokensOfAddressQuery,TokensOfAddressQueryVariables>(GET_TOKENS_OF_ADDRESS, 
+        {client: theGraphApolloClient, 
+            pollInterval: 5000, 
+            onError: defaultErrorHandler, 
+            variables: {address: address, isOriginal: false, isSharedInstance: false, isLikeToken: false, isEndorseToken:true}});    
+
+    if (active && accounts && tokenDetails && !originalTokensResult.loading && !endorseTokensResult.loading) {
+        const isOriginalOrSharedToken = tokenDetails.isOriginal || tokenDetails.isSharedInstance
+        const originalTokensInThisProject = originalTokensResult.data?.tokens.filter( (token) => token.project.id === tokenDetails.project.id) || []
+
+        const endorseTokensForCurrentTokenByCurrentAccount = endorseTokensResult.data?.tokens.filter( (token) => token.endorsedParentToken?.id === tokenDetails.id) || []
+        const hasAtLeastOneOriginalTokenInThisProject = originalTokensInThisProject.length !== 0
+        const hasAlreadyEndorseTokenByCurrentAccount = endorseTokensForCurrentTokenByCurrentAccount.length !== 0
+
+        const doesNotOwnCurrentToken = !addressesEqual(address, tokenDetails.ownerAddress)
+        return  hasAtLeastOneOriginalTokenInThisProject && 
+            doesNotOwnCurrentToken && 
+            isOriginalOrSharedToken &&
+            !hasAlreadyEndorseTokenByCurrentAccount &&
+            endorseContract
+    }
+    else return false
 }
