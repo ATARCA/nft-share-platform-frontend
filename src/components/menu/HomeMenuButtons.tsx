@@ -8,13 +8,14 @@ import { useQuery } from "@apollo/client";
 import { defaultErrorHandler } from "../../graphql/errorHandlers";
 import { theGraphApolloClient } from "../../graphql/theGraphApolloClient";
 import { GET_ALL_PROJECTS } from "../../queries-thegraph/queries";
-import { AllProjectsQuery } from "../../queries-thegraph/types-thegraph/AllProjectsQuery";
+import { AllProjectsQuery, AllProjectsQueryVariables, AllProjectsQuery_projects  } from "../../queries-thegraph/types-thegraph/AllProjectsQuery";
 import { useCurrentProjectId, useLastVisitedProjectCookie } from "../../hooks/hooks";
+import { createSecretKey } from "crypto";
 
 const HomeMenuNavigationButtons = () => {
 
-    const allProjectsResult = useQuery<AllProjectsQuery,undefined>(GET_ALL_PROJECTS, 
-        {client: theGraphApolloClient, onError: defaultErrorHandler});
+    const allProjectsResult = useQuery<AllProjectsQuery,AllProjectsQueryVariables>(GET_ALL_PROJECTS, 
+        {client: theGraphApolloClient, onError: defaultErrorHandler, variables: { filterId: process.env.REACT_APP_FILTER_OUT_PROJECT ?? '' }});
 
     const [lastVisitedProject, setLastVisitedProject] = useLastVisitedProjectCookie()
     const projectName = useCurrentProjectId() ||  lastVisitedProject
@@ -32,7 +33,7 @@ const HomeMenuNavigationButtons = () => {
         navigate(buildProjectPageRoute(projectId))
     }
 
-    const options = allProjectsResult.data?.projects.map( project => ({key: project.id, text:project.id, value:project.id}) ) 
+    const options = allProjectsResult.data?.projects.map( project => ({key: project.id, text:project.id, value:project.id}) ); 
 
     const renderProjectSelectionItems = () => {
         if (location.pathname === homeRoute || 

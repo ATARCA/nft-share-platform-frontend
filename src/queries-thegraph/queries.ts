@@ -123,10 +123,10 @@ query ProjectDetailsQuery ($projectId: ID!){
 `
 
 export const GET_ALL_PROJECTS = gql`
-query AllProjectsQuery {
-  projects {
+query AllProjectsQuery ( $filterId: ID!) {
+  projects (where: {id_not: $filterId}){
     id
-  }
+  } 
 }
 `
 

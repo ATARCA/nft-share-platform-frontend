@@ -3,14 +3,15 @@ import { useQuery } from '@apollo/client'
 import { GET_ALL_PROJECTS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
-import { AllProjectsQuery, AllProjectsQuery_projects } from '../../queries-thegraph/types-thegraph/AllProjectsQuery';
+import { AllProjectsQuery, AllProjectsQueryVariables, AllProjectsQuery_projects } from '../../queries-thegraph/types-thegraph/AllProjectsQuery';
 import { ProjectPreview } from '../ProjectPreview';
 import { streamrProjectId } from '../../utils';
 import { Segment } from 'semantic-ui-react';
 
 const Home = () => {
-    const allProjectsResult = useQuery<AllProjectsQuery,undefined>(GET_ALL_PROJECTS, 
-        {client: theGraphApolloClient, onError: defaultErrorHandler});
+    
+    const allProjectsResult = useQuery<AllProjectsQuery,AllProjectsQueryVariables>(GET_ALL_PROJECTS, 
+        {client: theGraphApolloClient, onError: defaultErrorHandler, variables: { filterId: process.env.REACT_APP_FILTER_OUT_PROJECT ?? ''}});
 
     const getProjectListWithStreamrProjectFirst = (projects: AllProjectsQuery_projects[] | undefined) => {
         const streamrProject = projects?.find( (project) => project.id === streamrProjectId)
