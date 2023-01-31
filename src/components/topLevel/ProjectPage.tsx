@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client'
 import { GET_TOKENS } from '../../queries-thegraph/queries';
 import { theGraphApolloClient } from '../../graphql/theGraphApolloClient';
 import { defaultErrorHandler } from '../../graphql/errorHandlers';
 import TokenGrid from '../TokenGrid';
-import { TokensQuery, TokensQueryVariables } from '../../queries-thegraph/types-thegraph/TokensQuery';
+import { TokensQuery, TokensQueryVariables, TokensQuery_tokens } from '../../queries-thegraph/types-thegraph/TokensQuery';
 import { Header, Segment, Image } from 'semantic-ui-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
@@ -13,6 +13,8 @@ import { useProjectDetails } from '../../hooks/hooks';
 import { aboutRoute } from '../../routingUtils';
 import streamr_logo from '../../images/streamr_simple.svg'
 import { SocialIcon } from 'react-social-icons';
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 const ProjectPage = () => {
 
@@ -26,11 +28,26 @@ const ProjectPage = () => {
 
     const navigate = useNavigate()
 
+    const infiniteScrollLoadStep = 6;
+    const [firstXtokens, setFirstXTokens] = useState(infiniteScrollLoadStep);
+
+    const fetchMoreData = () => {
+        setFirstXTokens(firstXtokens+infiniteScrollLoadStep)       
+    }
+
     const originalOrShareTokensResult = useQuery<TokensQuery,TokensQueryVariables>(GET_TOKENS, 
         {client: theGraphApolloClient, 
             pollInterval: 5000, 
             onError: defaultErrorHandler, 
-            variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId}});
+            variables: {isOriginalOrShared: true, category: selectedCategory, project: projectId, first: firstXtokens}});
+
+    const [tokensToRender, setTokensToRender] = useState<TokensQuery_tokens[]>([]);
+
+    useEffect(() => {
+        if ((originalOrShareTokensResult.data?.tokens || []).length !== 0) {
+            setTokensToRender(originalOrShareTokensResult.data?.tokens || [])
+        }
+    },[originalOrShareTokensResult.data?.tokens])
 
     const getProjectTitle = () => {
         if (projectId === streamrProjectId) return (
@@ -85,9 +102,17 @@ const ProjectPage = () => {
     )
     else
         return (
-            <div>
-                {renderProjectTitleAndDescription()}            
-                <TokenGrid tokens={originalOrShareTokensResult.data?.tokens || []} isLoading={originalOrShareTokensResult.loading}/>
+            <div >
+                {renderProjectTitleAndDescription()}      
+                <div id="scrollableDiv">
+                    <InfiniteScroll
+                        dataLength={tokensToRender.length}
+                        next={fetchMoreData}
+                        hasMore={tokensToRender.length + infiniteScrollLoadStep >= firstXtokens}
+                        loader={<Segment placeholder vertical padded='very' loading/>}>
+                        <TokenGrid tokens={tokensToRender} isLoading={originalOrShareTokensResult.loading && tokensToRender.length === 0}/>
+                    </InfiniteScroll>    
+                </div>
             </div>
         )
 }
