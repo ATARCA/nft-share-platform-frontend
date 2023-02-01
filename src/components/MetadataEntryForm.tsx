@@ -220,6 +220,10 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
         setMetadataAttributesArray(arrayCopy)
     }
 
+    const setMetadataAttributesArrayAndClearUuid = (attributes: MetadataAttributeUIEntry[]) => {
+        setMetadataAttributesArray(attributes.map(value => ({ ...value, id: uuidv4() })))
+    }
+    
     return (
         <div>
             <InputForm>
@@ -264,15 +268,15 @@ export const MetadataEntryForm = ({onIsValid, onMetadataChanged, onCategoryChang
             </Header>
             
             <div className='margin-vertical'>Choose a template</div>
-            <Button basic className="MetadataTemplateButton" onClick={() => { setMetadataAttributesArray(socialsContributionPropertiesTemplate)}}>Socials</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(educationContributionPropertiesTemplate)}}>Education</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(technologyContributionPropertiesTemplate)}}>Technology</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(securityContributionPropertiesTemplate)}}>Security</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(contentContributionPropertiesTemplate)}}>Content</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(competitionContributionPropertiesTemplate)}}>Competition</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(communityHeroContributionPropertiesTemplate)}}>Community Hero</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(eventOrganiserContributionPropertiesTemplate)}}>Events</Button>
-            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArray(streamTeamContributionPropertiesTemplate)}}>Stream Team</Button>
+            <Button basic className="MetadataTemplateButton" onClick={() => { setMetadataAttributesArrayAndClearUuid(socialsContributionPropertiesTemplate)}}>Socials</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(educationContributionPropertiesTemplate)}}>Education</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(technologyContributionPropertiesTemplate)}}>Technology</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(securityContributionPropertiesTemplate)}}>Security</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(contentContributionPropertiesTemplate)}}>Content</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(competitionContributionPropertiesTemplate)}}>Competition</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(communityHeroContributionPropertiesTemplate)}}>Community Hero</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(eventOrganiserContributionPropertiesTemplate)}}>Events</Button>
+            <Button basic className="MetadataTemplateButton"  onClick={() => { setMetadataAttributesArrayAndClearUuid(streamTeamContributionPropertiesTemplate)}}>Stream Team</Button>
             {Array.from( metadataAttributesArray ).map( entry => { 
                 const uuid = entry.id
                 const propertyName = entry.name
