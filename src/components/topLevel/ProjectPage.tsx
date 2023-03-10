@@ -28,7 +28,7 @@ const ProjectPage = () => {
 
     const navigate = useNavigate()
 
-    const infiniteScrollLoadStep = 6;
+    const infiniteScrollLoadStep = 24;
     const [firstXtokens, setFirstXTokens] = useState(infiniteScrollLoadStep);
 
     const fetchMoreData = () => {
