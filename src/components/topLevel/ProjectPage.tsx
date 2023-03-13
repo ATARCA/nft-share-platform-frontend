@@ -8,7 +8,7 @@ import { TokensQuery, TokensQueryVariables, TokensQuery_tokens } from '../../que
 import { Header, Segment, Image } from 'semantic-ui-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ALL_CATEGORIES_VALUE, TokenCategoryDropdown } from '../TokenCategoryDropdown';
-import { streamrProjectId } from '../../utils';
+import { atarcaProjectId, streamrProjectId } from '../../utils';
 import { useProjectDetails } from '../../hooks/hooks';
 import { aboutRoute } from '../../routingUtils';
 import streamr_logo from '../../images/streamr_simple.svg'
@@ -53,6 +53,9 @@ const ProjectPage = () => {
         if (projectId === streamrProjectId) return (
             <div>Streamr community contribution awards!</div>
         )
+        else if (projectId === atarcaProjectId) return (
+            <div>Atarca Anti-rival Community Awards</div>
+        )
         else return (
             <div>Awards to the {projectDetails?.id} community</div>
         )
@@ -63,6 +66,12 @@ const ProjectPage = () => {
             <div>
                 <p>Streamr Awards are a new type of token (sNFTs) minted to acknowledge the valuable contributions made by Streamr community members.</p>
                 <p>Browse, Like, and Share the awards!</p>
+            </div>
+        )
+        else if (projectId === atarcaProjectId) return (
+            <div>
+                <p>Tokens are minted to those who complete the course, An Introduction to Anti-rivalry to acknowledge their efforts to promote anti-rivalry.</p>
+                <p>These tokens can be shared with others to identify them as anti-rival experts.</p>
             </div>
         )
         else return (
