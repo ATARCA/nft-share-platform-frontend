@@ -39,4 +39,5 @@ export const getUrlLinkElement = (url: string): React.ReactNode => {
 }
 
 export const streamrProjectId = 'Streamr'
+export const atarcaProjectId = 'ATARCA EU'
 
