@@ -16,7 +16,7 @@ export const ProjectPreview = ( { projectId }: { projectId: string } ) => {
     const navigate = useNavigate()
 
     const DESIRED_TOKEN_COUNT_W_METADATA = 3
-    const LOADED_TOKEN_COUNT = 20
+    const LOADED_TOKEN_COUNT = 40
 
     const first20TokensResult = useQuery<FirstTokensQuery, FirstTokensQueryVariables>(GET_FIRST_X_TOKENS, 
         {client: theGraphApolloClient, 
